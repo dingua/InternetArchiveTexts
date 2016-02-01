@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="14F27" minimumToolsVersion="Automatic">
+    <entity name="ArchiveItem" representedClassName="ArchiveItem" syncable="YES">
+        <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="publicdate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="publisher" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="formats" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Format" syncable="YES"/>
+    </entity>
+    <entity name="Format" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="ArchiveItem" positionX="-63" positionY="-18" width="128" height="135"/>
+        <element name="Format" positionX="-54" positionY="9" width="128" height="60"/>
+    </elements>
+</model>

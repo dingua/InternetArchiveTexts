@@ -1,0 +1,29 @@
+PODS:
+  - Alamofire (3.1.5)
+  - AlamofireImage (2.3.0):
+    - Alamofire (~> 3.1)
+  - DGActivityIndicatorView (2.0)
+  - SwiftyJSON (2.3.2)
+
+DEPENDENCIES:
+  - Alamofire (~> 3.1)
+  - AlamofireImage (~> 2.0)
+  - DGActivityIndicatorView
+  - SwiftyJSON (from `https://github.com/SwiftyJSON/SwiftyJSON.git`)
+
+EXTERNAL SOURCES:
+  SwiftyJSON:
+    :git: https://github.com/SwiftyJSON/SwiftyJSON.git
+
+CHECKOUT OPTIONS:
+  SwiftyJSON:
+    :commit: 929539eb6a3304eaa9153ca44041a78b85bf2ee5
+    :git: https://github.com/SwiftyJSON/SwiftyJSON.git
+
+SPEC CHECKSUMS:
+  Alamofire: 5f730ba29fd113b7ddd71c1e65d0c630acf5d7b0
+  AlamofireImage: 4013fb5b99b10117bf2554a67b9bd2231d476b45
+  DGActivityIndicatorView: 52875b025a6ccf6a431a905285c12e2bb95eb559
+  SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
+
+COCOAPODS: 0.39.0

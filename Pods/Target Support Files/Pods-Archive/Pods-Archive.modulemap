@@ -1,0 +1,6 @@
+framework module Pods_Archive {
+  umbrella header "Pods-Archive-umbrella.h"
+
+  export *
+  module * { export * }
+}

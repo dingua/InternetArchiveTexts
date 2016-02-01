@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" initialViewController="vhD-Px-RXn">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="eRc-0f-Akt">
+            <objects>
+                <viewController id="vhD-Px-RXn" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="yr0-0e-LYW"/>
+                        <viewControllerLayoutGuide type="bottom" id="sfv-6F-cQ3"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Lz6-H0-yXG">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="AGm-C2-Z8x">
+                                <rect key="frame" x="100" y="100" width="400" height="400"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="400" id="Ze5-o2-BUl"/>
+                                    <constraint firstAttribute="width" constant="400" id="z0f-Pr-CvG"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="AGm-C2-Z8x" firstAttribute="centerY" secondItem="Lz6-H0-yXG" secondAttribute="centerY" id="Epi-0b-GQn"/>
+                            <constraint firstItem="AGm-C2-Z8x" firstAttribute="centerX" secondItem="Lz6-H0-yXG" secondAttribute="centerX" id="szR-Oe-reW"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DLq-fq-EOM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="53" y="375"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="LaunchImage" width="12" height="24"/>
+    </resources>
+</document>
