@@ -682,7 +682,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Archive/Librairies/ios_hierarchy_viewer_1.4.8_",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.huawei.ott.archive;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dingua.archive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "ffc20226-85bd-4fef-b132-676e03346530";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/Archive/ArchiveBridgingHeader.h";
@@ -704,7 +704,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Archive/Librairies/ios_hierarchy_viewer_1.4.8_",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.huawei.ott.archive;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dingua.archive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "ffc20226-85bd-4fef-b132-676e03346530";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/Archive/ArchiveBridgingHeader.h";
