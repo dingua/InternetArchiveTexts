@@ -176,18 +176,14 @@ class IAItemsListVC: UICollectionViewController {
     //MARK: - Helpers
     
     func addLoadingView() {
-        self.view.addSubview(self.activityIndicatorView)
-//        self.activityIndicatorView.addConstraint(NSLayoutConstraint(item: activityIndicatorView, attribute:.Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: 25))
-//        
-//        self.activityIndicatorView.addConstraint(NSLayoutConstraint(item: activityIndicatorView, attribute:.Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 0, constant: 25))
-//        
-        self.view.addConstraint(NSLayoutConstraint(item: self.activityIndicatorView.superview!  , attribute: .CenterX, relatedBy: .Equal, toItem: self.view, attribute: .CenterX, multiplier: 1.0, constant: 0))
+        self.view.addSubview(activityIndicatorView)
+        self.activityIndicatorView.startAnimating()
+        
+        activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.view.addConstraint(NSLayoutConstraint(item: self.activityIndicatorView  , attribute: .CenterX, relatedBy: .Equal, toItem: self.view, attribute: .CenterX, multiplier: 1.0, constant: 0))
         
         self.view.addConstraint(NSLayoutConstraint(item:  self.activityIndicatorView, attribute: .CenterY, relatedBy: .Equal, toItem:self.view , attribute: .CenterY, multiplier: 1.0, constant: 0))
-        
-        self.activityIndicatorView.center = self.view.center
-        
-        self.activityIndicatorView.startAnimating()
     }
     
     func removeLoadingView() {

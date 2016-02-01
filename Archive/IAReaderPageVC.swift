@@ -14,6 +14,7 @@ class IAReaderPageVC: UIViewController {
     var pageNumber : Int?
     var imagesDownloader : IABookImagesManager!
     lazy var activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
+//    lazy var activityIndicatorView = UIView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,9 +47,14 @@ class IAReaderPageVC: UIViewController {
     //MARK: Helpers
     
     func addLoadingView() {
-        self.activityIndicatorView.frame = CGRectMake(self.view.center.x - 25, self.view.center.y - 25, 50, 50)
-        self.view.addSubview(self.activityIndicatorView)
+        self.view.addSubview(activityIndicatorView)
         self.activityIndicatorView.startAnimating()
+
+        activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.view.addConstraint(NSLayoutConstraint(item: self.activityIndicatorView  , attribute: .CenterX, relatedBy: .Equal, toItem: self.view, attribute: .CenterX, multiplier: 1.0, constant: 0))
+        
+        self.view.addConstraint(NSLayoutConstraint(item:  self.activityIndicatorView, attribute: .CenterY, relatedBy: .Equal, toItem:self.view , attribute: .CenterY, multiplier: 1.0, constant: 0))
     }
     
     func removeLoadingView() {
