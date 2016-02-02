@@ -11,7 +11,7 @@ import DGActivityIndicatorView
 
 class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewControllerDataSource {
     //MARK: Variables Declaration
-
+    
     var pageController = UIPageViewController(transitionStyle: .PageCurl, navigationOrientation: .Horizontal, options: nil)
     var bookIdentifier : String!
     var file : File? //Book Details
@@ -26,7 +26,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     }
     
     lazy var activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
-
+    
     //IBOutlets
     @IBOutlet weak var bottomMenu: UIView!
     @IBOutlet weak var pageNumberLabel: UILabel!
@@ -39,50 +39,48 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     var updatePageAfterSeekTimer :NSTimer?
     let secondsToLoadMore = 1.0
-
+    
     //MARK: -INIT
     
     init(identifier: String){
         self.bookIdentifier = identifier
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init(coder aDecoder: NSCoder) {
         self.bookIdentifier = ""
         super.init(coder: aDecoder)!
     }
- 
+    
     //MARK: UI Methods
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.addLoadingView()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "dismiss", style: .Plain, target: self, action: "dismissViewController")
-       
+        
         //Get File Details from MetaData WS
-        archiveItemsManager.getFileDetails(bookIdentifier) {[weak self] (file) -> () in
-            if let mySelf = self {
-                mySelf.removeLoadingView()
-                if file.identifier == "" {
-                    let alert = UIAlertController(title: "Error", message: "Can not preview this file!", preferredStyle: .Alert)
-                    let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
-                        mySelf.dismissViewControllerAnimated(false, completion: nil)
-                    }
-                    alert.addAction(cancelAction)
-                    mySelf.presentViewController(alert, animated: true, completion:nil)
-                    
-                    return
+        archiveItemsManager.getFileDetails(bookIdentifier) { (file) -> () in
+            self.removeLoadingView()
+            if file.identifier == "" {
+                let alert = UIAlertController(title: "Error", message: "Can not preview this file!", preferredStyle: .Alert)
+                let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
+                    self.dismissViewControllerAnimated(false, completion: nil)
                 }
-                mySelf.file = file
-                if file.chapters?.count>0 {
-                    mySelf.setupReaderToChapter(0)
-                }
-                mySelf.chaptersButton.hidden = file.chapters?.count <= 1
+                alert.addAction(cancelAction)
+                self.presentViewController(alert, animated: true, completion:nil)
+                
+                return
             }
+            self.file = file
+            if file.chapters?.count>0 {
+                self.setupReaderToChapter(0)
+            }
+            self.chaptersButton.hidden = file.chapters?.count <= 1
             
         }
     }
-
+    
     func setupReaderToChapter(chapterIndex: Int) {
         if let file = self.file {
             let chapter = file.chapters![chapterIndex]
@@ -102,14 +100,14 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     func addPageController() {
         self.pageController.view.removeFromSuperview()
         self.pageController.view.frame = self.view.bounds
-       
+        
         self.pageController.setViewControllers(Array(arrayLiteral: self.pageVCWithNumber(self.pageNumber)) , direction: .Forward, animated: true, completion: nil)
         self.pageController.delegate = self
         self.pageController.dataSource = self
         
         self.view.addSubview(self.pageController.view)
         self.view.bringSubviewToFront(self.bottomMenu)
-
+        
     }
     
     
@@ -141,7 +139,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         let vc = pendingViewControllers.first as! IAReaderPageVC
         self.pageNumber = vc.pageNumber!
         self.downloadMore()
-
+        
     }
     //MARK: UIPageViewControllerDataSource
     
@@ -160,11 +158,11 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController?{
         let pageNumber = (viewController as! IAReaderPageVC).pageNumber
-       
+        
         if pageNumber >= self.numberOfPages-1 {
             return nil
         }
-
+        
         let afterVC = self.storyboard?.instantiateViewControllerWithIdentifier("pageVC") as! IAReaderPageVC
         afterVC.pageNumber = pageNumber!+1
         afterVC.imagesDownloader = self.imagesDownloader
@@ -187,10 +185,8 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     @IBAction func chaptersButtonPressed(sender: AnyObject) {
         let chaptersListVC = IAReaderChaptersListVC()
         chaptersListVC.chapters = file?.chapters
-        chaptersListVC.chapterSelectionHandler = { [weak self]chapterIndex in
-            if let mySelf = self {
-                mySelf.setupReaderToChapter(chapterIndex)
-            }
+        chaptersListVC.chapterSelectionHandler = { chapterIndex in
+            self.setupReaderToChapter(chapterIndex)
         }
         
         
@@ -204,7 +200,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         self.presentViewController(chaptersListVC, animated: true, completion: nil)
         
     }
-
+    
     func updateUIAfterPageSeek() {
         self.pageController.setViewControllers(Array(arrayLiteral: self.pageVCWithNumber(self.pageNumber)) , direction: .Forward, animated: true, completion: nil)
         self.updatePages()
@@ -218,45 +214,37 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     //MARK: Model calls
     
     func updatePage() {
-        self.imagesDownloader!.imageOfPage(self.pageNumber){[weak self] (image: UIImage, page: Int)->() in
-            if let myself = self {
-                if page == myself.pageNumber {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        myself.updatePageVCWithNumber(page,image: image)
-                    })
-                }
+        self.imagesDownloader!.imageOfPage(self.pageNumber){(image: UIImage, page: Int)->() in
+            if page == self.pageNumber {
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    self.updatePageVCWithNumber(page,image: image)
+                })
             }
         }
     }
     
     func updatePage(completion:()->()) {
-        self.imagesDownloader!.imageOfPage(self.pageNumber){ [weak self](image: UIImage, page: Int)->() in
+        self.imagesDownloader!.imageOfPage(self.pageNumber){(image: UIImage, page: Int)->() in
             completion()
-            if let myself = self {
-                if page == myself.pageNumber {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        myself.updatePageVCWithNumber(page,image: image)
-                    })
-                }
+            if page == self.pageNumber {
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    self.updatePageVCWithNumber(page,image: image)
+                })
             }
         }
     }
     
     func updatePages() {
-        self.updatePage(){[weak self]()->() in
-            if let myself = self {
-                myself.downloadMore()
-            }
+        self.updatePage(){()->() in
+            self.downloadMore()
         }
     }
     
     func downloadMore () {
         self.imagesDownloader!.getImages(pageNumber-2, count: 5,
-            updatedImage:{ [weak self](page: Int, image: UIImage)->() in
-                if let myslef = self {
-                    if myslef.pageNumber == page {
-                        myslef.updatePageVCWithNumber(page,image: image)
-                    }
+            updatedImage:{ (page: Int, image: UIImage)->() in
+                if self.pageNumber == page {
+                    self.updatePageVCWithNumber(page,image: image)
                 }
             }){ ()->() in
         }
