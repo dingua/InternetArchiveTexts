@@ -218,37 +218,45 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     //MARK: Model calls
     
     func updatePage() {
-        self.imagesDownloader!.imageOfPage(self.pageNumber){ (image: UIImage, page: Int)->() in
-            if page == self.pageNumber {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    self.updatePageVCWithNumber(page,image: image)
-                })
+        self.imagesDownloader!.imageOfPage(self.pageNumber){[weak self] (image: UIImage, page: Int)->() in
+            if let myself = self {
+                if page == myself.pageNumber {
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        myself.updatePageVCWithNumber(page,image: image)
+                    })
+                }
             }
         }
     }
     
     func updatePage(completion:()->()) {
-        self.imagesDownloader!.imageOfPage(self.pageNumber){ (image: UIImage, page: Int)->() in
-            if page == self.pageNumber {
-                completion()
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    self.updatePageVCWithNumber(page,image: image)
-                })
+        self.imagesDownloader!.imageOfPage(self.pageNumber){ [weak self](image: UIImage, page: Int)->() in
+            completion()
+            if let myself = self {
+                if page == myself.pageNumber {
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        myself.updatePageVCWithNumber(page,image: image)
+                    })
+                }
             }
         }
     }
     
     func updatePages() {
-        self.updatePage(){()->() in
-            self.downloadMore()
+        self.updatePage(){[weak self]()->() in
+            if let myself = self {
+                myself.downloadMore()
+            }
         }
     }
     
     func downloadMore () {
         self.imagesDownloader!.getImages(pageNumber-2, count: 5,
-            updatedImage:{ (page: Int, image: UIImage)->() in
-                if self.pageNumber == page {
-                    self.updatePageVCWithNumber(page,image: image)
+            updatedImage:{ [weak self](page: Int, image: UIImage)->() in
+                if let myslef = self {
+                    if myslef.pageNumber == page {
+                        myslef.updatePageVCWithNumber(page,image: image)
+                    }
                 }
             }){ ()->() in
         }
