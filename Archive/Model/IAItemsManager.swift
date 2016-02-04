@@ -40,8 +40,13 @@
                     let docs = json["files"].arrayValue
                     var chapters : [Chapter] = []
                     for doc in docs {
-                        if doc["format"].stringValue == "Single Page Processed JP2 ZIP" {
-                            chapters.append(Chapter(zipFile: doc["name"].stringValue))
+                        let format = doc["format"].stringValue
+                        if format.containsString("Single Page Processed") {
+                            var type = format.substringFromIndex((format.rangeOfString("Single Page Processed ")?.endIndex)!)
+                            if type.containsString(" ZIP") {
+                                type = type.substringToIndex((type.rangeOfString(" ZIP")?.startIndex)!)
+                            }
+                            chapters.append(Chapter(zipFile: doc["name"].stringValue,type: type))
                         }
                     }
                     chapters.sortInPlace({$0.name < $1.name })

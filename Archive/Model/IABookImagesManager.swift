@@ -32,6 +32,7 @@ class IABookImagesManager: NSObject {
     let directory: String!
     let subDirectory: String!
     let scandata: String!
+    let type: String!
     var pagesOnCacheProcess = Array<Int>()
     
     let imageCache =  AutoPurgingImageCache(
@@ -40,12 +41,13 @@ class IABookImagesManager: NSObject {
     )
     var requests : Array<Alamofire.Request>?
     
-    init(identifier:String , server:String, directory:String, subdirectory:String, scandata: String) {
+    init(identifier:String , server:String, directory:String, subdirectory:String, scandata: String, type: String) {
         self.bookId = identifier
         self.serverURL = server
         self.directory = directory
         self.subDirectory = subdirectory
         self.scandata = scandata
+        self.type = type
         self.requests = Array()
     }
     
@@ -54,7 +56,7 @@ class IABookImagesManager: NSObject {
     }
 
     func urlOfPage(number: Int, scale: Int) -> String{
-        return "https://\(serverURL)\(readerMethod)zip=\(directory)/\(subDirectory)_jp2.zip&file=\(subDirectory)_jp2/\(subDirectory)_\(String(format: "%04d", number)).jp2&scale\(scale)"
+        return "https://\(serverURL)\(readerMethod)zip=\(directory)/\(subDirectory)_\(type).zip&file=\(subDirectory)_\(type)/\(subDirectory)_\(String(format: "%04d", number)).\(type)&scale\(scale)"
     }
 
     func getImages(offset: Int, count:Int,updatedImage:(index: Int, image: UIImage)->() , completion:()->()) {
@@ -70,6 +72,7 @@ class IABookImagesManager: NSObject {
                 dispatch_group_leave(group)
             }else {
                 self.pagesOnCacheProcess.append(index)
+                print("download \(index)")
                 let request =  Alamofire.request(.GET, urlOfPage(index))
                     .responseImage { response in
                         if let image = response.result.value {
@@ -99,7 +102,8 @@ class IABookImagesManager: NSObject {
         }else if(!self.pagesOnCacheProcess.contains(number)){
             
             self.pagesOnCacheProcess.append(number)
-        
+
+            print("download \(number)")
             Alamofire.request(.GET, urlOfPage(number))
                 .responseImage { response in
                     if let image = response.result.value {
@@ -121,7 +125,7 @@ class IABookImagesManager: NSObject {
         }else if(!self.pagesOnCacheProcess.contains(number)){
             
             self.pagesOnCacheProcess.append(number)
-            
+            print("download \(number)")
             Alamofire.request(.GET, urlOfPage(number))
                 .responseImage { response in
                     if let image = response.result.value {

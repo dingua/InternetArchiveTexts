@@ -84,8 +84,8 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     func setupReaderToChapter(chapterIndex: Int) {
         if let file = self.file {
             let chapter = file.chapters![chapterIndex]
-            let subdirectory = chapter.zipFile?.substringToIndex((chapter.zipFile?.rangeOfString("_jp2.zip")?.startIndex)!)
-            self.imagesDownloader = IABookImagesManager(identifier:file.identifier,server: file.server! ,directory: file.directory!,subdirectory: subdirectory!, scandata: chapter.scandata!)
+            let subdirectory = chapter.zipFile?.substringToIndex((chapter.zipFile?.rangeOfString("_\((chapter.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)
+            self.imagesDownloader = IABookImagesManager(identifier:file.identifier,server: file.server! ,directory: file.directory!,subdirectory: subdirectory!, scandata: chapter.scandata!,type: (chapter.type?.rawValue.lowercaseString)!)
             if  let nbrPages = self.imagesDownloader!.getNumberPages() {
                 self.numberOfPages = Int(nbrPages)!
             }
@@ -227,17 +227,19 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         self.imagesDownloader!.imageOfPage(self.pageNumber){(image: UIImage, page: Int)->() in
             completion()
             if page == self.pageNumber {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     self.updatePageVCWithNumber(page,image: image)
-                })
+//                })
             }
         }
     }
     
     func updatePages() {
-        self.updatePage(){()->() in
-            self.downloadMore()
-        }
+        self.downloadMore()
+//
+//        self.updatePage(){()->() in
+//            self.downloadMore()
+//        }
     }
     
     func downloadMore () {
