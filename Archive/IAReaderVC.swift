@@ -210,6 +210,9 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    @IBAction func viewTapped(sender: AnyObject) {
+            self.bottomMenu.hidden = !self.bottomMenu.hidden
+    }
     
     //MARK: Model calls
     
@@ -250,6 +253,13 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                 }
             }){ ()->() in
         }
+    }
+    
+    
+    //GestureRecognizer Delegate
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
     
     //MARK: Navigation

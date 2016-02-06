@@ -104,6 +104,9 @@
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="HP1-YQ-rdj" secondAttribute="bottom" id="p6s-6D-lgH"/>
                             <constraint firstItem="HP1-YQ-rdj" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="tpe-LZ-hzc"/>
                         </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="YW7-S2-0RD" appends="YES" id="h5g-Eq-5gK"/>
+                        </connections>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" id="9KO-N1-H3X"/>
@@ -115,6 +118,12 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="YW7-S2-0RD">
+                    <connections>
+                        <action selector="viewTapped:" destination="BYZ-38-t0r" id="Mh3-QU-jgq"/>
+                        <outlet property="delegate" destination="BYZ-38-t0r" id="YfP-zf-7X5"/>
+                    </connections>
+                </tapGestureRecognizer>
                 <swipeGestureRecognizer direction="right" id="Olv-RB-40K">
                     <connections>
                         <action selector="didSwipePageRight:" destination="BYZ-38-t0r" id="a1d-bb-81C"/>
@@ -125,11 +134,6 @@
                         <action selector="didSwipePageLeft:" destination="BYZ-38-t0r" id="1Rt-mN-npT"/>
                     </connections>
                 </swipeGestureRecognizer>
-                <tapGestureRecognizer id="Tsm-5g-ryd">
-                    <connections>
-                        <action selector="didSwipePageLeft:" destination="BYZ-38-t0r" id="dYI-kl-NOj"/>
-                    </connections>
-                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="3383" y="2875"/>
         </scene>
