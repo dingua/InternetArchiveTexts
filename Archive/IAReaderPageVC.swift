@@ -61,5 +61,19 @@ class IAReaderPageVC: UIViewController {
         self.activityIndicatorView.stopAnimating()
         self.activityIndicatorView.removeFromSuperview()
     }
+    
+    //MARK: UIScrollViewDelegate
+    
+    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+        return self.imageView
+    }
 
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+    }
+    
+    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+        if scrollView.contentOffset.x == 0 {
+        
+        }
+    }
 }
