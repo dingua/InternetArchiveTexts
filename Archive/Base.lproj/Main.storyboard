@@ -52,7 +52,7 @@
                                         </connections>
                                     </button>
                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KMD-fs-DjH" userLabel="chaptersButton">
-                                        <rect key="frame" x="41" y="91" width="22" height="22"/>
+                                        <rect key="frame" x="41" y="28" width="22" height="22"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="22" id="5Rr-S7-RwZ"/>
                                             <constraint firstAttribute="height" constant="22" id="8v3-pR-08f"/>
@@ -66,7 +66,7 @@
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="bi8-Tc-M9Z" secondAttribute="bottom" constant="10" id="10M-K9-rry"/>
                                     <constraint firstAttribute="height" constant="60" id="ANq-7U-prZ"/>
-                                    <constraint firstItem="KMD-fs-DjH" firstAttribute="top" secondItem="HP1-YQ-rdj" secondAttribute="topMargin" constant="83" id="EoG-Nq-LEM"/>
+                                    <constraint firstItem="KMD-fs-DjH" firstAttribute="top" secondItem="HP1-YQ-rdj" secondAttribute="topMargin" constant="20" id="EoG-Nq-LEM"/>
                                     <constraint firstAttribute="bottom" secondItem="Ztu-FO-S2U" secondAttribute="bottom" id="IOM-eO-4xd"/>
                                     <constraint firstItem="NqS-pk-uYq" firstAttribute="leading" secondItem="HP1-YQ-rdj" secondAttribute="leading" id="KSK-XB-1Ee"/>
                                     <constraint firstItem="Ztu-FO-S2U" firstAttribute="width" secondItem="HP1-YQ-rdj" secondAttribute="width" id="ZGR-3k-Xdx"/>
