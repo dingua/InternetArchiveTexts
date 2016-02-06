@@ -100,7 +100,7 @@ class IAItemsListVC: UICollectionViewController {
             }
             break
         case IABookListType.Collection?:
-            searchManager.searchCollectionsAndTexts(searchText!, hidden: false, count: 50, offset: 0) { [weak self] items in
+            searchManager.searchCollectionsAndTexts(searchText!, hidden: false, count: itemsPerPage, offset: self.items.count) { [weak self] items in
                 if let mySelf = self {
                     mySelf.items.addObjectsFromArray(items as [AnyObject])
                     mySelf.collectionView?.reloadData()
