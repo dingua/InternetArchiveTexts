@@ -15,9 +15,11 @@ class IAReaderPageVC: UIViewController {
     var imagesDownloader : IABookImagesManager!
     lazy var activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
 //    lazy var activityIndicatorView = UIView()
+    @IBOutlet weak var scrollView: UIScrollView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        scrollView.decelerationRate = UIScrollViewDecelerationRateFast
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -75,5 +77,35 @@ class IAReaderPageVC: UIViewController {
         if scrollView.contentOffset.x == 0 {
         
         }
+    }
+    
+    //MARK: IBACTION
+    
+    
+    @IBAction func scrollViewDoubleTapped(sender: AnyObject) {
+        let recognizer = sender as! UIGestureRecognizer
+
+        if let scrollV = self.scrollView {
+            if (scrollV.zoomScale > scrollV.minimumZoomScale) {
+                scrollV.setZoomScale(scrollV.minimumZoomScale, animated: true)
+            }
+            else {
+                //(I divide by 3.0 since I don't wan't to zoom to the max upon the double tap)
+                let zoomRect = self.zoomRectForScale(2.0, center: recognizer.locationInView(recognizer.view))
+                self.scrollView?.zoomToRect(zoomRect, animated: true)
+            }
+        }
+    }
+    
+    func zoomRectForScale(scale : CGFloat, center : CGPoint) -> CGRect {
+        var zoomRect = CGRectZero
+        if let imageV = self.imageView {
+            zoomRect.size.height = imageV.frame.size.height / scale;
+            zoomRect.size.width  = imageV.frame.size.width  / scale;
+            let newCenter = imageV.convertPoint(center, fromView: self.scrollView)
+            zoomRect.origin.x = newCenter.x - ((zoomRect.size.width / 2.0));
+            zoomRect.origin.y = newCenter.y - ((zoomRect.size.height / 2.0));
+        }
+        return zoomRect;
     }
 }
