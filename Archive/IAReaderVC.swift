@@ -108,6 +108,9 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         self.view.addSubview(self.pageController.view)
         self.view.bringSubviewToFront(self.bottomMenu)
         
+        self.addChildViewController(self.pageController)
+        self.pageController.didMoveToParentViewController(self)
+        
     }
     
     
@@ -123,7 +126,10 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         for vc in viewControllers {
             if vc.pageNumber == number {
                 vc.removeLoadingView()
-                vc.imageView?.image = image
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    vc.updateImage(image)
+                })
+
             }
         }
     }
@@ -287,5 +293,9 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     func removeLoadingView() {
         self.activityIndicatorView.stopAnimating()
         self.activityIndicatorView.removeFromSuperview()
+    }
+    
+    override func didRotateFromInterfaceOrientation(fromInterfaceOrientation: UIInterfaceOrientation) {
+        print("called here")
     }
 }

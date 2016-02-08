@@ -8,9 +8,20 @@
 
 import UIKit
 import DGActivityIndicatorView
+import AVFoundation
 
 class IAReaderPageVC: UIViewController {
     @IBOutlet weak var imageView: UIImageView?
+    var image: UIImage?
+//        {
+//        didSet{
+//            let imageRect = AVMakeRectWithAspectRatioInsideRect(imageView!.image!.size, imageView!.frame)
+//            let scale = self.view.frame.size.width/imageRect.width
+//            let zoomRect = self.zoomRectForScale(scale, center: self.scrollView.center)
+//            self.scrollView?.zoomToRect(zoomRect, animated: false)
+//            self.scrollView.scrollRectToVisible(CGRectMake(self.scrollView.contentOffset.x, 0, zoomRect.width, zoomRect.height), animated: false)
+//        }
+//    }
     var pageNumber : Int?
     var imagesDownloader : IABookImagesManager!
     lazy var activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
@@ -22,9 +33,11 @@ class IAReaderPageVC: UIViewController {
         scrollView.decelerationRate = UIScrollViewDecelerationRateFast
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
         self.updatePage()
+        self.parentViewController?.parentViewController?.addChildViewController(self)
+        self.didMoveToParentViewController(self.parentViewController?.parentViewController)
     }
 
     override func didReceiveMemoryWarning() {
@@ -38,7 +51,7 @@ class IAReaderPageVC: UIViewController {
                 mySelf.removeLoadingView()
                 if page == mySelf.pageNumber {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        mySelf.imageView!.image = image
+                        mySelf.updateImage(image)
                     })
                 }
             }
@@ -80,8 +93,7 @@ class IAReaderPageVC: UIViewController {
     }
     
     //MARK: IBACTION
-    
-    
+
     @IBAction func scrollViewDoubleTapped(sender: AnyObject) {
         let recognizer = sender as! UIGestureRecognizer
 
@@ -107,5 +119,36 @@ class IAReaderPageVC: UIViewController {
             zoomRect.origin.y = newCenter.y - ((zoomRect.size.height / 2.0));
         }
         return zoomRect;
+    }
+    
+    //MARK: Setter
+    
+    func updateImage(image: UIImage) {
+        self.image = image
+        self.imageView?.image = image
+        self.reScaleScrollView(image)
+    }
+    
+    func reScaleScrollView(image: UIImage) {
+//        self.imageView?.image = image
+        print("frame \(imageView!.frame)")
+        let imageRect = AVMakeRectWithAspectRatioInsideRect(image.size, imageView!.frame)
+        let scale = self.view.frame.size.width/imageRect.width
+        let zoomRect = self.zoomRectForScale(scale, center: self.scrollView.center)
+        self.scrollView?.zoomToRect(zoomRect, animated: false)
+        self.scrollView.scrollRectToVisible(CGRectMake(self.scrollView.contentOffset.x, 0, zoomRect.width, zoomRect.height), animated: false)
+    }
+    
+    //MARK: Device orientation
+    
+    override func didRotateFromInterfaceOrientation(fromInterfaceOrientation: UIInterfaceOrientation) {
+        reScaleScrollView()
+    }
+    
+    func reScaleScrollView() {
+        if let image = self.image {
+            self.reScaleScrollView(image)
+        }
+
     }
 }
