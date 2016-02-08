@@ -19,7 +19,7 @@ enum IABookListType {
     case Collection
 }
 
-class IAItemsListVC: UICollectionViewController {
+class IAItemsListVC: UICollectionViewController,IASortListDelegate {
    
     //***** Properties ************
     
@@ -35,7 +35,42 @@ class IAItemsListVC: UICollectionViewController {
 
     var creatorSelectionCompletion: ((String) -> ())!
     var collectionSelectionCompletion: ((String) -> ())!
- 
+    var sortPresentationDelegate =  IASortPresentationDelgate()
+   
+    //sort option in which we base our request
+    var sortOption: IASearchSortOption! {
+        didSet {
+            if let searchText = self.searchText, type = self.type{
+                self.loadList(searchText, type: type)
+            }
+        }
+    }
+    
+    //sort option selected From List Of IASortListVC
+    var selectedSortDescriptor : IASortOption? {
+        didSet {
+            switch (selectedSortDescriptor!) {
+            case .Downloads:
+                sortOption = descendantSort ? .DownloadsDescendant : .DownloadsAscendant
+                break
+            case .ArchivedDate:
+                sortOption = descendantSort ? .ArchivedDatedescendant : .ArchivedDateAscendant
+                break
+            case .PublishedDate:
+                sortOption = descendantSort ? .PublishedDatedescendant : .PublishedDateAscendant
+                break
+            case .ReviewedDate:
+                sortOption = descendantSort ? .ReviewedDatedescendant : .ReviewedDateAscendant
+                break
+            case .Title:
+                sortOption  = descendantSort ? .TitleDescendant : .TitleAscendant
+                break
+            }
+
+        }
+    }
+    var descendantSort: Bool = true
+
     //**********************************
     
     //MARK: - Initializer
@@ -61,6 +96,8 @@ class IAItemsListVC: UICollectionViewController {
                 }
             }
         }
+        sortOption = .DownloadsDescendant
+        selectedSortDescriptor = .Downloads
     }
 
     //MARK: - Search
@@ -69,19 +106,17 @@ class IAItemsListVC: UICollectionViewController {
         self.searchText = searchText
         self.type = type
         self.items.removeAllObjects()
-        if searchText.stringByReplacingOccurrencesOfString(" ", withString: "") == "" {
-            self.collectionView?.reloadData()
-        }else {
+        self.collectionView?.reloadData()
+        if searchText.stringByReplacingOccurrencesOfString(" ", withString: "") != "" {
             loadMore()
         }
-
     }
 
     func loadMore() {
         self.addLoadingView()
         switch type {
         case IABookListType.Text?:
-            searchManager.searchBooksWithText(searchText!,count: itemsPerPage, offset: self.items.count) { [weak self]books in
+            searchManager.searchBooksWithText(searchText!,count: itemsPerPage, offset: self.items.count,sortOption:self.sortOption) { [weak self]books in
                 if let mySelf = self {
                     mySelf.items.addObjectsFromArray(books as [AnyObject])
                     mySelf.collectionView?.reloadData()
@@ -91,7 +126,7 @@ class IAItemsListVC: UICollectionViewController {
             }
             break
         case IABookListType.Creator?:
-            searchManager.searchBookOfCreator(searchText!,count: itemsPerPage, offset: self.items.count) { [weak self]books in
+            searchManager.searchBookOfCreator(searchText!,count: itemsPerPage, offset: self.items.count,sortOption:self.sortOption) { [weak self]books in
                 if let mySelf = self {
                     mySelf.items.addObjectsFromArray(books as [AnyObject])
                     mySelf.collectionView?.reloadData()
@@ -100,7 +135,7 @@ class IAItemsListVC: UICollectionViewController {
             }
             break
         case IABookListType.Collection?:
-            searchManager.searchCollectionsAndTexts(searchText!, hidden: false, count: itemsPerPage, offset: self.items.count) { [weak self] items in
+            searchManager.searchCollectionsAndTexts(searchText!, hidden: false, count: itemsPerPage, offset: self.items.count,sortOption:self.sortOption) { [weak self] items in
                 if let mySelf = self {
                     mySelf.items.addObjectsFromArray(items as [AnyObject])
                     mySelf.collectionView?.reloadData()
@@ -142,9 +177,9 @@ class IAItemsListVC: UICollectionViewController {
         sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
             let item = items[indexPath.row] as! ArchiveItemData
             if item.mediatype == "collection" {
-                return Utils.isiPad() ? CGSizeMake(240, 300) : CGSizeMake(self.view.frame.size.width/2-10, 250)
+                return Utils.isiPad() ? CGSizeMake(240, 300) : CGSizeMake(min(self.view.frame.size.width/2-10,self.view.frame.size.height/2-10), 250)
             }else {
-                return Utils.isiPad() ? CGSizeMake(235, 394) : CGSizeMake(self.view.frame.size.width/2-10, 300)
+                return Utils.isiPad() ? CGSizeMake(235, 394) : CGSizeMake(min(self.view.frame.size.width/2-10,self.view.frame.size.height/2-10), 300)
             }
     }
 
@@ -190,4 +225,37 @@ class IAItemsListVC: UICollectionViewController {
         self.activityIndicatorView.stopAnimating()
         self.activityIndicatorView.removeFromSuperview()
     }
+    
+    //MARK: IBAction
+    
+    @IBAction func showSortLIst(sender: AnyObject) {
+        let sortListVC = self.storyboard!.instantiateViewControllerWithIdentifier("sortListVC") as! IASortListVC
+        sortListVC.transitioningDelegate = sortPresentationDelegate;
+        sortListVC.modalPresentationStyle = .Custom;
+        sortListVC.delegate = self
+        if let selectedSortOption = self.selectedSortDescriptor {
+            sortListVC.selectedOption = selectedSortOption
+        }
+        self.presentViewController(sortListVC, animated:true, completion:nil)
+    }
+    
+    @IBAction func changeSortDirection(sender: AnyObject) {
+        let button = sender as! UIBarButtonItem
+        self.descendantSort = !self.descendantSort
+        if let selectedSort = self.selectedSortDescriptor {
+            self.selectedSortDescriptor = selectedSort
+        }
+        if self.descendantSort == true {
+            button.image = UIImage(named: "down_sort")
+        }else {
+            button.image = UIImage(named: "up_sort")
+        }
+    }
+  
+    //MARK: IASortListDelegate
+    
+    func sortListDidSelectSortOption(option: IASortOption) {
+        self.selectedSortDescriptor = option
+    }
+
 }

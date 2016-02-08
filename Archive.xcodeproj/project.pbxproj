@@ -12,6 +12,10 @@
 		3410EC6E1C54C11D0093E7C0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3410EC6D1C54C11D0093E7C0 /* Constants.swift */; };
 		3410EC731C54DC390093E7C0 /* IACollectionsExploreViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3410EC721C54DC390093E7C0 /* IACollectionsExploreViewCell.swift */; };
 		3410EC751C54DC5F0093E7C0 /* IAItemListCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3410EC741C54DC5F0093E7C0 /* IAItemListCellView.swift */; };
+		3449B93D1C67238E00EFD434 /* IASortListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3449B93C1C67238E00EFD434 /* IASortListVC.swift */; };
+		3449B9401C6728EB00EFD434 /* IASortPresentationAnimatedTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3449B93F1C6728EB00EFD434 /* IASortPresentationAnimatedTransitioning.swift */; };
+		3449B9421C6729C600EFD434 /* IASortPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3449B9411C6729C600EFD434 /* IASortPresentationController.swift */; };
+		3449B9441C672A1E00EFD434 /* IASortPresentationDelgate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3449B9431C672A1E00EFD434 /* IASortPresentationDelgate.swift */; };
 		3469069D1C5E213F001BACC6 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3469069C1C5E213F001BACC6 /* Utils.swift */; };
 		3478E3B61C48006900ABD093 /* IAReaderCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3478E3B51C48006900ABD093 /* IAReaderCollectionViewController.swift */; };
 		3478E3B81C4A777400ABD093 /* IAHomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3478E3B71C4A777400ABD093 /* IAHomeVC.swift */; };
@@ -31,6 +35,7 @@
 		34EBA0071C5A73BB00E32BFA /* IAReaderChaptersListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EBA0061C5A73BB00E32BFA /* IAReaderChaptersListVC.swift */; };
 		34EC1D921C43BBA00046C7B9 /* IAReaderPageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EC1D911C43BBA00046C7B9 /* IAReaderPageVC.swift */; };
 		34EC1D941C43FB070046C7B9 /* IAReaderVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EC1D931C43FB070046C7B9 /* IAReaderVC.swift */; };
+		34ED50221C68811D0005C73B /* IASortListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ED50211C68811D0005C73B /* IASortListTableViewCell.swift */; };
 		A612090F1C3D2EA30017A928 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A612090E1C3D2EA30017A928 /* AppDelegate.swift */; };
 		A61209141C3D2EA30017A928 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A61209121C3D2EA30017A928 /* Main.storyboard */; };
 		A61209171C3D2EA40017A928 /* Archive.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A61209151C3D2EA40017A928 /* Archive.xcdatamodeld */; };
@@ -66,6 +71,10 @@
 		3410EC6D1C54C11D0093E7C0 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3410EC721C54DC390093E7C0 /* IACollectionsExploreViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IACollectionsExploreViewCell.swift; sourceTree = "<group>"; };
 		3410EC741C54DC5F0093E7C0 /* IAItemListCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAItemListCellView.swift; sourceTree = "<group>"; };
+		3449B93C1C67238E00EFD434 /* IASortListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IASortListVC.swift; sourceTree = "<group>"; };
+		3449B93F1C6728EB00EFD434 /* IASortPresentationAnimatedTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IASortPresentationAnimatedTransitioning.swift; sourceTree = "<group>"; };
+		3449B9411C6729C600EFD434 /* IASortPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IASortPresentationController.swift; sourceTree = "<group>"; };
+		3449B9431C672A1E00EFD434 /* IASortPresentationDelgate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IASortPresentationDelgate.swift; sourceTree = "<group>"; };
 		3469069C1C5E213F001BACC6 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		3478E3B51C48006900ABD093 /* IAReaderCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAReaderCollectionViewController.swift; sourceTree = "<group>"; };
 		3478E3B71C4A777400ABD093 /* IAHomeVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAHomeVC.swift; sourceTree = "<group>"; };
@@ -79,6 +88,7 @@
 		34EBA0061C5A73BB00E32BFA /* IAReaderChaptersListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAReaderChaptersListVC.swift; sourceTree = "<group>"; };
 		34EC1D911C43BBA00046C7B9 /* IAReaderPageVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAReaderPageVC.swift; sourceTree = "<group>"; };
 		34EC1D931C43FB070046C7B9 /* IAReaderVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAReaderVC.swift; sourceTree = "<group>"; };
+		34ED50211C68811D0005C73B /* IASortListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IASortListTableViewCell.swift; sourceTree = "<group>"; };
 		A612090B1C3D2EA30017A928 /* Archive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Archive.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A612090E1C3D2EA30017A928 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A61209131C3D2EA30017A928 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -163,8 +173,28 @@
 			children = (
 				3410EC721C54DC390093E7C0 /* IACollectionsExploreViewCell.swift */,
 				3410EC741C54DC5F0093E7C0 /* IAItemListCellView.swift */,
+				34ED50211C68811D0005C73B /* IASortListTableViewCell.swift */,
 			);
 			name = Views;
+			sourceTree = "<group>";
+		};
+		3449B93B1C67236100EFD434 /* SortList */ = {
+			isa = PBXGroup;
+			children = (
+				3449B93E1C67289100EFD434 /* SortPresentationModel */,
+				3449B93C1C67238E00EFD434 /* IASortListVC.swift */,
+			);
+			name = SortList;
+			sourceTree = "<group>";
+		};
+		3449B93E1C67289100EFD434 /* SortPresentationModel */ = {
+			isa = PBXGroup;
+			children = (
+				3449B93F1C6728EB00EFD434 /* IASortPresentationAnimatedTransitioning.swift */,
+				3449B9411C6729C600EFD434 /* IASortPresentationController.swift */,
+				3449B9431C672A1E00EFD434 /* IASortPresentationDelgate.swift */,
+			);
+			name = SortPresentationModel;
 			sourceTree = "<group>";
 		};
 		3469069A1C5DE5B7001BACC6 /* CoreData */ = {
@@ -187,6 +217,7 @@
 		3478E3B41C47FFBA00ABD093 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				3449B93B1C67236100EFD434 /* SortList */,
 				3469069B1C5DE7CD001BACC6 /* ItemsList */,
 				3410EC691C54A6FC0093E7C0 /* Explore */,
 				3410EC681C54A6DE0093E7C0 /* Search */,
@@ -499,8 +530,12 @@
 			files = (
 				3410EC751C54DC5F0093E7C0 /* IAItemListCellView.swift in Sources */,
 				34EC1D921C43BBA00046C7B9 /* IAReaderPageVC.swift in Sources */,
+				3449B93D1C67238E00EFD434 /* IASortListVC.swift in Sources */,
 				A61209171C3D2EA40017A928 /* Archive.xcdatamodeld in Sources */,
+				3449B9401C6728EB00EFD434 /* IASortPresentationAnimatedTransitioning.swift in Sources */,
 				34EB38691C3FCF3E0034F3E4 /* ArchiveItem+CoreDataProperties.swift in Sources */,
+				34ED50221C68811D0005C73B /* IASortListTableViewCell.swift in Sources */,
+				3449B9421C6729C600EFD434 /* IASortPresentationController.swift in Sources */,
 				34EB386C1C3FCF3E0034F3E4 /* ArchiveItem.swift in Sources */,
 				3410EC731C54DC390093E7C0 /* IACollectionsExploreViewCell.swift in Sources */,
 				34EC1D941C43FB070046C7B9 /* IAReaderVC.swift in Sources */,
@@ -516,6 +551,7 @@
 				34EBA0071C5A73BB00E32BFA /* IAReaderChaptersListVC.swift in Sources */,
 				A612090F1C3D2EA30017A928 /* AppDelegate.swift in Sources */,
 				34EB38701C402D830034F3E4 /* IABookImagesManager.swift in Sources */,
+				3449B9441C672A1E00EFD434 /* IASortPresentationDelgate.swift in Sources */,
 				3410EC2F1C4CAA710093E7C0 /* ArchiveItemData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

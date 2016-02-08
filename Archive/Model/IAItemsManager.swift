@@ -10,11 +10,11 @@
  import Alamofire
  import SwiftyJSON
  
- enum IASearchDescriptor: String {
+ enum IASearchSortOption: String {
     case DownloadsDescendant = "downloads+desc"
     case DownloadsAscendant = "downloads+asc"
-    case TitleDescendant = "titleSorte+desc"
-    case TitleAscendant = "titleSorte+asc"
+    case TitleDescendant = "titleSorter+desc"
+    case TitleAscendant = "titleSorter+asc"
     case ArchivedDatedescendant = "addeddate+desc"
     case ArchivedDateAscendant = "addeddate+asc"
     case PublishedDatedescendant = "date+desc"
@@ -91,21 +91,36 @@
     //MARK: - Search Books Items
     
     func searchBooksWithText(word: String, count: Int, offset: Int,completion: (NSArray)->()) {
+       searchBooksWithText(word, count: count, offset: offset, sortOption: IASearchSortOption.DownloadsDescendant, completion: completion)
+    }
+   
+    func searchBookOfCreator(creator: String, count: Int, offset: Int,completion: (NSArray)->()) {
+        searchBookOfCreator(creator, count: count, offset: offset, sortOption: IASearchSortOption.DownloadsDescendant, completion: completion)
+    }
+
+    func searchBookOfCollection(collection: String, count: Int, offset: Int,completion: (NSArray)->()) {
+        searchBookOfCollection(collection, count: count, offset: offset, sortOption: IASearchSortOption.DownloadsDescendant, completion: completion)
+    }
+    
+    func searchBooksWithText(word: String, count: Int, offset: Int, sortOption: IASearchSortOption, completion: (NSArray)->()) {
         let text = word.stringByReplacingOccurrencesOfString(" ", withString: "+")
         let query = "title:\(text)%20OR%20description:\(text)%20OR%20collection:\(text)%20OR%20language:\(text)%20OR%20text:\(text)%20AND%20mediatype:texts"
-        searchItems(query, count: count, offset: offset, sort:  IASearchDescriptor.DownloadsDescendant.rawValue, completion: completion)
+        searchItems(query, count: count, offset: offset, sort:  sortOption.rawValue, completion: completion)
     }
     
-    func searchBookOfCreator(creator: String, count: Int, offset: Int,completion: (NSArray)->()) {
+   
+    func searchBookOfCreator(creator: String, count: Int, offset: Int, sortOption: IASearchSortOption, completion: (NSArray)->()) {
         let text = creator.stringByReplacingOccurrencesOfString(" ", withString: "+")
         let query = "creator:\(text)%20AND%20mediatype:texts"
-        searchItems(query, count: count, offset: offset, sort: IASearchDescriptor.DownloadsDescendant.rawValue, completion: completion)
+        searchItems(query, count: count, offset: offset, sort: sortOption.rawValue, completion: completion)
     }
+
     
-    func searchBookOfCollection(collection: String, count: Int, offset: Int,completion: (NSArray)->()) {
+    
+    func searchBookOfCollection(collection: String, count: Int, offset: Int,sortOption: IASearchSortOption, completion: (NSArray)->()) {
         let text = collection.stringByReplacingOccurrencesOfString(" ", withString: "+")
         let query = "collection:\(text)%20AND%20mediatype:texts"
-        searchItems(query, count: count, offset: offset, sort: IASearchDescriptor.DownloadsDescendant.rawValue, completion: completion)
+        searchItems(query, count: count, offset: offset, sort: IASearchSortOption.DownloadsDescendant.rawValue, completion: completion)
     }
     
     //MARK: - Search Books Collections
@@ -114,19 +129,23 @@
         let text = collection.stringByReplacingOccurrencesOfString(" ", withString: "+")
         let query = "collection:\(text)%20AND%20mediatype:collection%20AND%20NOT%20hidden:\(hidden)"
         
-        searchItems(query, count: count, offset: offset, sort: IASearchDescriptor.DownloadsDescendant.rawValue, completion: completion)
+        searchItems(query, count: count, offset: offset, sort: IASearchSortOption.DownloadsDescendant.rawValue, completion: completion)
         
     }
     
     //MARK: - Search Books Collections & Texts
     
     func searchCollectionsAndTexts(collection: String,hidden: Bool, count: Int, offset: Int,completion: (NSArray)->()) {
+        searchCollectionsAndTexts(collection, hidden: hidden, count: count, offset: offset, sortOption: IASearchSortOption.DownloadsDescendant, completion: completion)
+    }
+
+    func searchCollectionsAndTexts(collection: String,hidden: Bool, count: Int, offset: Int, sortOption: IASearchSortOption, completion: (NSArray)->()) {
         let text = collection.stringByReplacingOccurrencesOfString(" ", withString: "+")
         let query = "collection:\(text)%20AND%20(mediatype:collection%20OR%20mediatype:texts)%20AND%20NOT%20hidden:\(hidden)"
         
-        searchItems(query, count: count, offset: offset, sort: IASearchDescriptor.DownloadsDescendant.rawValue, completion: completion)
+        searchItems(query, count: count, offset: offset, sort: sortOption.rawValue, completion: completion)
     }
-    
+
     //MARK: - Gather Subjects
     
     func getSubjectsOfCollection(collection: String,count: Int,page: Int,completion:(NSArray)->()){
