@@ -98,6 +98,8 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     
     func addPageController() {
+        self.pageController.removeFromParentViewController()
+        self.pageController.didMoveToParentViewController(nil)
         self.pageController.view.removeFromSuperview()
         self.pageController.view.frame = self.view.bounds
         
@@ -208,8 +210,19 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     }
     
     func updateUIAfterPageSeek() {
-        self.pageController.setViewControllers(Array(arrayLiteral: self.pageVCWithNumber(self.pageNumber)) , direction: .Forward, animated: true, completion: nil)
+        let pageVC = self.pageVCWithNumber(self.pageNumber) 
+        self.pageController.setViewControllers(Array(arrayLiteral: pageVC) , direction: .Forward, animated: true, completion: nil)
         self.updatePages()
+    }
+    
+    func goNextPage() {
+        self.pageNumber++
+        updateUIAfterPageSeek()
+    }
+    
+    func goPreviousPage() {
+        self.pageNumber--
+        updateUIAfterPageSeek()
     }
     
     func dismissViewController() {
@@ -236,19 +249,15 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         self.imagesDownloader!.imageOfPage(self.pageNumber){(image: UIImage, page: Int)->() in
             completion()
             if page == self.pageNumber {
-//                dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     self.updatePageVCWithNumber(page,image: image)
-//                })
             }
         }
     }
     
     func updatePages() {
-        self.downloadMore()
-//
-//        self.updatePage(){()->() in
-//            self.downloadMore()
-//        }
+        self.updatePage(){()->() in
+            self.downloadMore()
+        }
     }
     
     func downloadMore () {

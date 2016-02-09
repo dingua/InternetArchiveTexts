@@ -417,6 +417,7 @@
 				TargetAttributes = {
 					A612090A1C3D2EA30017A928 = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = 3DX3CT7TZ5;
 					};
 					A61209211C3D2EA40017A928 = {
 						CreatedOnToolsVersion = 7.2;
@@ -711,8 +712,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Soubhi Droubi (WPMPGHG3UA)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Soubhi Droubi (WPMPGHG3UA)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Archive/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -721,7 +722,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.huawei.muchTV.archive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "f9eaf48f-9bb4-456f-b359-fba895f1dceb";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/Archive/ArchiveBridgingHeader.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -734,8 +735,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Soubhi Droubi (WPMPGHG3UA)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Soubhi Droubi (WPMPGHG3UA)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Archive/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -744,7 +745,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.huawei.muchTV.archive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "f9eaf48f-9bb4-456f-b359-fba895f1dceb";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/Archive/ArchiveBridgingHeader.h";
 			};
 			name = Release;

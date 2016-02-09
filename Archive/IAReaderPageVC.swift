@@ -10,22 +10,17 @@ import UIKit
 import DGActivityIndicatorView
 import AVFoundation
 
-class IAReaderPageVC: UIViewController {
+class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var imageView: UIImageView?
     var image: UIImage?
-//        {
-//        didSet{
-//            let imageRect = AVMakeRectWithAspectRatioInsideRect(imageView!.image!.size, imageView!.frame)
-//            let scale = self.view.frame.size.width/imageRect.width
-//            let zoomRect = self.zoomRectForScale(scale, center: self.scrollView.center)
-//            self.scrollView?.zoomToRect(zoomRect, animated: false)
-//            self.scrollView.scrollRectToVisible(CGRectMake(self.scrollView.contentOffset.x, 0, zoomRect.width, zoomRect.height), animated: false)
-//        }
-//    }
     var pageNumber : Int?
     var imagesDownloader : IABookImagesManager!
     lazy var activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
-//    lazy var activityIndicatorView = UIView()
+    
+    //Pan Gesture Variables
+    var panStartPosition: CGFloat?
+    var panPositionProgress: CGFloat?
+    
     @IBOutlet weak var scrollView: UIScrollView!
 
     override func viewDidLoad() {
@@ -36,8 +31,6 @@ class IAReaderPageVC: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         self.updatePage()
-        self.parentViewController?.parentViewController?.addChildViewController(self)
-        self.didMoveToParentViewController(self.parentViewController?.parentViewController)
     }
 
     override func didReceiveMemoryWarning() {
@@ -56,6 +49,28 @@ class IAReaderPageVC: UIViewController {
                 }
             }
             
+        }
+    }
+    
+    
+    func goNextPage() {
+        if let reader = self.parentViewController?.parentViewController where reader.isKindOfClass(IAReaderVC) {
+                (reader as! IAReaderVC).goNextPage()
+        }else if let readerVC = self.parentViewController where readerVC.isKindOfClass(IAReaderVC) {
+            (readerVC as! IAReaderVC).goNextPage()
+        }else {
+            print("reader is kind of \(self.parentViewController)")
+        }
+    }
+    
+    
+    func goPreviousPage() {
+        if let reader = self.parentViewController?.parentViewController where reader.isKindOfClass(IAReaderVC) {
+            (reader as! IAReaderVC).goPreviousPage()
+        }else if let readerVC = self.parentViewController where readerVC.isKindOfClass(IAReaderVC) {
+            (readerVC as! IAReaderVC).goPreviousPage()
+        }else {
+            print("reader is kind of \(self.parentViewController)")
         }
     }
     
@@ -92,6 +107,17 @@ class IAReaderPageVC: UIViewController {
         }
     }
     
+    
+    //MARK: UIGestureRecognizerDelegate
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if otherGestureRecognizer.isKindOfClass(UIPinchGestureRecognizer) {
+            return false
+        }else {
+            return true
+        }
+    }
+
     //MARK: IBACTION
 
     @IBAction func scrollViewDoubleTapped(sender: AnyObject) {
@@ -102,9 +128,12 @@ class IAReaderPageVC: UIViewController {
                 scrollV.setZoomScale(scrollV.minimumZoomScale, animated: true)
             }
             else {
-                //(I divide by 3.0 since I don't wan't to zoom to the max upon the double tap)
-                let zoomRect = self.zoomRectForScale(2.0, center: recognizer.locationInView(recognizer.view))
-                self.scrollView?.zoomToRect(zoomRect, animated: true)
+                if let image = self.image, imageView = self.imageView {
+                    let imageRect = AVMakeRectWithAspectRatioInsideRect(image.size, imageView.frame)
+                    let scale = self.view.frame.size.width/imageRect.width
+                    let zoomRect = self.zoomRectForScale(scale, center: recognizer.locationInView(recognizer.view))
+                    self.scrollView?.zoomToRect(zoomRect, animated: true)
+                }
             }
         }
     }
@@ -121,6 +150,21 @@ class IAReaderPageVC: UIViewController {
         return zoomRect;
     }
     
+    @IBAction func scrollViewPangestureHandler(sender: AnyObject) {
+        let pangesture = sender as! UIPanGestureRecognizer
+        
+        if pangesture.state == .Changed {
+        }else if pangesture.state == .Began {
+            self.panStartPosition = pangesture.translationInView(pangesture.view).x
+        } else if pangesture.state == .Ended {
+            if pangesture.translationInView(pangesture.view).x - self.panStartPosition! > 100 && self.scrollView.contentOffset.x<10 {
+                self.goPreviousPage()
+            } else if pangesture.translationInView(pangesture.view).x - self.panStartPosition! < 100 && self.scrollView.contentOffset.x + self.scrollView.frame.size.width >  self.scrollView.contentSize.width - 10 {
+                self.goNextPage()
+            }
+        }
+        
+    }
     //MARK: Setter
     
     func updateImage(image: UIImage) {
@@ -129,9 +173,7 @@ class IAReaderPageVC: UIViewController {
         self.reScaleScrollView(image)
     }
     
-    func reScaleScrollView(image: UIImage) {
-//        self.imageView?.image = image
-        print("frame \(imageView!.frame)")
+    func reScaleScrollView(image: UIImage) { 
         let imageRect = AVMakeRectWithAspectRatioInsideRect(image.size, imageView!.frame)
         let scale = self.view.frame.size.width/imageRect.width
         let zoomRect = self.zoomRectForScale(scale, center: self.scrollView.center)
@@ -149,6 +191,5 @@ class IAReaderPageVC: UIViewController {
         if let image = self.image {
             self.reScaleScrollView(image)
         }
-
     }
 }

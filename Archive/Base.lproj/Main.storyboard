@@ -157,6 +157,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                     </imageView>
                                 </subviews>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstItem="Teh-Dt-DnY" firstAttribute="height" secondItem="JBX-Rp-5oF" secondAttribute="height" id="7LH-d8-ys7"/>
                                     <constraint firstItem="Teh-Dt-DnY" firstAttribute="centerY" secondItem="JBX-Rp-5oF" secondAttribute="centerY" id="IMs-f2-u60"/>
@@ -184,6 +185,7 @@
                                 <connections>
                                     <outlet property="delegate" destination="SCC-r4-Vmb" id="CSF-fx-dza"/>
                                     <outletCollection property="gestureRecognizers" destination="71a-Xh-YV0" appends="YES" id="qEP-SC-LfM"/>
+                                    <outletCollection property="gestureRecognizers" destination="9YS-lP-pdk" appends="YES" id="tFR-zM-xmJ"/>
                                 </connections>
                             </scrollView>
                         </subviews>
@@ -217,6 +219,12 @@
                         <outlet property="delegate" destination="SCC-r4-Vmb" id="agp-OB-EZo"/>
                     </connections>
                 </tapGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="9YS-lP-pdk">
+                    <connections>
+                        <action selector="scrollViewPangestureHandler:" destination="SCC-r4-Vmb" id="9AW-kY-Evi"/>
+                        <outlet property="delegate" destination="SCC-r4-Vmb" id="y5k-Ti-O59"/>
+                    </connections>
+                </panGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="3383" y="3527"/>
         </scene>
