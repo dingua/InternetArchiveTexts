@@ -52,29 +52,14 @@
                                             <segue destination="8o2-sy-kOQ" kind="presentation" identifier="presentCollection" id="nxn-68-Vh7"/>
                                         </connections>
                                     </button>
-                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KMD-fs-DjH" userLabel="chaptersButton">
-                                        <rect key="frame" x="41" y="28" width="22" height="22"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="22" id="5Rr-S7-RwZ"/>
-                                            <constraint firstAttribute="height" constant="22" id="8v3-pR-08f"/>
-                                        </constraints>
-                                        <connections>
-                                            <action selector="chaptersButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ANM-SY-eDi"/>
-                                        </connections>
-                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="bi8-Tc-M9Z" secondAttribute="bottom" constant="10" id="10M-K9-rry"/>
                                     <constraint firstAttribute="height" constant="60" id="ANq-7U-prZ"/>
-                                    <constraint firstItem="KMD-fs-DjH" firstAttribute="top" secondItem="HP1-YQ-rdj" secondAttribute="topMargin" constant="20" id="EoG-Nq-LEM"/>
                                     <constraint firstAttribute="bottom" secondItem="Ztu-FO-S2U" secondAttribute="bottom" id="IOM-eO-4xd"/>
                                     <constraint firstItem="NqS-pk-uYq" firstAttribute="leading" secondItem="HP1-YQ-rdj" secondAttribute="leading" id="KSK-XB-1Ee"/>
                                     <constraint firstItem="Ztu-FO-S2U" firstAttribute="width" secondItem="HP1-YQ-rdj" secondAttribute="width" id="ZGR-3k-Xdx"/>
-                                    <constraint firstAttribute="bottom" secondItem="KMD-fs-DjH" secondAttribute="bottom" constant="15" id="aUv-Gc-u4c">
-                                        <variation key="widthClass=compact" constant="0.0"/>
-                                    </constraint>
-                                    <constraint firstItem="KMD-fs-DjH" firstAttribute="leading" secondItem="HP1-YQ-rdj" secondAttribute="leadingMargin" constant="33" id="acJ-ti-6pQ"/>
                                     <constraint firstItem="NqS-pk-uYq" firstAttribute="centerY" secondItem="HP1-YQ-rdj" secondAttribute="centerY" id="dTB-KG-eah"/>
                                     <constraint firstItem="bi8-Tc-M9Z" firstAttribute="centerY" secondItem="HP1-YQ-rdj" secondAttribute="centerY" id="ejC-pI-SSo"/>
                                     <constraint firstItem="NqS-pk-uYq" firstAttribute="top" secondItem="HP1-YQ-rdj" secondAttribute="top" constant="10" id="gVU-a0-y4w"/>
@@ -87,14 +72,7 @@
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="dTB-KG-eah"/>
-                                        <exclude reference="aUv-Gc-u4c"/>
                                         <exclude reference="ejC-pI-SSo"/>
-                                    </mask>
-                                </variation>
-                                <variation key="widthClass=compact">
-                                    <mask key="constraints">
-                                        <exclude reference="EoG-Nq-LEM"/>
-                                        <include reference="aUv-Gc-u4c"/>
                                     </mask>
                                 </variation>
                             </view>
@@ -113,7 +91,6 @@
                     <navigationItem key="navigationItem" id="9KO-N1-H3X"/>
                     <connections>
                         <outlet property="bottomMenu" destination="HP1-YQ-rdj" id="ojd-6C-iwb"/>
-                        <outlet property="chaptersButton" destination="KMD-fs-DjH" id="41g-jc-5Cu"/>
                         <outlet property="pageNumberLabel" destination="Ztu-FO-S2U" id="BJg-gT-77v"/>
                         <outlet property="progressSlider" destination="NqS-pk-uYq" id="vxr-sJ-3GX"/>
                     </connections>

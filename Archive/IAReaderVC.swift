@@ -32,8 +32,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     @IBOutlet weak var pageNumberLabel: UILabel!
     @IBOutlet weak var progressSlider: UISlider!
     
-    @IBOutlet weak var chaptersButton: UIButton!
-    
     var imagesDownloader: IABookImagesManager?
     let archiveItemsManager = IAItemsManager()
     
@@ -76,9 +74,17 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
             if file.chapters?.count>0 {
                 self.setupReaderToChapter(0)
             }
-            self.chaptersButton.hidden = file.chapters?.count <= 1
+            if file.chapters?.count > 1 {
+                self.addChaptersButton()
+            }
             
         }
+    }
+    
+    
+    func addChaptersButton() {
+        let button = UIBarButtonItem(image: UIImage(named: "sort"), style: .Plain, target: self, action: "chaptersButtonPressed:")
+        self.navigationItem.rightBarButtonItem = button
     }
     
     func setupReaderToChapter(chapterIndex: Int) {
@@ -198,13 +204,13 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         }
         
         
-        let button = sender as! UIButton
+//        let button = sender as! UIButton
         chaptersListVC.modalPresentationStyle = UIModalPresentationStyle.Popover
         let popover = chaptersListVC.popoverPresentationController
         chaptersListVC.preferredContentSize = CGSizeMake(500,600)
         popover!.sourceView = self.view
-        popover!.sourceRect =  self.bottomMenu.convertRect(button.frame, toView: self.view)
-        
+        popover!.sourceRect = CGRectMake(self.view.frame.size.width,0,1,1)
+        popover!.permittedArrowDirections = .Up
         self.presentViewController(chaptersListVC, animated: true, completion: nil)
         
     }
