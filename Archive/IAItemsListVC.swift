@@ -31,6 +31,8 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     var collectionTitle: String?
     var type: IABookListType?
 
+    var isLoading = false
+
     lazy var activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
 
     var creatorSelectionCompletion: ((String) -> ())!
@@ -113,40 +115,43 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     }
 
     func loadMore() {
-        self.addLoadingView()
-        switch type {
-        case IABookListType.Text?:
-            searchManager.searchBooksWithText(searchText!,count: itemsPerPage, offset: self.items.count,sortOption:self.sortOption) { [weak self]books in
-                if let mySelf = self {
-                    mySelf.items.addObjectsFromArray(books as [AnyObject])
-                    mySelf.collectionView?.reloadData()
-                    mySelf.removeLoadingView()
-                    
+        if (!isLoading){
+            self.addLoadingView()
+            switch type {
+            case IABookListType.Text?:
+                searchManager.searchBooksWithText(searchText!,count: itemsPerPage, offset: self.items.count,sortOption:self.sortOption) { [weak self]books in
+                    if let mySelf = self {
+                        mySelf.items.addObjectsFromArray(books as [AnyObject])
+                        mySelf.collectionView?.reloadData()
+                        mySelf.removeLoadingView()
+                        
+                    }
                 }
-            }
-            break
-        case IABookListType.Creator?:
-            searchManager.searchBookOfCreator(searchText!,count: itemsPerPage, offset: self.items.count,sortOption:self.sortOption) { [weak self]books in
-                if let mySelf = self {
-                    mySelf.items.addObjectsFromArray(books as [AnyObject])
-                    mySelf.collectionView?.reloadData()
-                    mySelf.removeLoadingView()
+                break
+            case IABookListType.Creator?:
+                searchManager.searchBookOfCreator(searchText!,count: itemsPerPage, offset: self.items.count,sortOption:self.sortOption) { [weak self]books in
+                    if let mySelf = self {
+                        mySelf.items.addObjectsFromArray(books as [AnyObject])
+                        mySelf.collectionView?.reloadData()
+                        mySelf.removeLoadingView()
+                    }
                 }
-            }
-            break
-        case IABookListType.Collection?:
-            searchManager.searchCollectionsAndTexts(searchText!, hidden: false, count: itemsPerPage, offset: self.items.count,sortOption:self.sortOption) { [weak self] items in
-                if let mySelf = self {
-                    mySelf.items.addObjectsFromArray(items as [AnyObject])
-                    mySelf.collectionView?.reloadData()
-                    mySelf.removeLoadingView()
+                break
+            case IABookListType.Collection?:
+                searchManager.searchCollectionsAndTexts(searchText!, hidden: false, count: itemsPerPage, offset: self.items.count,sortOption:self.sortOption) { [weak self] items in
+                    if let mySelf = self {
+                        mySelf.items.addObjectsFromArray(items as [AnyObject])
+                        mySelf.collectionView?.reloadData()
+                        mySelf.removeLoadingView()
+                    }
                 }
+                break
+            default:
+                break
             }
-            break
-        default:
-            break
+ 
         }
-    }
+           }
 
     // MARK: - UICollectionViewDataSource
 
@@ -211,6 +216,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     //MARK: - Helpers
     
     func addLoadingView() {
+        isLoading = true
         self.view.addSubview(activityIndicatorView)
         self.activityIndicatorView.startAnimating()
         
@@ -222,6 +228,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     }
     
     func removeLoadingView() {
+        isLoading = false
         self.activityIndicatorView.stopAnimating()
         self.activityIndicatorView.removeFromSuperview()
     }
