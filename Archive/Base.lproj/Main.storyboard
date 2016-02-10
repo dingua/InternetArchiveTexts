@@ -587,14 +587,14 @@
                         </collectionViewFlowLayout>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="itemCollectionCell" id="nKy-tb-s5e" customClass="IACollectionsExploreViewCell" customModule="Archive" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="114" width="150" height="200"/>
+                                <rect key="frame" x="0.0" y="64" width="150" height="300"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="150" height="200"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="150" height="300"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="htG-CN-Jj9">
-                                            <rect key="frame" x="19" y="8" width="200" height="200"/>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="htG-CN-Jj9">
+                                            <rect key="frame" x="-25" y="8" width="200" height="200"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="200" id="2CI-ov-wlZ">
                                                     <variation key="widthClass=compact" constant="100"/>
@@ -618,8 +618,8 @@
                                                 </mask>
                                             </variation>
                                         </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HRK-5I-UzV">
-                                            <rect key="frame" x="8" y="225" width="222" height="120"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HRK-5I-UzV">
+                                            <rect key="frame" x="8" y="225" width="134" height="120"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="120" id="mh1-i9-Vye">
                                                     <variation key="widthClass=compact" constant="60"/>
@@ -644,7 +644,7 @@
                                     <constraint firstItem="htG-CN-Jj9" firstAttribute="top" secondItem="nKy-tb-s5e" secondAttribute="topMargin" id="c2Z-hn-44l"/>
                                     <constraint firstItem="htG-CN-Jj9" firstAttribute="leading" secondItem="nKy-tb-s5e" secondAttribute="leadingMargin" id="sco-Pd-YaM"/>
                                 </constraints>
-                                <size key="customSize" width="150" height="200"/>
+                                <size key="customSize" width="150" height="300"/>
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="ao1-tj-uA5"/>
@@ -665,7 +665,7 @@
                                 </connections>
                             </collectionViewCell>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="BookSearchCell" id="YhU-r8-D5Z" customClass="IAItemListCellView" customModule="Archive" customModuleProvider="target">
-                                <rect key="frame" x="160" y="64" width="150" height="300"/>
+                                <rect key="frame" x="225" y="64" width="150" height="300"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="150" height="300"/>

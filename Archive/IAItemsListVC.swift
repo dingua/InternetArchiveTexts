@@ -182,7 +182,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
         sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
             let item = items[indexPath.row] as! ArchiveItemData
             if item.mediatype == "collection" {
-                return Utils.isiPad() ? CGSizeMake(240, 300) : CGSizeMake(min(self.view.frame.size.width/2-10,self.view.frame.size.height/2-10), 250)
+                return Utils.isiPad() ? CGSizeMake(235, 394) : CGSizeMake(min(self.view.frame.size.width/2-10,self.view.frame.size.height/2-10), 300)
             }else {
                 return Utils.isiPad() ? CGSizeMake(235, 394) : CGSizeMake(min(self.view.frame.size.width/2-10,self.view.frame.size.height/2-10), 300)
             }
