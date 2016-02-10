@@ -55,8 +55,9 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     override func viewDidLoad() {
         super.viewDidLoad()
         self.addLoadingView()
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "dismiss", style: .Plain, target: self, action: "dismissViewController")
-        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image:UIImage(named: "close_reader"), style: .Plain, target: self, action: "dismissViewController")
+        progressSlider.setThumbImage(UIImage(named: "reader_slider_thumb")  ,forState: .Normal)
+
         //Get File Details from MetaData WS
         archiveItemsManager.getFileDetails(bookIdentifier) { (file) -> () in
             self.removeLoadingView()
@@ -96,8 +97,8 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                 self.numberOfPages = Int(nbrPages)!
             }
             self.pageNumber = 0
-            self.updatePages()
             self.addPageController()
+            self.updatePages()
         }
         
     }
@@ -135,7 +136,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
             if vc.pageNumber == number {
                 vc.removeLoadingView()
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    vc.updateImage(image)
+                    vc.updateImage(image,hidden: true)
                 })
 
             }
@@ -202,9 +203,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         chaptersListVC.chapterSelectionHandler = { chapterIndex in
             self.setupReaderToChapter(chapterIndex)
         }
-        
-        
-//        let button = sender as! UIButton
+
         chaptersListVC.modalPresentationStyle = UIModalPresentationStyle.Popover
         let popover = chaptersListVC.popoverPresentationController
         chaptersListVC.preferredContentSize = CGSizeMake(500,600)
@@ -222,13 +221,17 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     }
     
     func goNextPage() {
-        self.pageNumber++
-        updateUIAfterPageSeek()
+        if self.pageNumber < self.numberOfPages-1 {
+            self.pageNumber++
+            updateUIAfterPageSeek()
+        }
     }
     
     func goPreviousPage() {
-        self.pageNumber--
-        updateUIAfterPageSeek()
+        if self.pageNumber > 0 {
+            self.pageNumber--
+            updateUIAfterPageSeek()
+        }
     }
     
     func dismissViewController() {
