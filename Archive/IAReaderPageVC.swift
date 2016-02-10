@@ -20,6 +20,9 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
     //Pan Gesture Variables
     var panStartPosition: CGFloat?
     var panPositionProgress: CGFloat?
+    var zoomScale: CGFloat?
+    var zoomOffset: CGPoint?
+    var zoomed = false
     
     @IBOutlet weak var scrollView: UIScrollView!
 
@@ -99,7 +102,22 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
     }
 
     func scrollViewDidScroll(scrollView: UIScrollView) {
+        if let  scale = self.zoomScale , zoomOffset =  self.zoomOffset{
+            if (scrollView.contentOffset.x != 0 && scrollView.zoomScale == scale && self.zoomed) {
+                var offset = scrollView.contentOffset
+                offset.x = zoomOffset.x
+                scrollView.contentOffset = offset
+            }
+            
+        }
+        
     }
+    
+    
+    func scrollViewDidZoom(scrollView: UIScrollView) {
+        self.zoomed = false
+    }
+    
     
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         if scrollView.contentOffset.x == 0 {
@@ -131,8 +149,11 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
                 if let image = self.image, imageView = self.imageView {
                     let imageRect = AVMakeRectWithAspectRatioInsideRect(image.size, imageView.frame)
                     let scale = self.view.frame.size.width/imageRect.width
-                    let zoomRect = self.zoomRectForScale(scale, center: recognizer.locationInView(recognizer.view))
+                    let zoomRect = self.zoomRectForScale(scale, center: CGPointMake(self.view.center.x , recognizer.locationInView(recognizer.view).y) )
                     self.scrollView?.zoomToRect(zoomRect, animated: true)
+                    self.zoomScale = scale
+                    self.zoomOffset = self.scrollView.contentOffset
+                    self.zoomed = true
                 }
             }
         }
@@ -157,9 +178,9 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
         }else if pangesture.state == .Began {
             self.panStartPosition = pangesture.translationInView(pangesture.view).x
         } else if pangesture.state == .Ended {
-            if pangesture.translationInView(pangesture.view).x - self.panStartPosition! > 100 && self.scrollView.contentOffset.x<10 {
+            if pangesture.translationInView(pangesture.view).x - self.panStartPosition! > 100 && (self.scrollView.contentOffset.x<10 || self.zoomed ) {
                 self.goPreviousPage()
-            } else if pangesture.translationInView(pangesture.view).x - self.panStartPosition! < 100 && self.scrollView.contentOffset.x + self.scrollView.frame.size.width >  self.scrollView.contentSize.width - 10 {
+            } else if pangesture.translationInView(pangesture.view).x - self.panStartPosition! < 100 && (self.scrollView.contentOffset.x + self.scrollView.frame.size.width >  self.scrollView.contentSize.width - 10 || self.zoomed){
                 self.goNextPage()
             }
         }
@@ -179,6 +200,9 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
         let zoomRect = self.zoomRectForScale(scale, center: self.scrollView.center)
         self.scrollView?.zoomToRect(zoomRect, animated: false)
         self.scrollView.scrollRectToVisible(CGRectMake(self.scrollView.contentOffset.x, 0, zoomRect.width, zoomRect.height), animated: false)
+        self.zoomScale = scale
+        self.zoomOffset = self.scrollView.contentOffset
+        self.zoomed = true
     }
     
     //MARK: Device orientation
