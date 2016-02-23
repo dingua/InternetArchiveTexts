@@ -71,6 +71,7 @@
         let searchParameters = "q=(\(query))&sort%5B%5D=\(sort)&rows=\(count)&output=json&start=\(offset)"
         
         let params = "\(baseURL)/\(searchURL)\(searchParameters)"
+
         Alamofire.request(.GET, params, parameters: nil)
             .responseJSON { response in
                 if let JSON = response.result.value {
@@ -104,7 +105,8 @@
     
     func searchBooksWithText(word: String, count: Int, offset: Int, sortOption: IASearchSortOption, completion: (NSArray)->()) {
         let text = word.stringByReplacingOccurrencesOfString(" ", withString: "+")
-        let query = "title:\(text)%20OR%20description:\(text)%20OR%20collection:\(text)%20OR%20language:\(text)%20OR%20text:\(text)%20AND%20mediatype:texts"
+        let searchText = text.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
+        let query = "title:\(searchText)%20OR%20description:\(searchText)%20OR%20collection:\(searchText)%20OR%20language:\(searchText)%20OR%20text:\(searchText)%20AND%20mediatype:texts"
         searchItems(query, count: count, offset: offset, sort:  sortOption.rawValue, completion: completion)
     }
     

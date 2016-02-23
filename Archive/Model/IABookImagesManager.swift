@@ -45,7 +45,8 @@ class IABookImagesManager: NSObject {
         self.bookId = identifier
         self.serverURL = server
         self.directory = directory
-        self.subDirectory = subdirectory
+        self.subDirectory = subdirectory.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
+
         self.scandata = scandata
         self.type = type
         self.requests = Array()
