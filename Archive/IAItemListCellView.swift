@@ -42,10 +42,10 @@ class IAItemListCellView : UICollectionViewCell {
         self.creatorButton.setTitle(book.creator, forState: .Normal)
         self.creatorName = book.creator
         self.collectionName = book.collections?.firstObject as? String
-        self.creatorButton.addTarget(self, action: "creatorButtonPressed", forControlEvents: .TouchUpInside)
+        self.creatorButton.addTarget(self, action: #selector(IAItemListCellView.creatorButtonPressed), forControlEvents: .TouchUpInside)
         
         self.collectionButton.setTitle(book.collections?.firstObject as? String, forState: .Normal)
-        self.collectionButton.addTarget(self, action: "collectionButtonPressed", forControlEvents: .TouchUpInside)
+        self.collectionButton.addTarget(self, action: #selector(IAItemListCellView.collectionButtonPressed), forControlEvents: .TouchUpInside)
         
         self.bookImageView.image = nil
         if let url = NSURL(string: "\(imageBaseURL)\(book.identifier!)") {

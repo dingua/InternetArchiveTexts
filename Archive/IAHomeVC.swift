@@ -37,7 +37,7 @@ class IAHomeVC: UIViewController,UISearchBarDelegate,UIGestureRecognizerDelegate
         if let timer = searchTimer {
             timer.invalidate()
         }
-        searchTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "search", userInfo: nil, repeats: false)
+        searchTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(IAHomeVC.search), userInfo: nil, repeats: false)
 
     }
     

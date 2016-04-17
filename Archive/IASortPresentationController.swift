@@ -51,7 +51,7 @@ class IASortPresentationController: UIPresentationController {
                self.chromeView!.alpha = 0.0
 
 
-        let tap = UITapGestureRecognizer(target:self ,action: "chromeviewTapped:")
+        let tap = UITapGestureRecognizer(target:self ,action: #selector(IASortPresentationController.chromeviewTapped(_:)))
         self.chromeView!.addGestureRecognizer(tap)
 
         self.presentedViewController.transitionCoordinator()!.animateAlongsideTransition({(UIViewControllerTransitionCoordinatorContext) -> () in

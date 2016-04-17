@@ -15,6 +15,7 @@ class IACollectionsExploreVC: UICollectionViewController {
     var searchManager = IAItemsManager()
     var collections = NSMutableArray()
     var selectedCollection: ArchiveItemData?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         searchManager.searchCollections("texts", hidden: true, count: 50, offset: 0) { [weak self] collections  in

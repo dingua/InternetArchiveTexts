@@ -2,7 +2,7 @@
 //  IAReaderChaptersListVC.swift
 //  Archive
 //
-//  Created by Mejdi Lassidi on 1/28/16.
+//  Created by Mejdi Lassidi on 1/28/16.{
 //  Copyright © 2016 Archive. All rights reserved.
 //
 

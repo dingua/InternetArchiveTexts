@@ -55,7 +55,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     override func viewDidLoad() {
         super.viewDidLoad()
         self.addLoadingView()
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image:UIImage(named: "close_reader"), style: .Plain, target: self, action: "dismissViewController")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(image:UIImage(named: "close_reader"), style: .Plain, target: self, action: #selector(IAReaderVC.dismissViewController))
         progressSlider.setThumbImage(UIImage(named: "reader_slider_thumb")  ,forState: .Normal)
         progressSlider.userInteractionEnabled = false
         //Get File Details from MetaData WS
@@ -84,7 +84,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     
     func addChaptersButton() {
-        let button = UIBarButtonItem(image: UIImage(named: "sort"), style: .Plain, target: self, action: "chaptersButtonPressed:")
+        let button = UIBarButtonItem(image: UIImage(named: "sort"), style: .Plain, target: self, action: #selector(IAReaderVC.chaptersButtonPressed(_:)))
         self.navigationItem.rightBarButtonItem = button
     }
     
@@ -194,7 +194,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         if let timer = self.updatePageAfterSeekTimer {
             timer.invalidate()
         }
-        self.updatePageAfterSeekTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: "updateUIAfterPageSeek:", userInfo: true, repeats: false)
+        self.updatePageAfterSeekTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(IAReaderVC.updateUIAfterPageSeek(_:)), userInfo: true, repeats: false)
     }
     
     @IBAction func chaptersButtonPressed(sender: AnyObject) {
@@ -222,14 +222,14 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     func goNextPage() {
         if self.pageNumber < self.numberOfPages-1 {
-            self.pageNumber++
+            self.pageNumber += 1
             updateUIAfterPageSeek(true)
         }
     }
     
     func goPreviousPage() {
         if self.pageNumber > 0 {
-            self.pageNumber--
+            self.pageNumber -= 1
             updateUIAfterPageSeek(false)
         }
     }

@@ -79,7 +79,7 @@
                     if let response = JSON.valueForKey("response")  {
                         let docs = response.valueForKey("docs") as! NSArray
                         let collections = NSMutableArray()
-                        for var index = 0;index < docs.count;++index {
+                        for index in 0 ..< docs.count {
                             collections.addObject(ArchiveItemData(dictionary: docs[index] as! NSDictionary))
                         }
                         completion(collections)
@@ -163,7 +163,7 @@
                     if let response = JSON.valueForKey("response")  {
                         let docs = response.valueForKey("docs") as! NSArray
                         let collections = NSMutableArray()
-                        for var index = 0;index < docs.count;++index {
+                        for index in 0 ..< docs.count {
                             collections.addObject(ArchiveItemData(dictionary: docs[index] as! NSDictionary))
                         }
                         completion(collections)
