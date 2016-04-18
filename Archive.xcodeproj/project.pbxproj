@@ -12,6 +12,8 @@
 		3410EC6E1C54C11D0093E7C0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3410EC6D1C54C11D0093E7C0 /* Constants.swift */; };
 		3410EC731C54DC390093E7C0 /* IACollectionsExploreViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3410EC721C54DC390093E7C0 /* IACollectionsExploreViewCell.swift */; };
 		3410EC751C54DC5F0093E7C0 /* IAItemListCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3410EC741C54DC5F0093E7C0 /* IAItemListCellView.swift */; };
+		3448CFF11CC38C89001CBB31 /* IALoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3448CFF01CC38C89001CBB31 /* IALoginVC.swift */; };
+		3448CFF31CC3901A001CBB31 /* IALoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3448CFF21CC3901A001CBB31 /* IALoginManager.swift */; };
 		3449B93D1C67238E00EFD434 /* IASortListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3449B93C1C67238E00EFD434 /* IASortListVC.swift */; };
 		3449B9401C6728EB00EFD434 /* IASortPresentationAnimatedTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3449B93F1C6728EB00EFD434 /* IASortPresentationAnimatedTransitioning.swift */; };
 		3449B9421C6729C600EFD434 /* IASortPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3449B9411C6729C600EFD434 /* IASortPresentationController.swift */; };
@@ -71,6 +73,8 @@
 		3410EC6D1C54C11D0093E7C0 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3410EC721C54DC390093E7C0 /* IACollectionsExploreViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IACollectionsExploreViewCell.swift; sourceTree = "<group>"; };
 		3410EC741C54DC5F0093E7C0 /* IAItemListCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAItemListCellView.swift; sourceTree = "<group>"; };
+		3448CFF01CC38C89001CBB31 /* IALoginVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IALoginVC.swift; sourceTree = "<group>"; };
+		3448CFF21CC3901A001CBB31 /* IALoginManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IALoginManager.swift; sourceTree = "<group>"; };
 		3449B93C1C67238E00EFD434 /* IASortListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IASortListVC.swift; sourceTree = "<group>"; };
 		3449B93F1C6728EB00EFD434 /* IASortPresentationAnimatedTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IASortPresentationAnimatedTransitioning.swift; sourceTree = "<group>"; };
 		3449B9411C6729C600EFD434 /* IASortPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IASortPresentationController.swift; sourceTree = "<group>"; };
@@ -178,6 +182,14 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
+		3448CFEF1CC38C6B001CBB31 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				3448CFF01CC38C89001CBB31 /* IALoginVC.swift */,
+			);
+			name = Login;
+			sourceTree = "<group>";
+		};
 		3449B93B1C67236100EFD434 /* SortList */ = {
 			isa = PBXGroup;
 			children = (
@@ -217,6 +229,7 @@
 		3478E3B41C47FFBA00ABD093 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				3448CFEF1CC38C6B001CBB31 /* Login */,
 				3449B93B1C67236100EFD434 /* SortList */,
 				3469069B1C5DE7CD001BACC6 /* ItemsList */,
 				3410EC691C54A6FC0093E7C0 /* Explore */,
@@ -247,6 +260,7 @@
 			children = (
 				34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */,
 				34EB386F1C402D830034F3E4 /* IABookImagesManager.swift */,
+				3448CFF21CC3901A001CBB31 /* IALoginManager.swift */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -548,9 +562,11 @@
 				3478E3BA1C4A7B8B00ABD093 /* IAItemsListVC.swift in Sources */,
 				3478E3B81C4A777400ABD093 /* IAHomeVC.swift in Sources */,
 				3410EC6B1C54A7A40093E7C0 /* IACollectionsExploreVC.swift in Sources */,
+				3448CFF31CC3901A001CBB31 /* IALoginManager.swift in Sources */,
 				3469069D1C5E213F001BACC6 /* Utils.swift in Sources */,
 				34EBA0071C5A73BB00E32BFA /* IAReaderChaptersListVC.swift in Sources */,
 				A612090F1C3D2EA30017A928 /* AppDelegate.swift in Sources */,
+				3448CFF11CC38C89001CBB31 /* IALoginVC.swift in Sources */,
 				34EB38701C402D830034F3E4 /* IABookImagesManager.swift in Sources */,
 				3449B9441C672A1E00EFD434 /* IASortPresentationDelgate.swift in Sources */,
 				3410EC2F1C4CAA710093E7C0 /* ArchiveItemData.swift in Sources */,

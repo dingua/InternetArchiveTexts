@@ -19,7 +19,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     var pageNumber = 0 {
         didSet {
-            pageNumberLabel.text = "\(pageNumber+1)"
+            pageNumberLabel.text = "\(pageNumber+1)/\(self.numberOfPages)"
             let percentage = Float(self.pageNumber)/Float(self.numberOfPages) as Float?
             progressSlider.value = percentage!
         }
@@ -56,7 +56,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         super.viewDidLoad()
         self.addLoadingView()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image:UIImage(named: "close_reader"), style: .Plain, target: self, action: #selector(IAReaderVC.dismissViewController))
-        progressSlider.setThumbImage(UIImage(named: "reader_slider_thumb")  ,forState: .Normal)
+        progressSlider.setThumbImage(UIImage(named: "roundSliderThumb")  ,forState: .Normal)
         progressSlider.userInteractionEnabled = false
         //Get File Details from MetaData WS
         archiveItemsManager.getFileDetails(bookIdentifier) { (file) -> () in
@@ -108,9 +108,12 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         self.pageController.removeFromParentViewController()
         self.pageController.didMoveToParentViewController(nil)
         self.pageController.view.removeFromSuperview()
-        self.pageController.view.frame = self.view.bounds
+//        self.pageController.view.frame = self.view.bounds
+//        self.pageController.view.frame = CGRectMake(100, 100, 200, 200)
+
         
         self.pageController.setViewControllers(Array(arrayLiteral: self.pageVCWithNumber(self.pageNumber)) , direction: .Forward, animated: true, completion: nil)
+        self.pageController.view.backgroundColor = UIColor.redColor()
         self.pageController.delegate = self
         self.pageController.dataSource = self
         
@@ -119,6 +122,14 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         
         self.addChildViewController(self.pageController)
         self.pageController.didMoveToParentViewController(self)
+
+        //Apply constraints
+        self.pageController.view.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addConstraint(NSLayoutConstraint(item: self.topLayoutGuide   , attribute: .Bottom, relatedBy: .Equal, toItem: self.pageController.view, attribute: .Top, multiplier: 1.0, constant: 0))
+        self.view.addConstraint(NSLayoutConstraint(item: self.pageController.view  , attribute: .Leading, relatedBy: .Equal, toItem: self.view, attribute: .Leading, multiplier: 1.0, constant: 0))
+        self.view.addConstraint(NSLayoutConstraint(item: self.pageController.view  , attribute: .Trailing, relatedBy: .Equal, toItem: self.view, attribute: .Trailing, multiplier: 1.0, constant: 0))
+        self.view.addConstraint(NSLayoutConstraint(item: self.bottomLayoutGuide  , attribute: .Top, relatedBy: .Equal, toItem:self.pageController.view, attribute: .Bottom, multiplier: 1.0, constant: 60))
+
         
     }
     
@@ -239,7 +250,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     }
     
     @IBAction func viewTapped(sender: AnyObject) {
-            self.bottomMenu.hidden = !self.bottomMenu.hidden
+//            self.bottomMenu.hidden = !self.bottomMenu.hidden
     }
     
     //MARK: Model calls

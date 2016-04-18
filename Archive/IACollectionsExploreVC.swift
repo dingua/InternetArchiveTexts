@@ -18,7 +18,14 @@ class IACollectionsExploreVC: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        searchManager.searchCollections("texts", hidden: true, count: 50, offset: 0) { [weak self] collections  in
+        searchCollections()
+        addLoginButton()
+    }
+    
+    //MARK: - Helpers
+    
+    func searchCollections() {
+        searchManager.searchCollections("texts", hidden: true, count: 50, page: 0) { [weak self] collections  in
             if let mySelf = self {
                 let allTextsDictionary = [
                     "identifier": "texts",
@@ -29,6 +36,16 @@ class IACollectionsExploreVC: UICollectionViewController {
                 mySelf.collectionView!.reloadData()
             }
         }
+    }
+    
+    
+    func addLoginButton() {
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Login", style: .Plain, target: self, action: #selector(IACollectionsExploreVC.pushLoginScreen))
+    }
+    
+    func pushLoginScreen() {
+        let loginVC = self.storyboard?.instantiateViewControllerWithIdentifier("loginVC")
+        self.navigationController?.pushViewController(loginVC!, animated: true)
     }
     
     // MARK: - UICollectionViewDataSource

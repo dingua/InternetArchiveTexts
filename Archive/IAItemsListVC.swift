@@ -119,7 +119,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
             self.addLoadingView()
             switch type {
             case IABookListType.Text?:
-                searchManager.searchBooksWithText(searchText!,count: itemsPerPage, offset: self.items.count,sortOption:self.sortOption) { [weak self]books in
+                searchManager.searchBooksWithText(searchText!,count: itemsPerPage, page: (self.items.count/itemsPerPage)+1,sortOption:self.sortOption) { [weak self]books in
                     if let mySelf = self {
                         mySelf.items.addObjectsFromArray(books as [AnyObject])
                         mySelf.collectionView?.reloadData()
@@ -129,7 +129,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
                 }
                 break
             case IABookListType.Creator?:
-                searchManager.searchBookOfCreator(searchText!,count: itemsPerPage, offset: self.items.count,sortOption:self.sortOption) { [weak self]books in
+                searchManager.searchBookOfCreator(searchText!,count: itemsPerPage, page: (self.items.count/itemsPerPage)+1,sortOption:self.sortOption) { [weak self]books in
                     if let mySelf = self {
                         mySelf.items.addObjectsFromArray(books as [AnyObject])
                         mySelf.collectionView?.reloadData()
@@ -138,7 +138,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
                 }
                 break
             case IABookListType.Collection?:
-                searchManager.searchCollectionsAndTexts(searchText!, hidden: false, count: itemsPerPage, offset: self.items.count,sortOption:self.sortOption) { [weak self] items in
+                searchManager.searchCollectionsAndTexts(searchText!, hidden: false, count: itemsPerPage, page: (self.items.count/itemsPerPage)+1,sortOption:self.sortOption) { [weak self] items in
                     if let mySelf = self {
                         mySelf.items.addObjectsFromArray(items as [AnyObject])
                         mySelf.collectionView?.reloadData()
