@@ -20,6 +20,7 @@ class IAReaderChaptersListVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: cellIdentfier)
+        self.view.layer.cornerRadius = 20
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {

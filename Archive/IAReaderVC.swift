@@ -27,6 +27,8 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     lazy var activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
     
+    var sortPresentationDelegate =  IASortPresentationDelgate()
+
     //IBOutlets
     @IBOutlet weak var bottomMenu: UIView!
     @IBOutlet weak var pageNumberLabel: UILabel!
@@ -90,17 +92,20 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     func setupReaderToChapter(chapterIndex: Int) {
         if let file = self.file {
-            let chapter = file.chapters![chapterIndex]
-            let subdirectory = chapter.zipFile?.substringToIndex((chapter.zipFile?.rangeOfString("_\((chapter.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)
-            self.imagesDownloader = IABookImagesManager(identifier:file.identifier,server: file.server! ,directory: file.directory!,subdirectory: subdirectory!, scandata: chapter.scandata!,type: (chapter.type?.rawValue.lowercaseString)!)
-            if  let nbrPages = self.imagesDownloader!.getNumberPages() {
-                self.numberOfPages = Int(nbrPages)!
-            }
-            self.pageNumber = 0
-            self.addPageController()
-            self.updatePages()
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), {
+                let chapter = file.chapters![chapterIndex]
+                let subdirectory = chapter.zipFile?.substringToIndex((chapter.zipFile?.rangeOfString("_\((chapter.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)
+                self.imagesDownloader = IABookImagesManager(identifier:file.identifier,server: file.server! ,directory: file.directory!,subdirectory: subdirectory!, scandata: chapter.scandata!,type: (chapter.type?.rawValue.lowercaseString)!)
+                if  let nbrPages = self.imagesDownloader!.getNumberPages() {
+                    self.numberOfPages = Int(nbrPages)!
+                }
+                self.pageNumber = 0
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.addPageController()
+                    self.updatePages()
+                })
+            })
         }
-        
     }
     
     
@@ -108,10 +113,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         self.pageController.removeFromParentViewController()
         self.pageController.didMoveToParentViewController(nil)
         self.pageController.view.removeFromSuperview()
-//        self.pageController.view.frame = self.view.bounds
-//        self.pageController.view.frame = CGRectMake(100, 100, 200, 200)
 
-        
         self.pageController.setViewControllers(Array(arrayLiteral: self.pageVCWithNumber(self.pageNumber)) , direction: .Forward, animated: true, completion: nil)
         self.pageController.view.backgroundColor = UIColor.redColor()
         self.pageController.delegate = self
@@ -210,17 +212,13 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     @IBAction func chaptersButtonPressed(sender: AnyObject) {
         let chaptersListVC = IAReaderChaptersListVC()
+        chaptersListVC.transitioningDelegate = sortPresentationDelegate;
         chaptersListVC.chapters = file?.chapters
         chaptersListVC.chapterSelectionHandler = { chapterIndex in
             self.setupReaderToChapter(chapterIndex)
         }
 
-        chaptersListVC.modalPresentationStyle = UIModalPresentationStyle.Popover
-        let popover = chaptersListVC.popoverPresentationController
-        chaptersListVC.preferredContentSize = CGSizeMake(500,600)
-        popover!.sourceView = self.view
-        popover!.sourceRect = CGRectMake(self.view.frame.size.width,0,1,1)
-        popover!.permittedArrowDirections = .Up
+        chaptersListVC.modalPresentationStyle = .Custom
         self.presentViewController(chaptersListVC, animated: true, completion: nil)
         
     }
