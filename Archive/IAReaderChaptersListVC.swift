@@ -16,10 +16,10 @@ class IAReaderChaptersListVC: UITableViewController {
     }
     
     var chapterSelectionHandler : ((chapterIndex: Int)->())?
+    var selectedChapterIndex = -1
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: cellIdentfier)
         self.view.layer.cornerRadius = 20
     }
     
@@ -40,9 +40,14 @@ class IAReaderChaptersListVC: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentfier)! as UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentfier)! as! IASortListTableViewCell
         let chapter = chapters![indexPath.row] as! Chapter
-        cell.textLabel?.text = chapter.name
+        cell.optionLabel?.text = chapter.name
+        if indexPath.row == selectedChapterIndex {
+            cell.optionImageView?.image = UIImage(named: "checkmark")
+        }else {
+            cell.optionImageView?.image = nil
+        }
         return cell
     }
     

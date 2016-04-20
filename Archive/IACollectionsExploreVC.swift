@@ -15,7 +15,8 @@ class IACollectionsExploreVC: UICollectionViewController {
     var searchManager = IAItemsManager()
     var collections = NSMutableArray()
     var selectedCollection: ArchiveItemData?
-    
+    var sortPresentationDelegate =  IASortPresentationDelgate()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         searchCollections()
@@ -45,7 +46,9 @@ class IACollectionsExploreVC: UICollectionViewController {
     
     func pushLoginScreen() {
         let loginVC = self.storyboard?.instantiateViewControllerWithIdentifier("loginVC")
-        self.navigationController?.pushViewController(loginVC!, animated: true)
+        loginVC?.transitioningDelegate = sortPresentationDelegate
+        loginVC?.modalPresentationStyle = .Custom
+        self.presentViewController(loginVC!, animated: true, completion: nil)
     }
     
     // MARK: - UICollectionViewDataSource

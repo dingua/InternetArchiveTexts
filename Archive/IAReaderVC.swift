@@ -24,7 +24,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
             progressSlider.value = percentage!
         }
     }
-    
+    var selectedChapterIndex = 0
     lazy var activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
     
     var sortPresentationDelegate =  IASortPresentationDelgate()
@@ -93,6 +93,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     func setupReaderToChapter(chapterIndex: Int) {
         if let file = self.file {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), {
+                self.selectedChapterIndex = chapterIndex
                 let chapter = file.chapters![chapterIndex]
                 let subdirectory = chapter.zipFile?.substringToIndex((chapter.zipFile?.rangeOfString("_\((chapter.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)
                 self.imagesDownloader = IABookImagesManager(identifier:file.identifier,server: file.server! ,directory: file.directory!,subdirectory: subdirectory!, scandata: chapter.scandata!,type: (chapter.type?.rawValue.lowercaseString)!)
@@ -211,13 +212,13 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     }
     
     @IBAction func chaptersButtonPressed(sender: AnyObject) {
-        let chaptersListVC = IAReaderChaptersListVC()
+        let chaptersListVC = self.storyboard?.instantiateViewControllerWithIdentifier("chaptersListVC") as! IAReaderChaptersListVC
         chaptersListVC.transitioningDelegate = sortPresentationDelegate;
         chaptersListVC.chapters = file?.chapters
         chaptersListVC.chapterSelectionHandler = { chapterIndex in
             self.setupReaderToChapter(chapterIndex)
         }
-
+        chaptersListVC.selectedChapterIndex = self.selectedChapterIndex
         chaptersListVC.modalPresentationStyle = .Custom
         self.presentViewController(chaptersListVC, animated: true, completion: nil)
         
