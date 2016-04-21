@@ -22,6 +22,7 @@
 		3478E3B61C48006900ABD093 /* IAReaderCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3478E3B51C48006900ABD093 /* IAReaderCollectionViewController.swift */; };
 		3478E3B81C4A777400ABD093 /* IAHomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3478E3B71C4A777400ABD093 /* IAHomeVC.swift */; };
 		3478E3BA1C4A7B8B00ABD093 /* IAItemsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3478E3B91C4A7B8B00ABD093 /* IAItemsListVC.swift */; };
+		34ABA0681CC76328000D7A4C /* IAFavoritesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ABA0671CC76328000D7A4C /* IAFavoritesVC.swift */; };
 		34EB38641C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */; };
 		34EB38651C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */; };
 		34EB38661C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */; };
@@ -83,6 +84,7 @@
 		3478E3B51C48006900ABD093 /* IAReaderCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAReaderCollectionViewController.swift; sourceTree = "<group>"; };
 		3478E3B71C4A777400ABD093 /* IAHomeVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAHomeVC.swift; sourceTree = "<group>"; };
 		3478E3B91C4A7B8B00ABD093 /* IAItemsListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAItemsListVC.swift; sourceTree = "<group>"; };
+		34ABA0671CC76328000D7A4C /* IAFavoritesVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAFavoritesVC.swift; sourceTree = "<group>"; };
 		34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAItemsManager.swift; sourceTree = "<group>"; };
 		34EB38671C3FCF3E0034F3E4 /* ArchiveItem+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ArchiveItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		34EB38681C3FCF3E0034F3E4 /* ArchiveItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArchiveItem.swift; sourceTree = "<group>"; };
@@ -229,6 +231,7 @@
 		3478E3B41C47FFBA00ABD093 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				34ABA0661CC76309000D7A4C /* Favorite */,
 				3448CFEF1CC38C6B001CBB31 /* Login */,
 				3449B93B1C67236100EFD434 /* SortList */,
 				3469069B1C5DE7CD001BACC6 /* ItemsList */,
@@ -237,6 +240,14 @@
 				3410EC671C54A6D20093E7C0 /* Reader */,
 			);
 			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		34ABA0661CC76309000D7A4C /* Favorite */ = {
+			isa = PBXGroup;
+			children = (
+				34ABA0671CC76328000D7A4C /* IAFavoritesVC.swift */,
+			);
+			name = Favorite;
 			sourceTree = "<group>";
 		};
 		34EB38521C3E64DF0034F3E4 /* Model */ = {
@@ -543,6 +554,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34ABA0681CC76328000D7A4C /* IAFavoritesVC.swift in Sources */,
 				3410EC751C54DC5F0093E7C0 /* IAItemListCellView.swift in Sources */,
 				34EC1D921C43BBA00046C7B9 /* IAReaderPageVC.swift in Sources */,
 				3449B93D1C67238E00EFD434 /* IASortListVC.swift in Sources */,

@@ -115,7 +115,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     }
 
     func loadMore() {
-        if (!isLoading){
+        if !isLoading && (items.count>=itemsPerPage || items.count==0) {
             self.addLoadingView()
             switch type {
             case IABookListType.Text?:

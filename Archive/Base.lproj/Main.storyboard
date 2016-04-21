@@ -269,6 +269,56 @@
             </objects>
             <point key="canvasLocation" x="153" y="4274"/>
         </scene>
+        <!--FavoritesVC-->
+        <scene sceneID="CdA-ZM-WwN">
+            <objects>
+                <viewController id="k4X-O1-iA3" customClass="IAFavoritesVC" customModule="Archive" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="sjc-GB-KKQ"/>
+                        <viewControllerLayoutGuide type="bottom" id="hxb-NO-Bzr"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="vKQ-Wk-I1E">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="grz-L9-gzL">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <connections>
+                                    <segue destination="nhk-cK-l3N" kind="embed" identifier="favoritesList" id="nMy-rZ-wJ2"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="grz-L9-gzL" firstAttribute="leading" secondItem="vKQ-Wk-I1E" secondAttribute="leading" id="DqJ-he-kNj"/>
+                            <constraint firstItem="grz-L9-gzL" firstAttribute="top" secondItem="vKQ-Wk-I1E" secondAttribute="topMargin" id="aGf-ZW-kVA"/>
+                            <constraint firstAttribute="trailing" secondItem="grz-L9-gzL" secondAttribute="trailing" id="wPt-mp-GMr"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="grz-L9-gzL" secondAttribute="bottom" id="yvp-mn-XGD"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="nl4-qc-9He"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uWs-OE-Ilo" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="160" y="5053"/>
+        </scene>
+        <!--Favorites Nav-->
+        <scene sceneID="7x2-af-ehw">
+            <objects>
+                <navigationController id="10l-OT-4Lu" userLabel="Favorites Nav" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Favorites" image="favorite" id="Ecs-KY-6Mc" userLabel="Favorites"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="d9v-hi-cYj">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="k4X-O1-iA3" kind="relationship" relationship="rootViewController" id="fXQ-NQ-LW6"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Dty-R3-dY1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-970" y="4923"/>
+        </scene>
         <!--Reader Collection View Controller-->
         <scene sceneID="XYt-Cb-fXR">
             <objects>
@@ -377,6 +427,7 @@
                     <connections>
                         <segue destination="B34-nn-Xaz" kind="relationship" relationship="viewControllers" id="lRf-M5-lWS"/>
                         <segue destination="y3X-A3-hRI" kind="relationship" relationship="viewControllers" id="FAr-w0-zVb"/>
+                        <segue destination="10l-OT-4Lu" kind="relationship" relationship="viewControllers" id="Kp9-WV-X01"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="T9Y-Cd-zbY" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -690,7 +741,7 @@
             <objects>
                 <collectionViewController storyboardIdentifier="bookListVC" id="nhk-cK-l3N" customClass="IAItemsListVC" customModule="Archive" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="y1S-rR-OR7">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="443"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="rOj-iu-F46">
@@ -1017,15 +1068,29 @@
             </objects>
             <point key="canvasLocation" x="1603" y="2582"/>
         </scene>
+        <!--View Controller-->
+        <scene sceneID="m0I-Gl-NWc">
+            <objects>
+                <viewController id="gtc-ey-vOw" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="6f9-yZ-20b">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4Hh-NF-kEW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
     </scenes>
     <resources>
         <image name="Internet-Archive-Logo" width="153" height="153"/>
         <image name="down_sort" width="32" height="32"/>
+        <image name="favorite" width="32" height="32"/>
         <image name="ia-button-plain" width="30" height="30"/>
         <image name="search-button" width="30" height="30"/>
         <image name="sort" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="tge-dc-5FS"/>
+        <segue reference="nMy-rZ-wJ2"/>
     </inferredMetricsTieBreakers>
 </document>
