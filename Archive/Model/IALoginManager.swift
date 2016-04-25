@@ -45,6 +45,10 @@ class IALoginManager: NSObject {
                         print ("user id = \(userid)")
                         NSUserDefaults.standardUserDefaults().setObject(userid , forKey: "userid")
                     }
+                    
+                    addBookmark("FP152980s", title: "FP152980s", completion: { _ in
+                        
+                    })
                 }
             })
 //        })
@@ -66,4 +70,14 @@ class IALoginManager: NSObject {
             }
         }
     }
+    
+    class func addBookmark(bookId: String, title: String, completion: String -> ()) {
+        let bookmarkURL = "https://archive.org/bookmarks.php?add_bookmark=1&mediatype=texts&identifier=\(bookId)&title=\(title)&output=json"
+        Alamofire.request(.GET, bookmarkURL).responseJSON (completionHandler: { response in
+            if let JSON = response.result.value {
+                print("JSON: \(JSON)")
+            }
+        })
+    }
+
 }
