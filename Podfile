@@ -7,6 +7,7 @@ pod 'Alamofire', '~> 3.1'
 pod 'AlamofireImage', '~> 2.0'
 pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
 pod 'DGActivityIndicatorView'
+pod 'TBXML'
 end
 
 target 'ArchiveTests' do

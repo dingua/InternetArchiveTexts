@@ -15,21 +15,6 @@ class IALoginManager: NSObject {
     static let accountS3URL = "https://archive.org/account/s3.php?output_json=1"
 
     class func login(username: String/*, password: String*/) {
-//        
-//        getUserId(username) { userid in
-//            print ("user id = \(userid)")
-//            NSUserDefaults.standardUserDefaults().setObject(userid , forKey: "userid")
-//        }
-//        
-//        Alamofire.request(.POST, accountLoginURL,parameters: ["username":"mejdi.dingua@gmail.com","password":"zouhour","action":"login","remember":"CHECKED"]).response(completionHandler: { (_, response, _, _) in
-//            if let
-//                headerFields = response?.allHeaderFields as? [String: String],
-//                URL = response?.URL
-//            {
-//                let cookies = NSHTTPCookie.cookiesWithResponseHeaderFields(headerFields, forURL: URL)
-//                print(cookies)
-//            }
-
             Alamofire.request(.GET, accountS3URL).responseJSON(completionHandler: { response in
                 if let JSON = response.result.value {
                     print("JSON: \(JSON)")
@@ -44,14 +29,14 @@ class IALoginManager: NSObject {
                     getUserId(username) { userid in
                         print ("user id = \(userid)")
                         NSUserDefaults.standardUserDefaults().setObject(userid , forKey: "userid")
+                        NSNotificationCenter.defaultCenter().postNotificationName("userLoggedIn", object: nil)
                     }
                     
-                    addBookmark("FP152980s", title: "FP152980s", completion: { _ in
-                        
-                    })
+//                    addBookmark("FP152980s", title: "FP152980s", completion: { _ in
+//                        
+//                    })
                 }
             })
-//        })
     }
     
     class func getUserId(username: String, completion: String -> ()) {

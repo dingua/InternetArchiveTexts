@@ -33,10 +33,8 @@ class Chapter: NSObject {
         }else if type == "PDF" {
             self.type = .PDF
         }
-        self.scandata = zipFile.substringToIndex((zipFile.rangeOfString("_\((self.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)+"_scandata.xml"
+        self.scandata = zipFile.substringToIndex((zipFile.rangeOfString("_\((self.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)+"_scandata.xml".stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
         self.name = zipFile.substringToIndex((zipFile.rangeOfString("\((self.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)
-        
-        
     }
 
 }

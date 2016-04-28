@@ -8,7 +8,8 @@
 
 import UIKit
 
-class IAHomeVC: UIViewController,UISearchBarDelegate,UIGestureRecognizerDelegate {
+@objc
+class IAHomeVC: UIViewController,IARootVCProtocol,UISearchBarDelegate,UIGestureRecognizerDelegate {
     
     var listBooksVC: IAItemsListVC?
     var searchTimer: NSTimer?
@@ -18,6 +19,11 @@ class IAHomeVC: UIViewController,UISearchBarDelegate,UIGestureRecognizerDelegate
         super.viewDidLoad()
     }
 
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        updateNavigationItem()
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -77,5 +83,9 @@ class IAHomeVC: UIViewController,UISearchBarDelegate,UIGestureRecognizerDelegate
         }else {
             button.image = UIImage(named: "up_sort")
         }
+    }
+    
+    func logoutAction() {
+        logout()
     }
 }

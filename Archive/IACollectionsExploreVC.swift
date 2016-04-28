@@ -10,19 +10,21 @@ import UIKit
 
 private let reuseIdentifier = "collectionExploreCell"
 
-class IACollectionsExploreVC: UICollectionViewController {
+class IACollectionsExploreVC: UICollectionViewController, IARootVCProtocol {
     
     var searchManager = IAItemsManager()
     var collections = NSMutableArray()
     var selectedCollection: ArchiveItemData?
-    var sortPresentationDelegate =  IASortPresentationDelgate()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         searchCollections()
-        addLoginButton()
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        updateNavigationItem()
+    }
     //MARK: - Helpers
     
     func searchCollections() {
@@ -39,17 +41,6 @@ class IACollectionsExploreVC: UICollectionViewController {
         }
     }
     
-    
-    func addLoginButton() {
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Login", style: .Plain, target: self, action: #selector(IACollectionsExploreVC.pushLoginScreen))
-    }
-    
-    func pushLoginScreen() {
-        let loginVC = self.storyboard?.instantiateViewControllerWithIdentifier("loginVC")
-        loginVC?.transitioningDelegate = sortPresentationDelegate
-        loginVC?.modalPresentationStyle = .Custom
-        self.presentViewController(loginVC!, animated: true, completion: nil)
-    }
     
     // MARK: - UICollectionViewDataSource
 
@@ -85,4 +76,11 @@ class IACollectionsExploreVC: UICollectionViewController {
             vc.title = collectionData.title
         }
     }
+    
+    //MARK: - IARootVCProtocol
+    
+    func logoutAction() {
+        logout()
+    }
+
 }

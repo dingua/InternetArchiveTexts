@@ -12,4 +12,8 @@ class Utils: NSObject {
     static func isiPad()->Bool {
         return (UI_USER_INTERFACE_IDIOM() == .Pad)
     }
+    
+    static func isLoggedIn() -> Bool {
+        return NSUserDefaults.standardUserDefaults().stringForKey("userid") != nil
+    }
 }

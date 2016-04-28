@@ -4,12 +4,14 @@ PODS:
     - Alamofire (~> 3.1)
   - DGActivityIndicatorView (2.0)
   - SwiftyJSON (2.3.2)
+  - TBXML (1.5)
 
 DEPENDENCIES:
   - Alamofire (~> 3.1)
   - AlamofireImage (~> 2.0)
   - DGActivityIndicatorView
   - SwiftyJSON (from `https://github.com/SwiftyJSON/SwiftyJSON.git`)
+  - TBXML
 
 EXTERNAL SOURCES:
   SwiftyJSON:
@@ -25,5 +27,6 @@ SPEC CHECKSUMS:
   AlamofireImage: 4013fb5b99b10117bf2554a67b9bd2231d476b45
   DGActivityIndicatorView: 52875b025a6ccf6a431a905285c12e2bb95eb559
   SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
+  TBXML: 9f9dadb239f2f2af1dadb87fe43a0ce6e479379a
 
 COCOAPODS: 0.39.0

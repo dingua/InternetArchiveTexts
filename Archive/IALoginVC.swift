@@ -21,9 +21,7 @@ class IALoginVC: UIViewController, UIWebViewDelegate {
         webView.loadRequest(NSURLRequest(URL: NSURL(string: "https://archive.org/account/login.php")!))
         webView.delegate = self
         self.view.layer.cornerRadius = 20
-//        webView.layer.cornerRadius = 20
         webView.hidden = true
-
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -32,10 +30,9 @@ class IALoginVC: UIViewController, UIWebViewDelegate {
     
     func webViewDidFinishLoad(webView: UIWebView) {
         if let
-            headerFields = webView.request?.allHTTPHeaderFields ,
-            URL = webView.request?.URL
+            _ = webView.request?.allHTTPHeaderFields ,
+            _ = webView.request?.URL
         {
-            let cookies = NSHTTPCookie.cookiesWithResponseHeaderFields(headerFields, forURL: NSURL(string: "https://archive.org/account/login.php")!)
             let availableCookies = NSHTTPCookieStorage.sharedHTTPCookieStorage().cookiesForURL(NSURL(string: "https://archive.org/account/login.php")!)
             var loggedIn = false
             var username : String?
@@ -62,8 +59,5 @@ class IALoginVC: UIViewController, UIWebViewDelegate {
             }
             print(availableCookies)
         }
-        
-//        let availableCookies = NSHTTPCookieStorage.sharedHTTPCookieStorage().cookiesForURL(NSURL(string: "https://archive.org/account/login.php")!)
-
     }
 }

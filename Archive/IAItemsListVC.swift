@@ -235,7 +235,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     
     //MARK: IBAction
     
-    @IBAction func showSortLIst(sender: AnyObject) {
+    @IBAction func showSortList(sender: AnyObject) {
         let sortListVC = self.storyboard!.instantiateViewControllerWithIdentifier("sortListVC") as! IASortListVC
         sortListVC.transitioningDelegate = sortPresentationDelegate;
         sortListVC.modalPresentationStyle = .Custom;

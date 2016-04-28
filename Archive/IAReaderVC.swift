@@ -11,7 +11,7 @@ import DGActivityIndicatorView
 
 class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewControllerDataSource {
     //MARK: Variables Declaration
-    
+    let bottomMarginReaderPage = 50.0
     var pageController = UIPageViewController(transitionStyle: .PageCurl, navigationOrientation: .Horizontal, options: nil)
     var bookIdentifier : String!
     var file : File? //Book Details
@@ -19,6 +19,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     var pageNumber = 0 {
         didSet {
+            //As soon as page number is set we update page number label
             pageNumberLabel.text = "\(pageNumber+1)/\(self.numberOfPages)"
             let percentage = Float(self.pageNumber)/Float(self.numberOfPages) as Float?
             progressSlider.value = percentage!
@@ -56,11 +57,15 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.addLoadingView()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image:UIImage(named: "close_reader"), style: .Plain, target: self, action: #selector(IAReaderVC.dismissViewController))
         progressSlider.setThumbImage(UIImage(named: "roundSliderThumb")  ,forState: .Normal)
         progressSlider.userInteractionEnabled = false
         //Get File Details from MetaData WS
+        getFileDetails()
+    }
+    
+    func getFileDetails() {
+        self.addLoadingView()
         archiveItemsManager.getFileDetails(bookIdentifier) { (file) -> () in
             self.removeLoadingView()
             if file.identifier == "" {
@@ -84,7 +89,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         }
     }
     
-    
     func addChaptersButton() {
         let button = UIBarButtonItem(image: UIImage(named: "sort"), style: .Plain, target: self, action: #selector(IAReaderVC.chaptersButtonPressed(_:)))
         self.navigationItem.rightBarButtonItem = button
@@ -101,14 +105,17 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                     self.numberOfPages = Int(nbrPages)!
                 }
                 self.pageNumber = 0
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.addPageController()
-                    self.updatePages()
-                })
+                self.imagesDownloader!.getPages(){pages in
+                    print("first page \(pages[0])")
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.addPageController()
+                        self.updatePages()
+                    })
+                }
+
             })
         }
     }
-    
     
     func addPageController() {
         self.pageController.removeFromParentViewController()
@@ -131,11 +138,10 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         self.view.addConstraint(NSLayoutConstraint(item: self.topLayoutGuide   , attribute: .Bottom, relatedBy: .Equal, toItem: self.pageController.view, attribute: .Top, multiplier: 1.0, constant: 0))
         self.view.addConstraint(NSLayoutConstraint(item: self.pageController.view  , attribute: .Leading, relatedBy: .Equal, toItem: self.view, attribute: .Leading, multiplier: 1.0, constant: 0))
         self.view.addConstraint(NSLayoutConstraint(item: self.pageController.view  , attribute: .Trailing, relatedBy: .Equal, toItem: self.view, attribute: .Trailing, multiplier: 1.0, constant: 0))
-        self.view.addConstraint(NSLayoutConstraint(item: self.bottomLayoutGuide  , attribute: .Top, relatedBy: .Equal, toItem:self.pageController.view, attribute: .Bottom, multiplier: 1.0, constant: 60))
+        self.view.addConstraint(NSLayoutConstraint(item: self.bottomLayoutGuide  , attribute: .Top, relatedBy: .Equal, toItem:self.pageController.view, attribute: .Bottom, multiplier: 1.0, constant: CGFloat(bottomMarginReaderPage)))
 
         
     }
-    
     
     func pageVCWithNumber(number: Int)->IAReaderPageVC {
         let pageVC = self.storyboard?.instantiateViewControllerWithIdentifier("pageVC") as! IAReaderPageVC
@@ -170,6 +176,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         self.downloadMore()
         
     }
+    
     //MARK: UIPageViewControllerDataSource
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
@@ -248,10 +255,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    @IBAction func viewTapped(sender: AnyObject) {
-//            self.bottomMenu.hidden = !self.bottomMenu.hidden
-    }
-    
     //MARK: Model calls
     
     func updatePage() {
@@ -289,8 +292,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         }
     }
     
-    
-    //GestureRecognizer Delegate
+    //MARK: GestureRecognizer Delegate
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
@@ -321,9 +323,5 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     func removeLoadingView() {
         self.activityIndicatorView.stopAnimating()
         self.activityIndicatorView.removeFromSuperview()
-    }
-    
-    override func didRotateFromInterfaceOrientation(fromInterfaceOrientation: UIInterfaceOrientation) {
-        print("called here")
     }
 }

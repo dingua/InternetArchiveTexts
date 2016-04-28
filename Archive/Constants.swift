@@ -8,3 +8,5 @@
 
 import Foundation
 let imageBaseURL = "https://archive.org/services/img/"
+let notificationUserDidLogout = "userDidlogout"
+let notificationUserDidLogin = "userLoggedIn"
