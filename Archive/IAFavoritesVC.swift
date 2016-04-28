@@ -18,8 +18,6 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAFavoritesVC.userDidLogin), name: notificationUserDidLogin, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAFavoritesVC.userDidLogout), name: notificationUserDidLogout, object: nil)
-
-        // Do any additional setup after loading the view.
     }
 
     
@@ -36,7 +34,6 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     // MARK: - Navigation
@@ -57,14 +54,6 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
         }
     }
     
-//    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
-//        if Utils.isLoggedIn() {
-//            return identifier == "favoritesList"
-//        } else {
-//            return identifier == "favoritesLogin"
-//        }
-//    }
-//    
     // MARK: Helper
     
     func userDidLogin() {
@@ -95,6 +84,4 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
     func logoutAction() {
         logout()
     }
-
-
 }

@@ -7,9 +7,13 @@
 //
 
 import UIKit
+import DGActivityIndicatorView
 
-class IALoginVC: UIViewController, UIWebViewDelegate {
 
+class IALoginVC: UIViewController, UIWebViewDelegate, IALoadingViewProtocol {
+    var activityIndicatorView : DGActivityIndicatorView?
+    var dismissCompletion: (()->())?
+    
     @IBOutlet weak var usernameField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
     
@@ -22,10 +26,17 @@ class IALoginVC: UIViewController, UIWebViewDelegate {
         webView.delegate = self
         self.view.layer.cornerRadius = 20
         webView.hidden = true
+        activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
+
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+    }
+    
+    func webViewDidStartLoad(webView: UIWebView) {
+        addLoadingView()
+        webView.hidden = true
     }
     
     func webViewDidFinishLoad(webView: UIWebView) {
@@ -51,9 +62,12 @@ class IALoginVC: UIViewController, UIWebViewDelegate {
                 }
             }
             if loggedIn{
-                self.dismissViewControllerAnimated(true, completion: nil)
+                self.dismissViewControllerAnimated(true, completion: {
+                    self.dismissCompletion!()
+                })
                 IALoginManager.login(username!)
             }else if webView.scrollView.contentOffset.y == 0 {
+                removeLoadingView()
                 webView.stringByEvaluatingJavaScriptFromString("document.getElementById('navwrap1').style.display = 'none'")
                 webView.hidden = false
             }
