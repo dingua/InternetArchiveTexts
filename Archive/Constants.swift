@@ -10,3 +10,6 @@ import Foundation
 let imageBaseURL = "https://archive.org/services/img/"
 let notificationUserDidLogout = "userDidlogout"
 let notificationUserDidLogin = "userLoggedIn"
+let favouriteListIds = "favouriteIds"
+let notificationBookmarkAdded = "bookMarkAdded"
+let notificationBookmarkRemoved = "bookMarkRemoved"

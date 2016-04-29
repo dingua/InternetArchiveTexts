@@ -18,6 +18,9 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAFavoritesVC.userDidLogin), name: notificationUserDidLogin, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAFavoritesVC.userDidLogout), name: notificationUserDidLogout, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAFavoritesVC.bookmarkChanged), name: notificationBookmarkAdded, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAFavoritesVC.bookmarkChanged), name: notificationBookmarkRemoved, object: nil)
+
     }
 
     
@@ -42,6 +45,7 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
         if segue.identifier == "favoritesList" {
             itemsListVC = segue.destinationViewController as? IAItemsListVC
             if let username = NSUserDefaults.standardUserDefaults().stringForKey("userid") {
+                itemsListVC!.isFavouriteList = true
                 itemsListVC!.loadList("fav-\(username)", type: .Collection)
                 itemsListVC!.title = "My Favorites"
                 favouriteLoginContainerView.hidden = true
@@ -77,6 +81,11 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
         }else {
             self.performSegueWithIdentifier("favoritesLogin", sender: nil)
         }
+    }
+    
+    
+    func bookmarkChanged() {
+        itemsListVC!.reloadList()
     }
     
     //MARK: - IARootVCProtocol

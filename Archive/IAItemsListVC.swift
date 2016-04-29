@@ -24,7 +24,8 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     //***** Properties ************
     
     let itemsPerPage = 12
-    
+    var currentPage = 0
+    var isFavouriteList = false
     var searchManager = IAItemsManager()
     var items = NSMutableArray()
     var searchText : String?
@@ -108,20 +109,30 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
         self.searchText = searchText
         self.type = type
         self.items.removeAllObjects()
+        self.currentPage = 0
         self.collectionView?.reloadData()
         if searchText.stringByReplacingOccurrencesOfString(" ", withString: "") != "" {
-            loadMore()
+            if !isFavouriteList {
+                loadMore()
+            }else {
+                loadBookmarks()
+            }
         }
     }
 
     func loadMore() {
-        if !isLoading && (items.count>=itemsPerPage || items.count==0) {
+        guard !isFavouriteList else {return}
+        if !isLoading {
             self.addLoadingView()
             switch type {
             case IABookListType.Text?:
-                searchManager.searchBooksWithText(searchText!,count: itemsPerPage, page: (self.items.count/itemsPerPage)+1,sortOption:self.sortOption) { [weak self]books in
+                searchManager.searchBooksWithText(searchText!,count: itemsPerPage, page: currentPage+1,sortOption:self.sortOption) { [weak self]books in
                     if let mySelf = self {
+                        if books.count>0 {
+                            mySelf.currentPage+=1
+                        }
                         mySelf.items.addObjectsFromArray(books as [AnyObject])
+                        mySelf.synchronizeFavourites()
                         mySelf.collectionView?.reloadData()
                         mySelf.removeLoadingView()
                         
@@ -129,18 +140,26 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
                 }
                 break
             case IABookListType.Creator?:
-                searchManager.searchBookOfCreator(searchText!,count: itemsPerPage, page: (self.items.count/itemsPerPage)+1,sortOption:self.sortOption) { [weak self]books in
+                searchManager.searchBookOfCreator(searchText!,count: itemsPerPage, page: currentPage+1,sortOption:self.sortOption) { [weak self]books in
                     if let mySelf = self {
+                        if books.count>0 {
+                            mySelf.currentPage+=1
+                        }
                         mySelf.items.addObjectsFromArray(books as [AnyObject])
+                        mySelf.synchronizeFavourites()
                         mySelf.collectionView?.reloadData()
                         mySelf.removeLoadingView()
                     }
                 }
                 break
             case IABookListType.Collection?:
-                searchManager.searchCollectionsAndTexts(searchText!, hidden: false, count: itemsPerPage, page: (self.items.count/itemsPerPage)+1,sortOption:self.sortOption) { [weak self] items in
+                searchManager.searchCollectionsAndTexts(searchText!, hidden: false, count: itemsPerPage, page: currentPage+1,sortOption:self.sortOption) { [weak self] items in
                     if let mySelf = self {
+                        if items.count>0 {
+                            mySelf.currentPage+=1
+                        }
                         mySelf.items.addObjectsFromArray(items as [AnyObject])
+                        mySelf.synchronizeFavourites()
                         mySelf.collectionView?.reloadData()
                         mySelf.removeLoadingView()
                     }
@@ -149,9 +168,26 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
             default:
                 break
             }
- 
         }
-           }
+    }
+    
+    func loadBookmarks() {
+        self.addLoadingView()
+        IABookmarkManager.getBookmarks(NSUserDefaults.standardUserDefaults().stringForKey("userid")!, completion: {[weak self] items in
+            if let mySelf = self {
+                mySelf.items.addObjectsFromArray(items as [AnyObject])
+                mySelf.synchronizeFavourites()
+                mySelf.collectionView?.reloadData()
+                mySelf.removeLoadingView()
+            }
+            })
+        
+    }
+    
+    func reloadList() {
+        currentPage = 0
+        loadList(self.searchText!, type: self.type!)
+    }
 
     // MARK: - UICollectionViewDataSource
 
@@ -173,6 +209,21 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
         }else {
             let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! IAItemListCellView
             cell.configureWithItem(item, creatorCompletion:  creatorSelectionCompletion, collectionCompletion: collectionSelectionCompletion)
+            cell.favouriteSelectionCompletion = {
+                if !item.isFavourite() {
+                    IABookmarkManager.addBookmark(item.identifier!, title: item.title!, completion: { message in
+                        self.collectionView?.reloadItemsAtIndexPaths([indexPath])
+                    })
+                    
+                }else {
+                    IABookmarkManager.deleteBookmark(item.identifier!, completion: { bookId in
+                        if !self.isFavouriteList {
+                            self.collectionView?.reloadItemsAtIndexPaths([indexPath])
+                        }
+                    })
+                    
+                }
+            }
             return cell
         }
     }
@@ -264,5 +315,12 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     func sortListDidSelectSortOption(option: IASortOption) {
         self.selectedSortDescriptor = option
     }
+    
+    func synchronizeFavourites() {
+        if isFavouriteList {
+           IABookmarkManager.synchronizeFavourites(items)
+        }
+    }
+    
 
 }

@@ -71,7 +71,6 @@ class IALoginVC: UIViewController, UIWebViewDelegate, IALoadingViewProtocol {
                 webView.stringByEvaluatingJavaScriptFromString("document.getElementById('navwrap1').style.display = 'none'")
                 webView.hidden = false
             }
-            print(availableCookies)
         }
     }
 }

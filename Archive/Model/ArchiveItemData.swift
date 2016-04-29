@@ -36,7 +36,18 @@ class ArchiveItemData :  NSObject {
         }else if let subject = dictionary.valueForKeyPath("subject") as? NSString {
             self.subjects = NSArray(object: subject)
         }
-        
-
+    }
+    
+    func isFavourite()->Bool {
+        if let favouriteList = NSUserDefaults.standardUserDefaults().objectForKey(favouriteListIds) as? [String] {
+            if !favouriteList.contains(self.identifier!) {
+                return false
+            }else {
+                return true
+            }
+            
+        }else {
+            return false
+        }
     }
 }

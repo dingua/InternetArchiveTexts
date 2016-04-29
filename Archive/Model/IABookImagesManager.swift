@@ -74,7 +74,6 @@ class IABookImagesManager: NSObject {
                 dispatch_group_leave(group)
             }else {
                 self.pagesOnCacheProcess.append(index)
-                print("download \(index)")
                 let request =  Alamofire.request(.GET, urlOfPage(index))
                     .responseImage { response in
                         if let image = response.result.value {
@@ -102,8 +101,6 @@ class IABookImagesManager: NSObject {
             }else if(!self.pagesOnCacheProcess.contains(number)){
                 
                 self.pagesOnCacheProcess.append(number)
-                
-                print("download \(number)")
                 Alamofire.request(.GET, urlOfPage(number))
                     .responseImage { response in
                         if let image = response.result.value {
@@ -124,7 +121,6 @@ class IABookImagesManager: NSObject {
             completion(image: image,page: number)
         }else if(!self.pagesOnCacheProcess.contains(number)){
             self.pagesOnCacheProcess.append(number)
-            print("download \(number)")
             Alamofire.request(.GET, urlOfPage(number))
                 .responseImage { response in
                     if let image = response.result.value {
@@ -169,9 +165,6 @@ class IABookImagesManager: NSObject {
     func getPages(completion : ([String])->()) {
         let scandataURL = "https://\(serverURL)\(directory)/\(scandata)" //"https://ia800500.us.archive.org/13/items/waq31210/31210_scandata.xml"
         Alamofire.request(.GET, scandataURL).response { (request, response, data, error) in
-            print("reponse \(data)")
-            print("error : \(error)")
-            print("string = \(String(data: data!, encoding: 0 )))")
             do{
                 let tbxml =  try TBXML(XMLData: data, error: ())
                 let rootEl = tbxml.rootXMLElement 
@@ -179,7 +172,6 @@ class IABookImagesManager: NSObject {
                 var  page = TBXML.childElementNamed("page", parentElement: pageData)
                 self.pages = []
                 while page != nil{
-                    print("pagedata \(TBXML.valueOfAttributeNamed("leafNum", forElement: page))")
                     self.pages!.append(TBXML.valueOfAttributeNamed("leafNum", forElement: page))
                     page = TBXML.nextSiblingNamed("page", searchFromElement: page)
                 }

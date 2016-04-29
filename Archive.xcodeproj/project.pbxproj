@@ -24,6 +24,7 @@
 		3478E3B61C48006900ABD093 /* IAReaderCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3478E3B51C48006900ABD093 /* IAReaderCollectionViewController.swift */; };
 		3478E3B81C4A777400ABD093 /* IAHomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3478E3B71C4A777400ABD093 /* IAHomeVC.swift */; };
 		3478E3BA1C4A7B8B00ABD093 /* IAItemsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3478E3B91C4A7B8B00ABD093 /* IAItemsListVC.swift */; };
+		349452F31CD23072007080E7 /* IABookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349452F21CD23072007080E7 /* IABookmarkManager.swift */; };
 		34ABA0681CC76328000D7A4C /* IAFavoritesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ABA0671CC76328000D7A4C /* IAFavoritesVC.swift */; };
 		34EB38641C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */; };
 		34EB38651C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */; };
@@ -88,6 +89,7 @@
 		3478E3B51C48006900ABD093 /* IAReaderCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAReaderCollectionViewController.swift; sourceTree = "<group>"; };
 		3478E3B71C4A777400ABD093 /* IAHomeVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAHomeVC.swift; sourceTree = "<group>"; };
 		3478E3B91C4A7B8B00ABD093 /* IAItemsListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAItemsListVC.swift; sourceTree = "<group>"; };
+		349452F21CD23072007080E7 /* IABookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IABookmarkManager.swift; sourceTree = "<group>"; };
 		34ABA0671CC76328000D7A4C /* IAFavoritesVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAFavoritesVC.swift; sourceTree = "<group>"; };
 		34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAItemsManager.swift; sourceTree = "<group>"; };
 		34EB38671C3FCF3E0034F3E4 /* ArchiveItem+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ArchiveItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -286,6 +288,7 @@
 				34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */,
 				34EB386F1C402D830034F3E4 /* IABookImagesManager.swift */,
 				3448CFF21CC3901A001CBB31 /* IALoginManager.swift */,
+				349452F21CD23072007080E7 /* IABookmarkManager.swift */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -593,6 +596,7 @@
 				3448CFF31CC3901A001CBB31 /* IALoginManager.swift in Sources */,
 				3469069D1C5E213F001BACC6 /* Utils.swift in Sources */,
 				34EBA0071C5A73BB00E32BFA /* IAReaderChaptersListVC.swift in Sources */,
+				349452F31CD23072007080E7 /* IABookmarkManager.swift in Sources */,
 				A612090F1C3D2EA30017A928 /* AppDelegate.swift in Sources */,
 				3448CFF11CC38C89001CBB31 /* IALoginVC.swift in Sources */,
 				34EB38701C402D830034F3E4 /* IABookImagesManager.swift in Sources */,

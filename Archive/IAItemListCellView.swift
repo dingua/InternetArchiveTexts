@@ -11,7 +11,8 @@ import UIKit
 class IAItemListCellView : UICollectionViewCell {
     @IBOutlet weak var bookImageView: UIImageView!
     @IBOutlet weak var bookTitleLabel: UILabel!
-    
+    @IBOutlet weak var favouriteBtn: UIButton!
+    var favouriteSelectionCompletion: (()->())?
     //MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -30,6 +31,13 @@ class IAItemListCellView : UICollectionViewCell {
         if let url = NSURL(string: "\(imageBaseURL)\(book.identifier!)") {
             self.bookImageView.af_setImageWithURL(url)
         }
+        
+        if book.isFavourite() {
+            self.favouriteBtn.setImage(UIImage(named:"favourite_filled"), forState: .Normal)
+        }else {
+            self.favouriteBtn.setImage(UIImage(named:"favourite_empty"), forState: .Normal)
+        }
+        
         self.contentView.layer.borderWidth = 1.0
         self.contentView.layer.borderColor = UIColor.blackColor().CGColor
     }
@@ -42,4 +50,9 @@ class IAItemListCellView : UICollectionViewCell {
         self.configureWithItem(book ,creatorCompletion: creatorCompletion)
     }
     
+    @IBAction func favouriteBtnPressed(sender: AnyObject) {
+        if let favCompletion = favouriteSelectionCompletion {
+            favCompletion()
+        }
+    }
 }

@@ -33,6 +33,7 @@ extension IARootVCProtocol where Self: UIViewController{
             NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "accesskey")
             NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "secretkey")
             NSUserDefaults.standardUserDefaults().setObject(nil , forKey: "userid")
+            NSUserDefaults.standardUserDefaults().setObject(nil, forKey: favouriteListIds)
             if  let loginCookies = NSHTTPCookieStorage.sharedHTTPCookieStorage().cookiesForURL(NSURL(string: "https://archive.org/account/login.php")!) {
                 for cookie in loginCookies {
                     NSHTTPCookieStorage.sharedHTTPCookieStorage().deleteCookie(cookie)

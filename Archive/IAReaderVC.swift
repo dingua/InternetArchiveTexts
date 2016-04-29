@@ -106,7 +106,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                 }
                 self.pageNumber = 0
                 self.imagesDownloader!.getPages(){pages in
-                    print("first page \(pages[0])")
                     dispatch_async(dispatch_get_main_queue(), {
                         self.addPageController()
                         self.updatePages()

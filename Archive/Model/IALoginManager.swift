@@ -15,28 +15,20 @@ class IALoginManager: NSObject {
     static let accountS3URL = "https://archive.org/account/s3.php?output_json=1"
 
     class func login(username: String/*, password: String*/) {
-            Alamofire.request(.GET, accountS3URL).responseJSON(completionHandler: { response in
-                if let JSON = response.result.value {
-                    print("JSON: \(JSON)")
-
-                    let key = JSON.valueForKey("key")
-                    if let key = key {
-                        print("key access \(key.valueForKey("s3accesskey")!)")
-                        NSUserDefaults.standardUserDefaults().setObject(key.valueForKey("s3accesskey"), forKey: "accesskey")
-                        NSUserDefaults.standardUserDefaults().setObject(key.valueForKey("s3secretkey"), forKey: "secretkey")
-
-                    }
-                    getUserId(username) { userid in
-                        print ("user id = \(userid)")
-                        NSUserDefaults.standardUserDefaults().setObject(userid , forKey: "userid")
-                        NSNotificationCenter.defaultCenter().postNotificationName("userLoggedIn", object: nil)
-                    }
+        Alamofire.request(.GET, accountS3URL).responseJSON(completionHandler: { response in
+            if let JSON = response.result.value {
+                let key = JSON.valueForKey("key")
+                if let key = key {
+                    NSUserDefaults.standardUserDefaults().setObject(key.valueForKey("s3accesskey"), forKey: "accesskey")
+                    NSUserDefaults.standardUserDefaults().setObject(key.valueForKey("s3secretkey"), forKey: "secretkey")
                     
-//                    addBookmark("FP152980s", title: "FP152980s", completion: { _ in
-//                        
-//                    })
                 }
-            })
+                getUserId(username) { userid in
+                    NSUserDefaults.standardUserDefaults().setObject(userid , forKey: "userid")
+                    NSNotificationCenter.defaultCenter().postNotificationName("userLoggedIn", object: nil)
+                }
+            }
+        })
     }
     
     class func getUserId(username: String, completion: String -> ()) {
@@ -55,14 +47,4 @@ class IALoginManager: NSObject {
             }
         }
     }
-    
-    class func addBookmark(bookId: String, title: String, completion: String -> ()) {
-        let bookmarkURL = "https://archive.org/bookmarks.php?add_bookmark=1&mediatype=texts&identifier=\(bookId)&title=\(title)&output=json"
-        Alamofire.request(.GET, bookmarkURL).responseJSON (completionHandler: { response in
-            if let JSON = response.result.value {
-                print("JSON: \(JSON)")
-            }
-        })
-    }
-
 }

@@ -75,7 +75,6 @@
         Alamofire.request(.GET, params, parameters: nil)
             .responseJSON { response in
                 if let JSON = response.result.value {
-                    print("JSON: \(JSON)")
                     if let response = JSON.valueForKey("response")  {
                         let docs = response.valueForKey("docs") as! NSArray
                         let collections = NSMutableArray()
@@ -163,7 +162,6 @@
         Alamofire.request(.GET, params, parameters: nil)
             .responseJSON { response in
                 if let JSON = response.result.value {
-                    print("JSON: \(JSON)")
                     if let response = JSON.valueForKey("response")  {
                         let docs = response.valueForKey("docs") as! NSArray
                         let collections = NSMutableArray()
@@ -188,7 +186,6 @@
         Alamofire.request(.GET, params, parameters: nil)
             .responseJSON { response in
                 if let JSON = response.result.value {
-                    print("JSON: \(JSON)")
                     if let response = JSON.valueForKey("response")  {
                         if let numberFound = response.valueForKey("numFound") {
                             completion(numberFound as! Int)
@@ -197,5 +194,4 @@
                 }
         }
     }
-    
  }
