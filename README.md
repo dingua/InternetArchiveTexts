@@ -15,6 +15,6 @@ Currently user is able to:
 
 <a href="http://makeagif.com/5Jb_ga" title="IA Book Text Project"><img src="http://i.makeagif.com/media/4-30-2016/5Jb_ga.gif" alt="IA Book Text Project"></a>
 
-#Developers
+##Developers
 
 Developers are welcome to contribute to this project, we need to improve it and make reading from IA platform a much easier experience.
