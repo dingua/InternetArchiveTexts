@@ -23,7 +23,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
    
     //***** Properties ************
     
-    let itemsPerPage = 12
+    let itemsPerPage = 36
     var currentPage = 0
     var isFavouriteList = false
     var searchManager = IAItemsManager()
@@ -68,10 +68,13 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
             case .Title:
                 sortOption  = descendantSort ? .TitleDescendant : .TitleAscendant
                 break
+            case .Relevance:
+                sortOption = .Relevance
+                break
             }
-
         }
     }
+    
     var descendantSort: Bool = true
 
     //**********************************

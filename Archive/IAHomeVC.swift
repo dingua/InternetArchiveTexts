@@ -9,14 +9,17 @@
 import UIKit
 
 @objc
-class IAHomeVC: UIViewController,IARootVCProtocol,UISearchBarDelegate,UIGestureRecognizerDelegate {
+class IAHomeVC: UIViewController,IARootVCProtocol,UISearchBarDelegate,UIGestureRecognizerDelegate, IASortListDelegate {
     
     var listBooksVC: IAItemsListVC?
     var searchTimer: NSTimer?
     
+    @IBOutlet weak var donwnUpSortButton: UIBarButtonItem!
     @IBOutlet weak var searchBar: UISearchBar!
     override func viewDidLoad() {
         super.viewDidLoad()
+        //At the start it will be disable as for Relevance Option there is no sort direction
+        donwnUpSortButton.enabled = false
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -34,6 +37,8 @@ class IAHomeVC: UIViewController,IARootVCProtocol,UISearchBarDelegate,UIGestureR
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "bookList" {
             self.listBooksVC = segue.destinationViewController as? IAItemsListVC
+            self.listBooksVC?.sortOption = .Relevance
+            self.listBooksVC?.selectedSortDescriptor = .Relevance
         }
     }
     
@@ -65,7 +70,7 @@ class IAHomeVC: UIViewController,IARootVCProtocol,UISearchBarDelegate,UIGestureR
         let sortListVC = self.storyboard!.instantiateViewControllerWithIdentifier("sortListVC") as! IASortListVC
         sortListVC.transitioningDelegate = listBooksVC!.sortPresentationDelegate;
         sortListVC.modalPresentationStyle = .Custom;
-        sortListVC.delegate = listBooksVC
+        sortListVC.delegate = self
         if let selectedSortOption = listBooksVC!.selectedSortDescriptor {
             sortListVC.selectedOption = selectedSortOption
         }
@@ -88,4 +93,21 @@ class IAHomeVC: UIViewController,IARootVCProtocol,UISearchBarDelegate,UIGestureR
     func logoutAction() {
         logout()
     }
+    
+    //MARK: IASortListDelegate
+    
+    func listOfSortOptions()->[IASortOption] {
+        return [.Relevance, .Downloads,.Title,.ArchivedDate,.PublishedDate,.ReviewedDate]
+    }
+    
+    func sortListDidSelectSortOption(option: IASortOption) {
+        listBooksVC!.selectedSortDescriptor = option
+        if option == .Relevance {
+            donwnUpSortButton.enabled = false
+        }else {
+            donwnUpSortButton.enabled = true
+        }
+    }
+
+
 }

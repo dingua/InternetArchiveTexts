@@ -21,6 +21,8 @@
     case PublishedDateAscendant = "date+asc"
     case ReviewedDatedescendant = "reviewdate+desc"
     case ReviewedDateAscendant = "reviewdate+asc"
+    case Relevance = ""
+
  }
  
  class IAItemsManager: NSObject {
@@ -105,7 +107,7 @@
     func searchBooksWithText(word: String, count: Int, page: Int, sortOption: IASearchSortOption, completion: (NSArray)->()) {
         let text = word.stringByReplacingOccurrencesOfString(" ", withString: "+")
         let searchText = text.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
-        let query = "title:\(searchText)%20OR%20description:\(searchText)%20OR%20collection:\(searchText)%20OR%20language:\(searchText)%20OR%20text:\(searchText)%20AND%20mediatype:texts"
+        let query = "\(searchText)%20AND%20mediatype:texts"
         searchItems(query, count: count, page: page, sort:  sortOption.rawValue, completion: completion)
     }
     

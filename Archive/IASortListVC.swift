@@ -10,6 +10,16 @@ import UIKit
 
 protocol IASortListDelegate {
     func sortListDidSelectSortOption(option: IASortOption)
+    func listOfSortOptions()->[IASortOption]
+}
+
+
+extension IASortListDelegate {
+    func listOfSortOptions()->[IASortOption] {
+        return [.Downloads,.Title,.ArchivedDate,.PublishedDate,.ReviewedDate]
+    }
+    
+    func sortListDidSelectSortOption(option: IASortOption) {}
 }
 
 enum IASortOption: String {
@@ -18,18 +28,23 @@ enum IASortOption: String {
     case ArchivedDate = "Archived Date"
     case PublishedDate = "Published Date"
     case ReviewedDate = "Reviewed Date"
+    case Relevance = "Relevance"
 }
 
 let optionCellIdentifier = "optionCellIdentifier"
 
-class IASortListVC: UITableViewController {
+class IASortListVC: UITableViewController, IASortListDelegate {
     var sortOptions: [IASortOption]?
     var delegate: IASortListDelegate?
     var selectedOption: IASortOption?
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        sortOptions = [.Downloads,.Title,.ArchivedDate,.PublishedDate,.ReviewedDate]
+        if delegate == nil {
+            self.delegate = self
+        }
+        self.sortOptions = self.delegate?.listOfSortOptions()
         self.view.layer.cornerRadius = 20
     }
 

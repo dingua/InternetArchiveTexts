@@ -260,6 +260,7 @@
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
+                        <outlet property="donwnUpSortButton" destination="ivV-Bp-eBy" id="oXv-KA-zzs"/>
                         <outlet property="searchBar" destination="RTV-TK-IjX" id="ShO-T0-qvI"/>
                     </connections>
                 </viewController>
@@ -825,7 +826,7 @@
             <objects>
                 <collectionViewController storyboardIdentifier="bookListVC" id="nhk-cK-l3N" customClass="IAItemsListVC" customModule="Archive" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="y1S-rR-OR7">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="443"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="rOj-iu-F46">
@@ -1154,6 +1155,6 @@
         <image name="sort" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="nMy-rZ-wJ2"/>
+        <segue reference="tge-dc-5FS"/>
     </inferredMetricsTieBreakers>
 </document>
