@@ -18,3 +18,12 @@ Currently user is able to:
 ##Developers
 
 Developers are welcome to contribute to this project, we need to improve it and make reading from IA platform a much easier experience.
+
+[![Slack][slack-image]][slack-url]
+
+
+Join us on [Slack](http://iatexts.slack.com)
+
+
+[slack-image]: http://s13.postimg.org/ybwy92ktf/Slack.png
+[slack-url]: http://iatexts.slack.com
