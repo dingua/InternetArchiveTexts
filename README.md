@@ -9,7 +9,7 @@ Currently user is able to:
 -Login to IA platform.
 -Manage his favourite list of texts (books).
 
-<a href="http://makeagif.com/5Jb_ga" title="IA Book Text Project"><img src="http://i.makeagif.com/media/4-30-2016/5Jb_ga.gif" alt="IA Book Text Project"></a><div style="font-size:11px;">make <a href="http://makeagif.com" title="make a gif"></a> like this at MakeaGif</div>
+<a href="http://makeagif.com/5Jb_ga" title="IA Book Text Project"><img src="http://i.makeagif.com/media/4-30-2016/5Jb_ga.gif" alt="IA Book Text Project"></a>
 
 #Developers
 
