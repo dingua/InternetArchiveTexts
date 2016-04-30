@@ -66,7 +66,7 @@ class IABookmarkManager {
                 if let JSON = response.result.value {
                         let collections = NSMutableArray()
                         for index in 0 ..< JSON.count {
-                            let dictionary = JSON[index] as! NSDictionary
+                            let dictionary = ((JSON as! Array)[index]) as NSDictionary
                             if let mediatype = dictionary.valueForKey("mediatype") as? String{
                                 if mediatype == "texts" {
                                     collections.addObject(ArchiveItemData(dictionary: dictionary ))
