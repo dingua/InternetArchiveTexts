@@ -5,13 +5,13 @@ The aim of this repository is to make an application that makes reading books fr
 
 Currently user is able to:
 
--Explore the list of books of Internet Archiave's texts.
+- Explore the list of books of Internet Archiave's texts.
 
--Read books.
+- Read books.
 
--Login to IA platform.
+- Login to IA platform.
 
--Manage his favourite list of texts (books).
+- Manage his favourite list of texts (books).
 
 <a href="http://makeagif.com/5Jb_ga" title="IA Book Text Project"><img src="http://i.makeagif.com/media/4-30-2016/5Jb_ga.gif" alt="IA Book Text Project"></a>
 
