@@ -207,7 +207,7 @@
         <!--Search HomeVC-->
         <scene sceneID="Wfj-n6-llJ">
             <objects>
-                <viewController id="xUQ-Kh-edR" userLabel="Search HomeVC" customClass="IAHomeVC" customModule="Archive" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="xUQ-Kh-edR" userLabel="Search HomeVC" customClass="IASearchHomeVC" customModule="Archive" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ixZ-f2-myZ"/>
                         <viewControllerLayoutGuide type="bottom" id="9Rs-Es-fo0"/>

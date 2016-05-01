@@ -9,7 +9,7 @@
 import UIKit
 
 @objc
-class IAHomeVC: UIViewController,IARootVCProtocol,UISearchBarDelegate,UIGestureRecognizerDelegate, IASortListDelegate {
+class IASearchHomeVC: UIViewController,IARootVCProtocol,UISearchBarDelegate,UIGestureRecognizerDelegate, IASortListDelegate {
     
     var listBooksVC: IAItemsListVC?
     var searchTimer: NSTimer?
@@ -48,7 +48,7 @@ class IAHomeVC: UIViewController,IARootVCProtocol,UISearchBarDelegate,UIGestureR
         if let timer = searchTimer {
             timer.invalidate()
         }
-        searchTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(IAHomeVC.search), userInfo: nil, repeats: false)
+        searchTimer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: #selector(IASearchHomeVC.search), userInfo: nil, repeats: false)
 
     }
     

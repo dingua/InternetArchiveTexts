@@ -13,6 +13,7 @@ import DGActivityIndicatorView
 class IALoginVC: UIViewController, UIWebViewDelegate, IALoadingViewProtocol {
     var activityIndicatorView : DGActivityIndicatorView?
     var dismissCompletion: (()->())?
+    let loginURL = "https://archive.org/account/login.php"
     
     @IBOutlet weak var usernameField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
@@ -44,7 +45,7 @@ class IALoginVC: UIViewController, UIWebViewDelegate, IALoadingViewProtocol {
             _ = webView.request?.allHTTPHeaderFields ,
             _ = webView.request?.URL
         {
-            let availableCookies = NSHTTPCookieStorage.sharedHTTPCookieStorage().cookiesForURL(NSURL(string: "https://archive.org/account/login.php")!)
+            let availableCookies = NSHTTPCookieStorage.sharedHTTPCookieStorage().cookiesForURL(NSURL(string: loginURL)!)
             var loggedIn = false
             var username : String?
             for cookie in availableCookies! {
