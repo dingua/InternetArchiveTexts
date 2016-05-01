@@ -32,8 +32,6 @@
 		3448CFF31CC3901A001CBB31 /* IALoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3448CFF21CC3901A001CBB31 /* IALoginManager.swift */; };
 		349452F31CD23072007080E7 /* IABookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349452F21CD23072007080E7 /* IABookmarkManager.swift */; };
 		34EB38641C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */; };
-		34EB38651C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */; };
-		34EB38661C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */; };
 		34EB38691C3FCF3E0034F3E4 /* ArchiveItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38671C3FCF3E0034F3E4 /* ArchiveItem+CoreDataProperties.swift */; };
 		34EB386A1C3FCF3E0034F3E4 /* ArchiveItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38671C3FCF3E0034F3E4 /* ArchiveItem+CoreDataProperties.swift */; };
 		34EB386B1C3FCF3E0034F3E4 /* ArchiveItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38671C3FCF3E0034F3E4 /* ArchiveItem+CoreDataProperties.swift */; };
@@ -613,7 +611,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				34EB38651C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */,
 				34EB386D1C3FCF3E0034F3E4 /* ArchiveItem.swift in Sources */,
 				34EB386A1C3FCF3E0034F3E4 /* ArchiveItem+CoreDataProperties.swift in Sources */,
 				A61209271C3D2EA40017A928 /* ArchiveTests.swift in Sources */,
@@ -624,7 +621,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				34EB38661C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */,
 				34EB386E1C3FCF3E0034F3E4 /* ArchiveItem.swift in Sources */,
 				34EB386B1C3FCF3E0034F3E4 /* ArchiveItem+CoreDataProperties.swift in Sources */,
 				A61209321C3D2EA40017A928 /* ArchiveUITests.swift in Sources */,
