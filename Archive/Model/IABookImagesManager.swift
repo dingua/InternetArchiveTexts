@@ -27,6 +27,8 @@ extension Array where Element: Equatable {
 let readerMethod = "/BookReader/BookReaderImages.php?"
 
 class IABookImagesManager: NSObject {
+    
+    /************** PROPERTIES *****/
     let bookId: String!
     let serverURL: String!
     let directory: String!
@@ -35,12 +37,17 @@ class IABookImagesManager: NSObject {
     let type: String!
     var pagesOnCacheProcess = Array<Int>()
     
-    let imageCache =  AutoPurgingImageCache(
-        memoryCapacity: 1000 * 1024 * 1024,
-        preferredMemoryUsageAfterPurge: 200 * 1024 * 1024
+    let imageDownloader = ImageDownloader(
+        configuration: ImageDownloader.defaultURLSessionConfiguration(),
+        downloadPrioritization: .FIFO,
+        maximumActiveDownloads: 4,
+        imageCache: AutoPurgingImageCache()
     )
+
     var requests : Array<Alamofire.Request>?
     var pages : [String]?
+    
+    //MARK: - Initializer
     
     init(identifier:String , server:String, directory:String, subdirectory:String, scandata: String, type: String) {
         self.bookId = identifier
@@ -52,6 +59,8 @@ class IABookImagesManager: NSObject {
         self.type = type
         self.requests = Array()
     }
+    
+    //MARK: - Download Pages
     
     func urlOfPage(number: Int) -> String{
         return urlOfPage(Int(pages![number])!,scale: 2)
@@ -65,26 +74,21 @@ class IABookImagesManager: NSObject {
         let group = dispatch_group_create();
         for index in offset...offset+count {
             dispatch_group_enter(group)
-            let identifier = "page_\(self.bookId)_\(String(format: "%04d", index))"
             if index<0 {
-                dispatch_group_leave(group)
-            }else if let _ = self.imageCache.imageWithIdentifier(identifier) {
                 dispatch_group_leave(group)
             }else if(self.pagesOnCacheProcess.contains(index)){
                 dispatch_group_leave(group)
             }else {
                 self.pagesOnCacheProcess.append(index)
-                let request =  Alamofire.request(.GET, urlOfPage(index))
-                    .responseImage { response in
-                        if let image = response.result.value {
-                            self.imageCache.addImage(image,
-                                withIdentifier: "page_\(self.bookId)_\(String(format: "%04d", index))")
-                            updatedImage(index: index, image: image)
-                            self.pagesOnCacheProcess.removeObject(index)
-                            dispatch_group_leave(group)
-                        }
+               let requestReceipt =  imageDownloader.downloadImage(URLRequest: NSURLRequest(URL:NSURL(string: urlOfPage(index))!)) { response in
+                    if let image = response.result.value {
+                        updatedImage(index: index, image: image)
+                        self.pagesOnCacheProcess.removeObject(index)
+                    }
                 }
-                self.requests?.append(request)
+                if let requestReceipt = requestReceipt {
+                    self.requests?.append(requestReceipt.request)
+                }
             }
         }
         dispatch_group_notify(group, dispatch_get_main_queue()) { () -> Void in
@@ -94,45 +98,28 @@ class IABookImagesManager: NSObject {
     
     func imageOfPage(number: Int,completion:(image: UIImage , page: Int)->()){
         if self.pages != nil && self.pages?.count>number {
-            let identifier = "page_\(self.bookId)_\(String(format: "%04d", number))"
-            
-            if let image = self.imageCache.imageWithIdentifier(identifier) {
-                completion(image: image,page: number)
-            }else if(!self.pagesOnCacheProcess.contains(number)){
-                
-                self.pagesOnCacheProcess.append(number)
-                Alamofire.request(.GET, urlOfPage(number))
-                    .responseImage { response in
-                        if let image = response.result.value {
-                            self.imageCache.addImage(image,
-                                withIdentifier: identifier)
-                            completion(image: image,page: number)
-                            self.pagesOnCacheProcess.removeObject(number)
-                        }
+            self.pagesOnCacheProcess.append(number)
+            imageDownloader.downloadImage(URLRequest: NSURLRequest(URL:NSURL(string: urlOfPage(number))!)) { response in
+                if let image = response.result.value {
+                    completion(image: image,page: number)
+                    self.pagesOnCacheProcess.removeObject(number)
                 }
             }
         }
     }
     
     func imageOfPage(number: Int, scale: Int,completion:(image: UIImage , page: Int)->()){
-        let identifier = "page_\(self.bookId)_\(String(format: "%04d", number))_scale_\(scale)"
-        
-        if let image = self.imageCache.imageWithIdentifier(identifier) {
-            completion(image: image,page: number)
-        }else if(!self.pagesOnCacheProcess.contains(number)){
-            self.pagesOnCacheProcess.append(number)
-            Alamofire.request(.GET, urlOfPage(number))
-                .responseImage { response in
-                    if let image = response.result.value {
-                        self.imageCache.addImage(image,
-                            withIdentifier: identifier)
-                        completion(image: image,page: number)
-                        self.pagesOnCacheProcess.removeObject(number)
-                    }
+        self.pagesOnCacheProcess.append(number)
+        imageDownloader.downloadImage(URLRequest: NSURLRequest(URL:NSURL(string: urlOfPage(number))!)) { response in
+            if let image = response.result.value {
+                completion(image: image,page: number)
+                self.pagesOnCacheProcess.removeObject(number)
             }
         }
     }
 
+    //MARK: - Get Number Of Pages
+    
     func getNumberPages() -> String? {
         var text : String?
         if let url = NSURL(string: "https://\(serverURL)\(directory)/\(scandata)") {
@@ -162,8 +149,10 @@ class IABookImagesManager: NSObject {
         return text
     }
     
+    //MARK: - Get Pages 
+    
     func getPages(completion : ([String])->()) {
-        let scandataURL = "https://\(serverURL)\(directory)/\(scandata)" //"https://ia800500.us.archive.org/13/items/waq31210/31210_scandata.xml"
+        let scandataURL = "https://\(serverURL)\(directory)/\(scandata)"
         Alamofire.request(.GET, scandataURL).response { (request, response, data, error) in
             do{
                 let tbxml =  try TBXML(XMLData: data, error: ())
@@ -179,9 +168,10 @@ class IABookImagesManager: NSObject {
             } catch let error as NSError {
                 print("Parse scandata xml failed: \(error.localizedDescription)")
             }
-
         }
     }
+    
+    //MARK: - Cancel Requests
     
     func cancelAllRequests() {
         for request in self.requests! {
@@ -189,5 +179,23 @@ class IABookImagesManager: NSObject {
         }
         self.requests?.removeAll()
         self.pagesOnCacheProcess.removeAll()
+    }
+    
+    //MARK: - Download zip
+    
+    func downloadZip() {
+        let destination = Alamofire.Request.suggestedDownloadDestination(
+            directory: .CachesDirectory,
+            domain: .UserDomainMask
+        )
+        
+        Alamofire.download(.GET, "https://\(serverURL)\(directory)/\(subDirectory)_\(type).zip", destination: destination)
+            .progress { bytesRead, totalBytesRead, totalBytesExpectedToRead in
+                print(totalBytesRead)
+            }
+            .response { request, response, _, error in
+                print(response)
+                print("fileURL: \(destination(NSURL(string: "")!, response!))")
+        }
     }
 }
