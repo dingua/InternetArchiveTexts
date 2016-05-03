@@ -96,6 +96,7 @@ class IABookImagesManager: NSObject {
     }
 
     func getImages(offset: Int, count:Int,updateImage:(index: Int, image: UIImage)->() , completion:()->()) {
+        guard pages != nil && pages?.count>0 else{return}
         let group = dispatch_group_create();
         for index in offset...offset+count {
             dispatch_group_enter(group)

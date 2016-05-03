@@ -108,6 +108,9 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         if let file = self.file {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), {
                 self.selectedChapterIndex = chapterIndex
+                if let oldImagesDownloader = self.imagesDownloader{
+                    oldImagesDownloader.cancelAllRequests()
+                }
                 self.imagesDownloader = IABookImagesManager(file: self.file!, chapterIndex: self.selectedChapterIndex)
               
                 let chapter = file.chapters![chapterIndex]
