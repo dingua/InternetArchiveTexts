@@ -7,14 +7,35 @@
 //
 
 import UIKit
+import Alamofire
+import ReachabilitySwift
 
-class Utils: NSObject {
+class Utils {
     static func isiPad()->Bool {
         return (UI_USER_INTERFACE_IDIOM() == .Pad)
     }
     
     static func isLoggedIn() -> Bool {
         return NSUserDefaults.standardUserDefaults().stringForKey("userid") != nil
+    }
+    
+    static func suitableCacheConfiguration()->NSURLRequestCachePolicy {
+        do {
+            if try Reachability.reachabilityForInternetConnection().isReachable() {
+                return .ReloadIgnoringLocalCacheData
+            }else {
+                return .ReturnCacheDataElseLoad
+            }
+        } catch {
+            return .ReloadIgnoringLocalCacheData
+        }
+     }
+    
+    static func requestWithURL(url: String)->NSMutableURLRequest {
+        let request = NSMutableURLRequest(URL: NSURL(string: url)!)
+        request.HTTPMethod = "GET"
+        request.cachePolicy = Utils.suitableCacheConfiguration()
+        return request
     }
 }
 

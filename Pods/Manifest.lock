@@ -4,6 +4,7 @@ PODS:
     - Alamofire (~> 3.1)
   - DGActivityIndicatorView (2.0)
   - MBProgressHUD (0.9.2)
+  - ReachabilitySwift (2.3.3)
   - SSZipArchive (1.1)
   - SwiftyJSON (2.3.2)
   - TBXML (1.5)
@@ -13,15 +14,21 @@ DEPENDENCIES:
   - AlamofireImage (~> 2.0)
   - DGActivityIndicatorView
   - MBProgressHUD (~> 0.9.2)
+  - ReachabilitySwift (from `https://github.com/ashleymills/Reachability.swift`)
   - SSZipArchive
   - SwiftyJSON (from `https://github.com/SwiftyJSON/SwiftyJSON.git`)
   - TBXML
 
 EXTERNAL SOURCES:
+  ReachabilitySwift:
+    :git: https://github.com/ashleymills/Reachability.swift
   SwiftyJSON:
     :git: https://github.com/SwiftyJSON/SwiftyJSON.git
 
 CHECKOUT OPTIONS:
+  ReachabilitySwift:
+    :commit: fa90df50c04f5743fbdf643cbe8d10562d75673d
+    :git: https://github.com/ashleymills/Reachability.swift
   SwiftyJSON:
     :commit: 929539eb6a3304eaa9153ca44041a78b85bf2ee5
     :git: https://github.com/SwiftyJSON/SwiftyJSON.git
@@ -31,6 +38,7 @@ SPEC CHECKSUMS:
   AlamofireImage: 4013fb5b99b10117bf2554a67b9bd2231d476b45
   DGActivityIndicatorView: 52875b025a6ccf6a431a905285c12e2bb95eb559
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
+  ReachabilitySwift: e0f6b6f280effb47731acfaaa2d5ffe223703793
   SSZipArchive: de3d215ab73f87db627f81f2ce24f1731e3886c3
   SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
   TBXML: 9f9dadb239f2f2af1dadb87fe43a0ce6e479379a

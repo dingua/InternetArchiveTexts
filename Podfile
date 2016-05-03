@@ -10,6 +10,7 @@ pod 'DGActivityIndicatorView'
 pod 'TBXML'
 pod 'SSZipArchive'
 pod 'MBProgressHUD', '~> 0.9.2'
+pod 'ReachabilitySwift', :git => 'https://github.com/ashleymills/Reachability.swift'
 end
 
 target 'ArchiveTests' do

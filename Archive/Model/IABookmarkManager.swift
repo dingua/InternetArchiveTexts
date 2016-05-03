@@ -61,7 +61,10 @@ class IABookmarkManager {
 
     class func getBookmarks(userId: String, completion: (NSArray)->()) {
         let url = "https://archive.org/bookmarks/\(userId)?output=json"
-        Alamofire.request(.GET, url, parameters: nil)
+        let request = NSMutableURLRequest(URL: NSURL(string: url)!)
+        request.HTTPMethod = "GET"
+        request.cachePolicy = Utils.suitableCacheConfiguration()
+        Alamofire.request(request)
             .responseJSON { response in
                 if let JSON = response.result.value {
                         let collections = NSMutableArray()

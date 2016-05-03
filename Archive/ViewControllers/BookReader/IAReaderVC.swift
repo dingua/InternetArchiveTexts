@@ -16,14 +16,17 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     var pageController = UIPageViewController(transitionStyle: .PageCurl, navigationOrientation: .Horizontal, options: nil)
     var bookIdentifier : String!
     var file : File? //Book Details
-    var numberOfPages = 0 //Will be calculated Later after getting book details
+    var numberOfPages = 0 {
+        didSet {
+            //As soon as page number is set we update page number label
+            updateProgressUI()
+        }
+    } //Will be calculated Later after getting book details
     
     var pageNumber = 0 {
         didSet {
             //As soon as page number is set we update page number label
-            pageNumberLabel.text = "\(pageNumber+1)/\(self.numberOfPages)"
-            let percentage = Float(self.pageNumber)/Float(self.numberOfPages) as Float?
-            progressSlider.value = percentage!
+            updateProgressUI()
         }
     }
     var selectedChapterIndex = 0
@@ -109,8 +112,8 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
               
                 let chapter = file.chapters![chapterIndex]
                 
-                if  let nbrPages = self.imagesDownloader!.getNumberPages(chapterIndex) {
-                    self.numberOfPages = Int(nbrPages)!
+                if  let nbrPages = self.imagesDownloader!.numberOfPages {
+                    self.numberOfPages = Int(nbrPages)
                     chapter.numberOfPages = self.numberOfPages
                 }
                 
@@ -355,5 +358,20 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     func removeLoadingView() {
         self.activityIndicatorView.stopAnimating()
         self.activityIndicatorView.removeFromSuperview()
+    }
+    
+    func updateProgressUI() {
+        dispatch_async(dispatch_get_main_queue()) {
+            guard self.numberOfPages>1 else {
+                self.pageNumberLabel.hidden = true
+                self.progressSlider.hidden = true
+                return
+            }
+            self.pageNumberLabel.text = "\(self.pageNumber+1)/\(self.numberOfPages)"
+            let percentage = Float(self.pageNumber)/Float(self.numberOfPages) as Float?
+            self.progressSlider.value = percentage!
+            self.pageNumberLabel.hidden = false
+            self.progressSlider.hidden = false
+        }
     }
 }

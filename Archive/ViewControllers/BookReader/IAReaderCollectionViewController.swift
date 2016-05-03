@@ -27,7 +27,7 @@ class IAReaderCollectionViewController: UICollectionViewController {
 
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if let downloader = imagesDownloader {
-            return Int(downloader.getNumberPages()!)!
+            return downloader.numberOfPages!
         } else {
             return 0
         }

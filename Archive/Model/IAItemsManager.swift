@@ -38,7 +38,8 @@
             return completion(file)
 
         }else {
-            Alamofire.request(.GET, "\(baseURL)/metadata/\(identifier)", parameters: nil)
+            let url = "\(baseURL)/metadata/\(identifier)"
+            Alamofire.request(Utils.requestWithURL(url))
                 .responseJSON { response in
                     if let value = response.result.value {
                         let json = JSON(value)
@@ -80,8 +81,7 @@
         let searchParameters = "q=(\(query))&sort%5B%5D=\(sort)&rows=\(count)&start=0&page=\(page)&output=json"
         
         let params = "\(baseURL)/\(searchURL)\(searchParameters)"
-
-        Alamofire.request(.GET, params, parameters: nil)
+        Alamofire.request(Utils.requestWithURL(params))
             .responseJSON { response in
                 if let JSON = response.result.value {
                     if let response = JSON.valueForKey("response")  {
@@ -168,7 +168,8 @@
         let searchParameters = "q=(collection:\(searchText)%20AND%20(mediatype:collection%20OR%20mediatype:texts))&fl%5B%5D=subject&sort%5B%5D=downloads+desc&rows=\(count)&output=json&start=0&page=\(page)"
         
         let params = "\(baseURL)/\(searchMethod)\(searchParameters)"
-        Alamofire.request(.GET, params, parameters: nil)
+        
+        Alamofire.request(Utils.requestWithURL(params))
             .responseJSON { response in
                 if let JSON = response.result.value {
                     if let response = JSON.valueForKey("response")  {
@@ -192,7 +193,8 @@
         let searchParameters = "q=(collection:\(text)%20AND%20(mediatype:collection%20OR%20mediatype:texts))&sort%5B%5D=downloads+desc&rows=0&output=json&start=0"
         
         let params = "\(baseURL)/\(searchMethod)\(searchParameters)"
-        Alamofire.request(.GET, params, parameters: nil)
+
+        Alamofire.request(Utils.requestWithURL(params))
             .responseJSON { response in
                 if let JSON = response.result.value {
                     if let response = JSON.valueForKey("response")  {

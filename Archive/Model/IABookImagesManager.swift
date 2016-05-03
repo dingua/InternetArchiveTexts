@@ -36,7 +36,6 @@ class IABookImagesManager: NSObject {
     var chapterIndex: Int
     var chapter : Chapter
     var type : String?
-    var pagesOnCacheProcess = Array<Int>()
     
     let imageDownloader = ImageDownloader(
         configuration: ImageDownloader.defaultURLSessionConfiguration(),
@@ -47,7 +46,33 @@ class IABookImagesManager: NSObject {
 
     var requests : Array<Alamofire.Request>?
     var pages : [String]?
-    var numberOfPages : Int?
+    private var _numberOfPages : Int?
+    var numberOfPages : Int? {
+        get {
+            if let numberOfPages = self._numberOfPages {
+                return numberOfPages
+            }
+            if let subdirectory = self.chapter.subdirectory , type = type {
+                let isStored = NSUserDefaults.standardUserDefaults().boolForKey("\(subdirectory)_\(type)")
+                if isStored {
+                    if let unarchivedObject = NSUserDefaults.standardUserDefaults().objectForKey("file_\(self.file.identifier!)") as? NSData {
+                        let file =  NSKeyedUnarchiver.unarchiveObjectWithData(unarchivedObject) as! File
+                        self._numberOfPages = file.chapters![chapterIndex].numberOfPages!
+                        return self._numberOfPages
+                    }else {
+                        return getNumberPages()
+                    }
+                }else {
+                    return getNumberPages()
+                }
+            }else {
+                return getNumberPages()
+            }
+        }
+        set {
+            self._numberOfPages = newValue
+        }
+    }
     
     //MARK: - Initializer
     
@@ -75,8 +100,6 @@ class IABookImagesManager: NSObject {
         for index in offset...offset+count {
             dispatch_group_enter(group)
             if index<0 || self.numberOfPages!<=index{
-                dispatch_group_leave(group)
-            }else if(self.pagesOnCacheProcess.contains(index)){
                 dispatch_group_leave(group)
             }else {
                 if isChapterStored() {
@@ -111,11 +134,9 @@ class IABookImagesManager: NSObject {
         if isStored {
             completion(image: UIImage(data: NSData(contentsOfFile: "\(self.docuementsDirectory())/\(self.chapter.subdirectory)/\(String(format: "%04d", number)).\(type!)")!)!,page: number)
         }else {
-            self.pagesOnCacheProcess.append(number)
             imageDownloader.downloadImage(URLRequest: NSURLRequest(URL:NSURL(string: urlOfPage(number))!)) { response in
                 if let image = response.result.value {
                     completion(image: image,page: number)
-                    self.pagesOnCacheProcess.removeObject(number)
                 }
             }
         }
@@ -123,11 +144,9 @@ class IABookImagesManager: NSObject {
     }
     
     func downloadImageAtIndex(index: Int, updateImage:(index: Int, image: UIImage)->()) -> RequestReceipt? {
-        self.pagesOnCacheProcess.append(index)
         return imageDownloader.downloadImage(URLRequest: NSURLRequest(URL:NSURL(string: urlOfPage(index))!)) { response in
             if let image = response.result.value {
                 updateImage(index: index, image: image)
-                self.pagesOnCacheProcess.removeObject(index)
             }
         }
         
@@ -135,27 +154,7 @@ class IABookImagesManager: NSObject {
 
     //MARK: - Get Number Of Pages
     
-    func getNumberPages(chapterIndex: Int) -> String? {
-        if let subdirectory = self.chapter.subdirectory , type = type {
-            let isStored = NSUserDefaults.standardUserDefaults().boolForKey("\(subdirectory)_\(type)")
-            if isStored {
-                if let unarchivedObject = NSUserDefaults.standardUserDefaults().objectForKey("file_\(self.file.identifier!)") as? NSData {
-                    let file =  NSKeyedUnarchiver.unarchiveObjectWithData(unarchivedObject) as! File
-                    self.numberOfPages = file.chapters![chapterIndex].numberOfPages!
-                    return String (self.numberOfPages!)
-                }else {
-                    return getNumberPages()
-                }
-            }else {
-                return getNumberPages()
-            }
-        }else {
-            return getNumberPages()
-        }
-       
-    }
-  
-    func getNumberPages() -> String? {
+    func getNumberPages() -> Int? {
         var text : String?
         if let url = NSURL(string: "https://\(file.server!)\(file.directory!)/\(chapter.scandata!)") {
             do{
@@ -166,15 +165,15 @@ class IABookImagesManager: NSObject {
                 print("Get content url failed: \(error.localizedDescription)")
             }
         }
-        numberOfPages = Int(text!)
-        return text
+        self._numberOfPages = Int(text!)
+        return self._numberOfPages
     }
     
     //MARK: - Get Pages 
     
     func getPages(completion : ([String])->()) {
         let scandataURL = "https://\(file.server!)\(file.directory!)/\(chapter.scandata!)"
-        Alamofire.request(.GET, scandataURL).response { (request, response, data, error) in
+        Alamofire.request(Utils.requestWithURL(scandataURL)).response { (request, response, data, error) in
             do{
                 let tbxml =  try TBXML(XMLData: data, error: ())
                 let rootEl = tbxml.rootXMLElement 
@@ -199,7 +198,6 @@ class IABookImagesManager: NSObject {
             request.cancel()
         }
         self.requests?.removeAll()
-        self.pagesOnCacheProcess.removeAll()
     }
     
     //MARK: - Download zip
