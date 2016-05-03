@@ -76,10 +76,16 @@
                                     </mask>
                                 </variation>
                             </view>
+                            <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="tm4-BB-VNI">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="2"/>
+                            </progressView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="tm4-BB-VNI" secondAttribute="trailing" id="LgS-de-ren"/>
+                            <constraint firstAttribute="topMargin" secondItem="tm4-BB-VNI" secondAttribute="top" id="g3R-Hw-P93"/>
                             <constraint firstItem="HP1-YQ-rdj" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="iRv-kg-a04"/>
+                            <constraint firstItem="tm4-BB-VNI" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="m9f-AJ-kJH"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="HP1-YQ-rdj" secondAttribute="bottom" id="p6s-6D-lgH"/>
                             <constraint firstItem="HP1-YQ-rdj" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="tpe-LZ-hzc"/>
                         </constraints>
@@ -91,6 +97,7 @@
                     <navigationItem key="navigationItem" id="9KO-N1-H3X"/>
                     <connections>
                         <outlet property="bottomMenu" destination="HP1-YQ-rdj" id="ojd-6C-iwb"/>
+                        <outlet property="downloadProgressView" destination="tm4-BB-VNI" id="hlS-bx-DIb"/>
                         <outlet property="pageNumberLabel" destination="Ztu-FO-S2U" id="BJg-gT-77v"/>
                         <outlet property="progressSlider" destination="NqS-pk-uYq" id="vxr-sJ-3GX"/>
                     </connections>

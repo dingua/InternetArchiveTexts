@@ -49,7 +49,7 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
     
     func updatePage() {
         self.addLoadingView()
-        self.imagesDownloader!.imageOfPage(self.pageNumber!){ [weak self](image: UIImage, page: Int)->() in
+        self.imagesDownloader!.imageOfPage(self.pageNumber!){ [weak self](page: Int, image: UIImage)->() in
             if let mySelf = self {
                 mySelf.removeLoadingView()
                 if page == mySelf.pageNumber {

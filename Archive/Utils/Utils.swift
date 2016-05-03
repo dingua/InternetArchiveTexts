@@ -17,3 +17,11 @@ class Utils: NSObject {
         return NSUserDefaults.standardUserDefaults().stringForKey("userid") != nil
     }
 }
+
+
+extension String {
+    func allowdStringForURL() -> String {
+        return self.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
+
+    }
+}

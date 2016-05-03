@@ -87,6 +87,8 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-Archive/Alamofire.framework"
   install_framework "Pods-Archive/AlamofireImage.framework"
   install_framework "Pods-Archive/DGActivityIndicatorView.framework"
+  install_framework "Pods-Archive/MBProgressHUD.framework"
+  install_framework "Pods-Archive/SSZipArchive.framework"
   install_framework "Pods-Archive/SwiftyJSON.framework"
   install_framework "Pods-Archive/TBXML.framework"
 fi
@@ -94,6 +96,8 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-Archive/Alamofire.framework"
   install_framework "Pods-Archive/AlamofireImage.framework"
   install_framework "Pods-Archive/DGActivityIndicatorView.framework"
+  install_framework "Pods-Archive/MBProgressHUD.framework"
+  install_framework "Pods-Archive/SSZipArchive.framework"
   install_framework "Pods-Archive/SwiftyJSON.framework"
   install_framework "Pods-Archive/TBXML.framework"
 fi

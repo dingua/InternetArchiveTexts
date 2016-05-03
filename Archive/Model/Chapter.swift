@@ -13,19 +13,21 @@ enum FileType: String {
     case PDF = "PDF"
 }
 
-class Chapter: NSObject {
+class Chapter: NSObject, NSCoding {
     var name: String?
     var zipFile: String!
+    var subdirectory: String?
     var scandata: String?
     var type: FileType?
-
+    var numberOfPages : Int?
+    
     init (zipFile: String) {
-        self.zipFile = zipFile
-        self.scandata = zipFile.substringToIndex((zipFile.rangeOfString("_jp2.zip")?.startIndex)!)+"_scandata.xml"
-        self.name = zipFile.substringToIndex((zipFile.rangeOfString("_jp2.zip")?.startIndex)!)
+        self.zipFile = zipFile.allowdStringForURL()
+        self.scandata = zipFile.substringToIndex((zipFile.rangeOfString("_jp2.zip")?.startIndex)!)+"_scandata.xml".allowdStringForURL()
+        self.name = zipFile.substringToIndex((zipFile.rangeOfString("_jp2.zip")?.startIndex)!).allowdStringForURL()
     }
     init (zipFile: String, type: String) {
-        self.zipFile = zipFile
+        self.zipFile = zipFile.allowdStringForURL()
          if type == "JP2" {
             self.type = .JP2
         }else if type == "TIFF" {
@@ -33,8 +35,27 @@ class Chapter: NSObject {
         }else if type == "PDF" {
             self.type = .PDF
         }
-        self.scandata = zipFile.substringToIndex((zipFile.rangeOfString("_\((self.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)+"_scandata.xml".stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
-        self.name = zipFile.substringToIndex((zipFile.rangeOfString("\((self.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)
+        self.scandata = (zipFile.substringToIndex((zipFile.rangeOfString("_\((self.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)+"_scandata.xml").allowdStringForURL()
+        self.name = zipFile.substringToIndex((zipFile.rangeOfString("\((self.type?.rawValue.lowercaseString)!).zip")?.startIndex)!).allowdStringForURL()
+        self.subdirectory = zipFile.substringToIndex((zipFile.rangeOfString("_\((self.type?.rawValue.lowercaseString)!).zip")?.startIndex)!).allowdStringForURL()
     }
 
+    
+    required init(coder aDecoder : NSCoder) {
+        self.name = (aDecoder.decodeObjectForKey("name") as? String)
+        self.zipFile = aDecoder.decodeObjectForKey("zipFile") as! String
+        self.scandata = aDecoder.decodeObjectForKey("scandata") as? String
+        self.type = FileType(rawValue: aDecoder.decodeObjectForKey("type") as! String)
+        self.numberOfPages =  aDecoder.decodeObjectForKey("numberOfPages") as? Int
+        self.subdirectory = aDecoder.decodeObjectForKey("subdirectory") as? String
+    }
+    
+    func encodeWithCoder(aCoder: NSCoder) {
+        aCoder.encodeObject(self.name, forKey: "name")
+        aCoder.encodeObject(self.zipFile, forKey: "zipFile")
+        aCoder.encodeObject(self.scandata, forKey: "scandata")
+        aCoder.encodeObject(self.type?.rawValue, forKey: "type")
+        aCoder.encodeObject(self.numberOfPages, forKey: "numberOfPages")
+        aCoder.encodeObject(self.subdirectory, forKey: "subdirectory")
+    }
 }

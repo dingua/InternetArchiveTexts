@@ -31,7 +31,7 @@ class IALoginManager: NSObject {
     }
     
     class func getUserId(username: String, completion: String -> ()) {
-        let uploader = username.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
+        let uploader = username.allowdStringForURL()
         let searchURL = "https://archive.org/search.php?query=uploader:\(uploader)"
         Alamofire.request(.GET, searchURL).response { (_, response, data, _) in
             var datastring = NSString(data: data!, encoding: NSUTF8StringEncoding)

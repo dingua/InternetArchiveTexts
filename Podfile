@@ -8,6 +8,8 @@ pod 'AlamofireImage', '~> 2.0'
 pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
 pod 'DGActivityIndicatorView'
 pod 'TBXML'
+pod 'SSZipArchive'
+pod 'MBProgressHUD', '~> 0.9.2'
 end
 
 target 'ArchiveTests' do

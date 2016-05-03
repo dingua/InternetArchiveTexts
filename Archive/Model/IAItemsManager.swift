@@ -32,38 +32,45 @@
     //MARK: - File Details
     
     func getFileDetails(identifier: String, completion:(File)->()){
-        Alamofire.request(.GET, "\(baseURL)/metadata/\(identifier)", parameters: nil)
-            .responseJSON { response in
-                if let value = response.result.value {
-                    let json = JSON(value)
-                    let server = json["server"].stringValue
-                    let directory = json["dir"].stringValue
-                    
-                    let docs = json["files"].arrayValue
-                    var chapters : [Chapter] = []
-                    for doc in docs {
-                        let format = doc["format"].stringValue
-                        if format.containsString("Single Page Processed") {
-                            var type = format.substringFromIndex((format.rangeOfString("Single Page Processed ")?.endIndex)!)
-                            if type.containsString(" ZIP") {
-                                type = type.substringToIndex((type.rangeOfString(" ZIP")?.startIndex)!)
+        
+        if let unarchivedObject = NSUserDefaults.standardUserDefaults().objectForKey("file_\(identifier)") as? NSData {
+            let file =  NSKeyedUnarchiver.unarchiveObjectWithData(unarchivedObject) as! File
+            return completion(file)
+
+        }else {
+            Alamofire.request(.GET, "\(baseURL)/metadata/\(identifier)", parameters: nil)
+                .responseJSON { response in
+                    if let value = response.result.value {
+                        let json = JSON(value)
+                        let server = json["server"].stringValue
+                        let directory = json["dir"].stringValue
+                        
+                        let docs = json["files"].arrayValue
+                        var chapters : [Chapter] = []
+                        for doc in docs {
+                            let format = doc["format"].stringValue
+                            if format.containsString("Single Page Processed") {
+                                var type = format.substringFromIndex((format.rangeOfString("Single Page Processed ")?.endIndex)!)
+                                if type.containsString(" ZIP") {
+                                    type = type.substringToIndex((type.rangeOfString(" ZIP")?.startIndex)!)
+                                }
+                                chapters.append(Chapter(zipFile: doc["name"].stringValue,type: type))
                             }
-                            chapters.append(Chapter(zipFile: doc["name"].stringValue,type: type))
                         }
+                        chapters.sortInPlace({$0.name < $1.name })
+                        
+                        if chapters.count == 0 {
+                            completion(File(identifier: ""))
+                            return
+                        }
+                        
+                        let file = File(identifier: identifier)
+                        file.server = server.allowdStringForURL()
+                        file.directory = directory.allowdStringForURL()
+                        file.chapters = chapters
+                        completion(file)
                     }
-                    chapters.sortInPlace({$0.name < $1.name })
-                    
-                    if chapters.count == 0 {
-                        completion(File(identifier: ""))
-                        return
-                    }
-                    
-                    let file = File(identifier: identifier)
-                    file.server = server
-                    file.directory = directory
-                    file.chapters = chapters
-                    completion(file)
-                }
+            }
         }
     }
     
@@ -106,7 +113,7 @@
     
     func searchBooksWithText(word: String, count: Int, page: Int, sortOption: IASearchSortOption, completion: (NSArray)->()) {
         let text = word.stringByReplacingOccurrencesOfString(" ", withString: "+")
-        let searchText = text.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
+        let searchText = text.allowdStringForURL()
         let query = "\(searchText)%20AND%20mediatype:texts"
         searchItems(query, count: count, page: page, sort:  sortOption.rawValue, completion: completion)
     }
@@ -114,7 +121,7 @@
    
     func searchBookOfCreator(creator: String, count: Int, page: Int, sortOption: IASearchSortOption, completion: (NSArray)->()) {
         let text = creator.stringByReplacingOccurrencesOfString(" ", withString: "+")
-        let searchText = text.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
+        let searchText = text.allowdStringForURL()
         let query = "creator:\(searchText)%20AND%20mediatype:texts"
         searchItems(query, count: count, page: page, sort: sortOption.rawValue, completion: completion)
     }
@@ -123,7 +130,7 @@
     
     func searchBookOfCollection(collection: String, count: Int, page: Int,sortOption: IASearchSortOption, completion: (NSArray)->()) {
         let text = collection.stringByReplacingOccurrencesOfString(" ", withString: "+")
-        let searchText = text.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
+        let searchText = text.allowdStringForURL()
         let query = "collection:\(searchText)%20AND%20mediatype:texts"
         searchItems(query, count: count, page: page, sort: IASearchSortOption.DownloadsDescendant.rawValue, completion: completion)
     }
@@ -132,7 +139,7 @@
     
     func searchCollections(collection: String,hidden: Bool, count: Int, page: Int,completion: (NSArray)->()) {
         let text = collection.stringByReplacingOccurrencesOfString(" ", withString: "+")
-        let searchText = text.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
+        let searchText = text.allowdStringForURL()
         let query = "collection:\(searchText)%20AND%20mediatype:collection%20AND%20NOT%20hidden:\(hidden)"
         
         searchItems(query, count: count, page: page, sort: IASearchSortOption.DownloadsDescendant.rawValue, completion: completion)
@@ -157,7 +164,7 @@
     func getSubjectsOfCollection(collection: String,count: Int,page: Int,completion:(NSArray)->()){
         let searchMethod = searchURL
         let text = collection.stringByReplacingOccurrencesOfString(" ", withString: "+")
-        let searchText = text.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
+        let searchText = text.allowdStringForURL()
         let searchParameters = "q=(collection:\(searchText)%20AND%20(mediatype:collection%20OR%20mediatype:texts))&fl%5B%5D=subject&sort%5B%5D=downloads+desc&rows=\(count)&output=json&start=0&page=\(page)"
         
         let params = "\(baseURL)/\(searchMethod)\(searchParameters)"

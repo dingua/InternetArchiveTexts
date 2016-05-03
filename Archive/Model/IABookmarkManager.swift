@@ -13,7 +13,7 @@ import SwiftyJSON
 class IABookmarkManager {
 
     class func addBookmark(bookId: String, title: String, completion: String -> ()) {
-        let encodedTitle = title.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
+        let encodedTitle = title.allowdStringForURL()
         let bookmarkURL = "https://archive.org/bookmarks.php?add_bookmark=1&mediatype=texts&identifier=\(bookId)&title=\(encodedTitle)&output=json"
         Alamofire.request(.GET, bookmarkURL).responseJSON (completionHandler: { response in
             if let value = response.result.value {

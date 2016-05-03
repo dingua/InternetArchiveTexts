@@ -10,6 +10,7 @@ import UIKit
 import AlamofireImage
 import Alamofire
 import TBXML
+import SSZipArchive
 
 extension Array where Element: Equatable {
     mutating func removeObject(object: Element) {
@@ -24,17 +25,17 @@ extension Array where Element: Equatable {
         }
     }
 }
+
 let readerMethod = "/BookReader/BookReaderImages.php?"
 
 class IABookImagesManager: NSObject {
     
-    /************** PROPERTIES *****/
-    let bookId: String!
-    let serverURL: String!
-    let directory: String!
-    let subDirectory: String!
-    let scandata: String!
-    let type: String!
+    //MARK: - Properties
+    
+    var file: File
+    var chapterIndex: Int
+    var chapter : Chapter
+    var type : String?
     var pagesOnCacheProcess = Array<Int>()
     
     let imageDownloader = ImageDownloader(
@@ -46,17 +47,16 @@ class IABookImagesManager: NSObject {
 
     var requests : Array<Alamofire.Request>?
     var pages : [String]?
+    var numberOfPages : Int?
     
     //MARK: - Initializer
     
-    init(identifier:String , server:String, directory:String, subdirectory:String, scandata: String, type: String) {
-        self.bookId = identifier
-        self.serverURL = server
-        self.directory = directory
-        self.subDirectory = subdirectory.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
-
-        self.scandata = scandata.stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!
-        self.type = type
+    init(file : File, chapterIndex : Int) {
+        
+        self.file = file
+        self.chapterIndex = chapterIndex
+        self.chapter = self.file.chapters![chapterIndex]
+        self.type = self.chapter.type?.rawValue.lowercaseString
         self.requests = Array()
     }
     
@@ -67,37 +67,50 @@ class IABookImagesManager: NSObject {
     }
 
     func urlOfPage(number: Int, scale: Int) -> String{
-        return "https://\(serverURL)\(readerMethod)zip=\(directory)/\(subDirectory)_\(type).zip&file=\(subDirectory)_\(type)/\(subDirectory)_\(String(format: "%04d", number)).\(type)&scale=\(scale)"
+        return "https://\(file.server!)\(readerMethod)zip=\(file.directory!)/\(chapter.subdirectory!)_\(type!).zip&file=\(chapter.subdirectory!)_\(type!)/\(chapter.subdirectory!)_\(String(format: "%04d", number)).\(type!)&scale=\(scale)"
     }
 
-    func getImages(offset: Int, count:Int,updatedImage:(index: Int, image: UIImage)->() , completion:()->()) {
+    func getImages(offset: Int, count:Int,updateImage:(index: Int, image: UIImage)->() , completion:()->()) {
         let group = dispatch_group_create();
         for index in offset...offset+count {
             dispatch_group_enter(group)
-            if index<0 {
+            if index<0 || self.numberOfPages!<=index{
                 dispatch_group_leave(group)
             }else if(self.pagesOnCacheProcess.contains(index)){
                 dispatch_group_leave(group)
             }else {
-                self.pagesOnCacheProcess.append(index)
-               let requestReceipt =  imageDownloader.downloadImage(URLRequest: NSURLRequest(URL:NSURL(string: urlOfPage(index))!)) { response in
-                    if let image = response.result.value {
-                        updatedImage(index: index, image: image)
-                        self.pagesOnCacheProcess.removeObject(index)
+                if isChapterStored() {
+                    updateImage(index: index, image: UIImage(data: NSData(contentsOfFile: "\(self.docuementsDirectory())/\(self.chapter.subdirectory!)_\(type!)/\(self.chapter.subdirectory!)_\(String(format: "%04d", index)).\(type!)")!)!)
+                }else {
+                    let requestReceipt =  self.downloadImageAtIndex(index, updateImage: updateImage)
+                    if let requestReceipt = requestReceipt {
+                        self.requests?.append(requestReceipt.request)
                     }
                 }
-                if let requestReceipt = requestReceipt {
-                    self.requests?.append(requestReceipt.request)
-                }
             }
+            
         }
         dispatch_group_notify(group, dispatch_get_main_queue()) { () -> Void in
             completion()
         }
     }
     
-    func imageOfPage(number: Int,completion:(image: UIImage , page: Int)->()){
+    func imageOfPage(number: Int,completion:(page: Int , image: UIImage)->()){
         if self.pages != nil && self.pages?.count>number {
+            
+            if isChapterStored() {
+                completion(page: number, image: UIImage(data: NSData(contentsOfFile: "\(self.docuementsDirectory())/\(self.chapter.subdirectory!)_\(type!)/\(chapter.subdirectory!)_\(String(format: "%04d", number)).\(type!)")!)!)
+            }else {
+                self.downloadImageAtIndex(number, updateImage: completion)
+        }
+        }
+    }
+    
+    func imageOfPage(number: Int, scale: Int,completion:(image: UIImage , page: Int)->()){
+        let isStored = NSUserDefaults.standardUserDefaults().boolForKey("\(self.chapter.subdirectory!)_\(type!)")
+        if isStored {
+            completion(image: UIImage(data: NSData(contentsOfFile: "\(self.docuementsDirectory())/\(self.chapter.subdirectory)/\(String(format: "%04d", number)).\(type!)")!)!,page: number)
+        }else {
             self.pagesOnCacheProcess.append(number)
             imageDownloader.downloadImage(URLRequest: NSURLRequest(URL:NSURL(string: urlOfPage(number))!)) { response in
                 if let image = response.result.value {
@@ -106,38 +119,45 @@ class IABookImagesManager: NSObject {
                 }
             }
         }
+    
     }
     
-    func imageOfPage(number: Int, scale: Int,completion:(image: UIImage , page: Int)->()){
-        self.pagesOnCacheProcess.append(number)
-        imageDownloader.downloadImage(URLRequest: NSURLRequest(URL:NSURL(string: urlOfPage(number))!)) { response in
+    func downloadImageAtIndex(index: Int, updateImage:(index: Int, image: UIImage)->()) -> RequestReceipt? {
+        self.pagesOnCacheProcess.append(index)
+        return imageDownloader.downloadImage(URLRequest: NSURLRequest(URL:NSURL(string: urlOfPage(index))!)) { response in
             if let image = response.result.value {
-                completion(image: image,page: number)
-                self.pagesOnCacheProcess.removeObject(number)
+                updateImage(index: index, image: image)
+                self.pagesOnCacheProcess.removeObject(index)
             }
         }
+        
     }
 
     //MARK: - Get Number Of Pages
     
-    func getNumberPages() -> String? {
-        var text : String?
-        if let url = NSURL(string: "https://\(serverURL)\(directory)/\(scandata)") {
-            do{
-                text = try String(contentsOfURL: url)
-                text = text!.substringFromIndex((text!.rangeOfString("<leafCount>")?.endIndex)!)
-                text = text!.substringToIndex((text!.rangeOfString("</leafCount>")?.startIndex)!)
-            }catch let error as NSError {
-                print("Get content url failed: \(error.localizedDescription)")
-                text = getNumberPagesWithoutSubdirectory()
+    func getNumberPages(chapterIndex: Int) -> String? {
+        if let subdirectory = self.chapter.subdirectory , type = type {
+            let isStored = NSUserDefaults.standardUserDefaults().boolForKey("\(subdirectory)_\(type)")
+            if isStored {
+                if let unarchivedObject = NSUserDefaults.standardUserDefaults().objectForKey("file_\(self.file.identifier!)") as? NSData {
+                    let file =  NSKeyedUnarchiver.unarchiveObjectWithData(unarchivedObject) as! File
+                    self.numberOfPages = file.chapters![chapterIndex].numberOfPages!
+                    return String (self.numberOfPages!)
+                }else {
+                    return getNumberPages()
+                }
+            }else {
+                return getNumberPages()
             }
+        }else {
+            return getNumberPages()
         }
-        return text
+       
     }
   
-    func getNumberPagesWithoutSubdirectory() -> String? {
+    func getNumberPages() -> String? {
         var text : String?
-        if let url = NSURL(string: "https://\(serverURL)\(directory)/\(scandata)") {
+        if let url = NSURL(string: "https://\(file.server!)\(file.directory!)/\(chapter.scandata!)") {
             do{
                 text = try String(contentsOfURL: url)
                 text = text!.substringFromIndex((text!.rangeOfString("<leafCount>")?.endIndex)!)
@@ -146,13 +166,14 @@ class IABookImagesManager: NSObject {
                 print("Get content url failed: \(error.localizedDescription)")
             }
         }
+        numberOfPages = Int(text!)
         return text
     }
     
     //MARK: - Get Pages 
     
     func getPages(completion : ([String])->()) {
-        let scandataURL = "https://\(serverURL)\(directory)/\(scandata)"
+        let scandataURL = "https://\(file.server!)\(file.directory!)/\(chapter.scandata!)"
         Alamofire.request(.GET, scandataURL).response { (request, response, data, error) in
             do{
                 let tbxml =  try TBXML(XMLData: data, error: ())
@@ -183,19 +204,27 @@ class IABookImagesManager: NSObject {
     
     //MARK: - Download zip
     
-    func downloadZip() {
+    func downloadZip()->Request {
         let destination = Alamofire.Request.suggestedDownloadDestination(
             directory: .CachesDirectory,
             domain: .UserDomainMask
         )
         
-        Alamofire.download(.GET, "https://\(serverURL)\(directory)/\(subDirectory)_\(type).zip", destination: destination)
-            .progress { bytesRead, totalBytesRead, totalBytesExpectedToRead in
-                print(totalBytesRead)
-            }
+        return Alamofire.download(.GET, "https://\(file.server!)\(file.directory!)/\(chapter.subdirectory!)_\(type!).zip", destination: destination)
             .response { request, response, _, error in
-                print(response)
-                print("fileURL: \(destination(NSURL(string: "")!, response!))")
+                SSZipArchive.unzipFileAtPath((destination(NSURL(string: "")!, response!).absoluteString as NSString).substringFromIndex(7), toDestination: "\(self.docuementsDirectory())")
+                NSUserDefaults.standardUserDefaults().setBool(true, forKey: "\(self.chapter.subdirectory!)_\(self.type!)")
         }
+    }
+    
+    
+    //MARK: - Helpers
+    func docuementsDirectory()->String {
+        let paths =  NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+        return paths[0]
+    }
+    
+    func isChapterStored()->Bool {
+        return NSUserDefaults.standardUserDefaults().boolForKey("\(self.chapter.subdirectory!)_\(type!)")
     }
 }
