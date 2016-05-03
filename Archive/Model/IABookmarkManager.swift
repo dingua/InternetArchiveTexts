@@ -10,11 +10,12 @@ import UIKit
 import Alamofire
 import SwiftyJSON
 
+let bookmarkAPI = "https://archive.org/bookmarks.php?"
+let getBookmarkURL = "https://archive.org/bookmarks"
 class IABookmarkManager {
-
     class func addBookmark(bookId: String, title: String, completion: String -> ()) {
         let encodedTitle = title.allowdStringForURL()
-        let bookmarkURL = "https://archive.org/bookmarks.php?add_bookmark=1&mediatype=texts&identifier=\(bookId)&title=\(encodedTitle)&output=json"
+        let bookmarkURL = "\(bookmarkAPI)add_bookmark=1&mediatype=texts&identifier=\(bookId)&title=\(encodedTitle)&output=json"
         Alamofire.request(.GET, bookmarkURL).responseJSON (completionHandler: { response in
             if let value = response.result.value {
                 addBookmark(bookId)
@@ -25,7 +26,7 @@ class IABookmarkManager {
     }
     
     class func deleteBookmark(bookId: String, completion: String -> ()) {
-        let bookmarkURL = "https://archive.org/bookmarks.php?del_bookmark=\(bookId)"
+        let bookmarkURL = "\(bookmarkAPI)del_bookmark=\(bookId)"
         Alamofire.request(.GET, bookmarkURL).responseString(completionHandler: { response in
             deleteBookmark(bookId)
             completion(bookId)
@@ -60,11 +61,8 @@ class IABookmarkManager {
     }
 
     class func getBookmarks(userId: String, completion: (NSArray)->()) {
-        let url = "https://archive.org/bookmarks/\(userId)?output=json"
-        let request = NSMutableURLRequest(URL: NSURL(string: url)!)
-        request.HTTPMethod = "GET"
-        request.cachePolicy = Utils.suitableCacheConfiguration()
-        Alamofire.request(request)
+        let url = "\(getBookmarkURL)/\(userId)?output=json"
+        Alamofire.request(Utils.requestWithURL(url))
             .responseJSON { response in
                 if let JSON = response.result.value {
                         let collections = NSMutableArray()
