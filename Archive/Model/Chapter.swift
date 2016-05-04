@@ -28,7 +28,7 @@ class Chapter: NSObject, NSCoding {
     }
     init (zipFile: String, type: String) {
         self.zipFile = zipFile.allowdStringForURL()
-         if type == "JP2" {
+         if type == "JP2" || type == "JPEG" {
             self.type = .JP2
         }else if type == "TIFF" {
             self.type = .TIFF
