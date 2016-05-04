@@ -64,7 +64,9 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image:UIImage(named: "close_reader"), style: .Plain, target: self, action: #selector(IAReaderVC.dismissViewController))
-        self.addDownloadButton()
+        if Utils.isLoggedIn() {
+            self.addDownloadButton()
+        }
         progressSlider.setThumbImage(UIImage(named: "roundSliderThumb")  ,forState: .Normal)
         progressSlider.userInteractionEnabled = false
         //Get File Details from MetaData WS
@@ -103,7 +105,11 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
  
     func addChaptersButton() {
         let button = UIBarButtonItem(image: UIImage(named: "sort"), style: .Plain, target: self, action: #selector(IAReaderVC.chaptersButtonPressed(_:)))
-        self.navigationItem.rightBarButtonItems?.append(button)
+        if let _ = self.navigationItem.rightBarButtonItems {
+            self.navigationItem.rightBarButtonItems?.append(button)
+        }else {
+            self.navigationItem.rightBarButtonItem = button
+        }
     }
     
     func setupReaderToChapter(chapterIndex: Int) {

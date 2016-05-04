@@ -32,10 +32,15 @@ class IAItemListCellView : UICollectionViewCell {
             self.bookImageView.af_setImageWithURL(url)
         }
         
-        if book.isFavourite() {
-            self.favouriteBtn.setImage(UIImage(named:"favourite_filled"), forState: .Normal)
+        if Utils.isLoggedIn() {
+            if book.isFavourite() {
+                self.favouriteBtn.setImage(UIImage(named:"favourite_filled"), forState: .Normal)
+            }else {
+                self.favouriteBtn.setImage(UIImage(named:"favourite_empty"), forState: .Normal)
+            }
+
         }else {
-            self.favouriteBtn.setImage(UIImage(named:"favourite_empty"), forState: .Normal)
+            self.favouriteBtn.hidden = true
         }
         
         self.contentView.layer.borderWidth = 1.0
