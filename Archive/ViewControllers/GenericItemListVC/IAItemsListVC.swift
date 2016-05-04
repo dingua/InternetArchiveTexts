@@ -263,7 +263,9 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
             let selectedIndex = self.collectionView?.indexPathForCell(sender as! IAItemListCellView)
             let bookReaderNavController = segue.destinationViewController as! UINavigationController
             let bookReader = bookReaderNavController.topViewController as! IAReaderVC
-            bookReader.bookIdentifier = (items[selectedIndex!.row] as! ArchiveItemData).identifier!
+            let item = items[selectedIndex!.row] as! ArchiveItemData
+            bookReader.bookIdentifier = item.identifier!
+            bookReader.bookTitle = item.title
         }
     }
 

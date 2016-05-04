@@ -21,7 +21,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UITabBar.appearance().tintColor = UIColor.blackColor()
         UINavigationBar.appearance().barTintColor = UIColor.whiteColor()
         UINavigationBar.appearance().tintColor = UIColor.blackColor()
-
+        let tabbar = IATabBarController.sharedInstance
+        self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        self.window?.rootViewController = tabbar
+        self.window?.makeKeyAndVisible()
+        tabbar.addProgressView()
         return true
     }
 

@@ -30,7 +30,9 @@
 		344551A51CD5E0F500FE7C47 /* IASortListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344551911CD5E0F500FE7C47 /* IASortListTableViewCell.swift */; };
 		344551A71CD5E13800FE7C47 /* IALoadingViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344551A61CD5E13800FE7C47 /* IALoadingViewProtocol.swift */; };
 		3448CFF31CC3901A001CBB31 /* IALoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3448CFF21CC3901A001CBB31 /* IALoginManager.swift */; };
+		3473ACAE1CD8C436008FE4C9 /* IATabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3473ACAD1CD8C436008FE4C9 /* IATabBarController.swift */; };
 		349452F31CD23072007080E7 /* IABookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349452F21CD23072007080E7 /* IABookmarkManager.swift */; };
+		34B9A2A01CD8AEAC00C7D9CD /* IADownloadsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B9A29F1CD8AEAC00C7D9CD /* IADownloadsManager.swift */; };
 		34EB38641C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */; };
 		34EB38691C3FCF3E0034F3E4 /* ArchiveItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38671C3FCF3E0034F3E4 /* ArchiveItem+CoreDataProperties.swift */; };
 		34EB386A1C3FCF3E0034F3E4 /* ArchiveItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38671C3FCF3E0034F3E4 /* ArchiveItem+CoreDataProperties.swift */; };
@@ -94,7 +96,9 @@
 		344551911CD5E0F500FE7C47 /* IASortListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IASortListTableViewCell.swift; sourceTree = "<group>"; };
 		344551A61CD5E13800FE7C47 /* IALoadingViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IALoadingViewProtocol.swift; sourceTree = "<group>"; };
 		3448CFF21CC3901A001CBB31 /* IALoginManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IALoginManager.swift; sourceTree = "<group>"; };
+		3473ACAD1CD8C436008FE4C9 /* IATabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IATabBarController.swift; sourceTree = "<group>"; };
 		349452F21CD23072007080E7 /* IABookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IABookmarkManager.swift; sourceTree = "<group>"; };
+		34B9A29F1CD8AEAC00C7D9CD /* IADownloadsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IADownloadsManager.swift; sourceTree = "<group>"; };
 		34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAItemsManager.swift; sourceTree = "<group>"; };
 		34EB38671C3FCF3E0034F3E4 /* ArchiveItem+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ArchiveItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		34EB38681C3FCF3E0034F3E4 /* ArchiveItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArchiveItem.swift; sourceTree = "<group>"; };
@@ -219,6 +223,7 @@
 				344551871CD5E0F500FE7C47 /* Explore */,
 				344551891CD5E0F500FE7C47 /* Favourite */,
 				3445518C1CD5E0F500FE7C47 /* Search */,
+				3473ACAD1CD8C436008FE4C9 /* IATabBarController.swift */,
 			);
 			path = Tabs;
 			sourceTree = "<group>";
@@ -290,6 +295,7 @@
 				34EB386F1C402D830034F3E4 /* IABookImagesManager.swift */,
 				3448CFF21CC3901A001CBB31 /* IALoginManager.swift */,
 				349452F21CD23072007080E7 /* IABookmarkManager.swift */,
+				34B9A29F1CD8AEAC00C7D9CD /* IADownloadsManager.swift */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -585,8 +591,10 @@
 				34EB386C1C3FCF3E0034F3E4 /* ArchiveItem.swift in Sources */,
 				344551A71CD5E13800FE7C47 /* IALoadingViewProtocol.swift in Sources */,
 				344551951CD5E0F500FE7C47 /* IAReaderChaptersListVC.swift in Sources */,
+				3473ACAE1CD8C436008FE4C9 /* IATabBarController.swift in Sources */,
 				34EB38641C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */,
 				34EBA0031C5A42F300E32BFA /* Chapter.swift in Sources */,
+				34B9A2A01CD8AEAC00C7D9CD /* IADownloadsManager.swift in Sources */,
 				34EB38721C4175150034F3E4 /* File.swift in Sources */,
 				3445519D1CD5E0F500FE7C47 /* IASortPresentationDelgate.swift in Sources */,
 				344551961CD5E0F500FE7C47 /* IAReaderCollectionViewController.swift in Sources */,

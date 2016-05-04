@@ -166,7 +166,9 @@ class IABookImagesManager: NSObject {
                 print("Get content url failed: \(error.localizedDescription)")
             }
         }
-        self._numberOfPages = Int(text!)
+        if let text = text {
+            self._numberOfPages = Int(text)
+        }
         return self._numberOfPages
     }
     

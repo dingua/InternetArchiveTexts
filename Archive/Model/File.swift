@@ -43,6 +43,5 @@ class File: NSObject, NSCoding {
         aCoder.encodeObject(self.collection, forKey: "collection")
         aCoder.encodeObject(self.scandata, forKey: "scandata")
         aCoder.encodeObject(self.chapters, forKey: "chapters")
-        
     }
 }

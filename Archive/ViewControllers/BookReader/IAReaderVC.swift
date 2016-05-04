@@ -15,6 +15,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     let bottomMarginReaderPage = 50.0
     var pageController = UIPageViewController(transitionStyle: .PageCurl, navigationOrientation: .Horizontal, options: nil)
     var bookIdentifier : String!
+    var bookTitle: String!
     var file : File? //Book Details
     var numberOfPages = 0 {
         didSet {
@@ -47,8 +48,9 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     //MARK: -INIT
     
-    init(identifier: String){
+    init(identifier: String, title: String){
         self.bookIdentifier = identifier
+        self.bookTitle = title
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -246,28 +248,27 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     }
     
     func downloadChapterFiles() {
-        downloadProgressView.hidden = false
-        downloadProgressView.progress  = 0
-        self.imagesDownloader?.downloadZip().progress { bytesRead, totalBytesRead, totalBytesExpectedToRead in
-            ////            print(Float(Float(totalBytesRead)/Float(totalBytesExpectedToRead)))
-            dispatch_async(dispatch_get_main_queue(), {
-                self.downloadProgressView.progress  = Float(Float(totalBytesRead)/Float(totalBytesExpectedToRead))
-            })
-            }.response { request, response, _, error in
-                let doneView = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
-                doneView.mode = .CustomView
-                doneView.labelText = "Done"
-                doneView.customView = UIImageView(image: UIImage(named: "done_btn"))
-                self.downloadProgressView.hidden = true
-                let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(2 * Double(NSEC_PER_SEC)))
-                dispatch_after(popTime, dispatch_get_main_queue(),{
-                    MBProgressHUD.hideHUDForView(self.view ,animated:true)
+        if self.isFavourite() {
+            startDownloading()
+        }else {
+            let alert = UIAlertController(title: "Download", message: "To download, you need to add this book to your favourite list", preferredStyle: .Alert )
+            let action = UIAlertAction(title: "Yes", style: .Default , handler: { _ in
+                IABookmarkManager.addBookmark(self.bookIdentifier, title: self.bookTitle, completion: { _ in
+                    self.startDownloading()
                 })
-                let fileData = NSKeyedArchiver.archivedDataWithRootObject(self.file!)
-                NSUserDefaults.standardUserDefaults().setObject(fileData, forKey: "file_\(self.file!.identifier!)")
-                NSUserDefaults.standardUserDefaults().synchronize()
+            })
+            alert.addAction(action)
+            alert.addAction(UIAlertAction(title: "No", style: .Cancel, handler: {_ in}))
+            self.presentViewController(alert, animated: true, completion: nil)
         }
     }
+    
+    func startDownloading() {
+        if let chapter = self.imagesDownloader?.chapter , file = self.imagesDownloader?.file {
+            IADownloadsManager.sharedInstance.download(chapter, file: file)
+        }
+    }
+    
     
     func updateUIAfterPageSeek(toNextPage: Bool) {
         let pageVC = self.pageVCWithNumber(self.pageNumber)
@@ -375,6 +376,20 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
             self.progressSlider.value = percentage!
             self.pageNumberLabel.hidden = false
             self.progressSlider.hidden = false
+        }
+    }
+    
+    
+    func isFavourite()->Bool {
+        if let favouriteList = NSUserDefaults.standardUserDefaults().objectForKey(favouriteListIds) as? [String] {
+            if !favouriteList.contains(self.bookIdentifier!) {
+                return false
+            }else {
+                return true
+            }
+            
+        }else {
+            return false
         }
     }
 }

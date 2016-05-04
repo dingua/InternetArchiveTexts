@@ -34,7 +34,7 @@ class IABookmarkManager {
         })
     }
     
-    class func addBookmark(identifier : String) {
+    private class func addBookmark(identifier : String) {
         if let favouriteList = NSUserDefaults.standardUserDefaults().objectForKey(favouriteListIds) as? [String] {
             var newFavouriteList = favouriteList
             if !favouriteList.contains(identifier) {
@@ -49,7 +49,7 @@ class IABookmarkManager {
     }
     
     
-    class func deleteBookmark(identifier : String) {
+    private class func deleteBookmark(identifier : String) {
         if let favouriteList = NSUserDefaults.standardUserDefaults().objectForKey(favouriteListIds) as? [String] {
             var newFavouriteList = favouriteList
             if favouriteList.contains(identifier) {
