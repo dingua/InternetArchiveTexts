@@ -10,8 +10,9 @@ import UIKit
 import Alamofire
 import SwiftyJSON
 
-let bookmarkAPI = "https://archive.org/bookmarks.php?"
-let getBookmarkURL = "https://archive.org/bookmarks"
+private let bookmarkAPI = "https://archive.org/bookmarks.php?"
+private let getBookmarkURL = "https://archive.org/bookmarks"
+
 class IABookmarkManager {
     class func addBookmark(bookId: String, title: String, completion: String -> ()) {
         let encodedTitle = title.allowdStringForURL()
@@ -41,6 +42,7 @@ class IABookmarkManager {
                 newFavouriteList.append(identifier)
             }
             NSUserDefaults.standardUserDefaults().setObject(newFavouriteList, forKey: favouriteListIds)
+            NSUserDefaults.standardUserDefaults().synchronize()
             NSNotificationCenter.defaultCenter().postNotificationName(notificationBookmarkAdded, object: nil)
         }else {
             NSUserDefaults.standardUserDefaults().setObject([identifier], forKey: favouriteListIds)
@@ -56,6 +58,7 @@ class IABookmarkManager {
                 newFavouriteList.removeObject(identifier)
             }
             NSUserDefaults.standardUserDefaults().setObject(newFavouriteList, forKey: favouriteListIds)
+            NSUserDefaults.standardUserDefaults().synchronize()
             NSNotificationCenter.defaultCenter().postNotificationName(notificationBookmarkRemoved, object: nil)
         }
     }
