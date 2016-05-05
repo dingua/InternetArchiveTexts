@@ -12,8 +12,9 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
 
     @IBOutlet weak var favouriteListContainerView: UIView!
     @IBOutlet weak var favouriteLoginContainerView: UIView!
-    var itemsListVC : IAItemsListVC?
+    var itemsListVC : IAFavouriteListVC?
     var loginVC: IAFavouriteLoginVC?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAFavoritesVC.userDidLogin), name: notificationUserDidLogin, object: nil)
@@ -43,10 +44,10 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "favoritesList" {
-            itemsListVC = segue.destinationViewController as? IAItemsListVC
-            if let username = NSUserDefaults.standardUserDefaults().stringForKey("userid") {
-                itemsListVC!.isFavouriteList = true
-                itemsListVC!.loadList("fav-\(username)", type: .Collection)
+            itemsListVC = segue.destinationViewController as? IAFavouriteListVC
+            if let _ = NSUserDefaults.standardUserDefaults().stringForKey("userid") {
+//                itemsListVC!.isFavouriteList = true
+//                itemsListVC!.loadList("fav-\(username)", type: .Collection)
                 itemsListVC!.title = "My Favorites"
                 favouriteLoginContainerView.hidden = true
                 favouriteListContainerView.hidden = false
@@ -66,7 +67,7 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
             favouriteLoginContainerView.hidden = true
             favouriteListContainerView.hidden = false
             if let username = NSUserDefaults.standardUserDefaults().stringForKey("userid") {
-                itemsListVC!.loadList("fav-\(username)", type: .Collection)
+//                itemsListVC!.loadList("fav-\(username)", type: .Collection)
             }
         }else {
             self.performSegueWithIdentifier("favoritesList", sender: nil)
@@ -85,7 +86,7 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
     
     
     func bookmarkChanged() {
-        itemsListVC!.reloadList()
+//        itemsListVC!.reloadList()
     }
     
     //MARK: - IARootVCProtocol

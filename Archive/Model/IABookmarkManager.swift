@@ -13,57 +13,49 @@ import SwiftyJSON
 private let bookmarkAPI = "https://archive.org/bookmarks.php?"
 private let getBookmarkURL = "https://archive.org/bookmarks"
 
-class IABookmarkManager {
-    class func addBookmark(bookId: String, title: String, completion: String -> ()) {
-        let encodedTitle = title.allowdStringForURL()
-        let bookmarkURL = "\(bookmarkAPI)add_bookmark=1&mediatype=texts&identifier=\(bookId)&title=\(encodedTitle)&output=json"
+class IABookmarkManager: NSObject {
+    static let sharedInstance = IABookmarkManager()
+    
+    override init() {
+        super.init()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IABookmarkManager.deleteAllBookmarks), name: notificationUserDidLogout, object: nil)
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self, forKeyPath: notificationUserDidLogout)
+    }
+ 
+    func addBookmark(item: ArchiveItemData, completion: String -> ()) {
+        let encodedTitle = item.title!.allowdStringForURL()
+        let bookmarkURL = "\(bookmarkAPI)add_bookmark=1&mediatype=texts&identifier=\(item.identifier!)&title=\(encodedTitle)&output=json"
         Alamofire.request(.GET, bookmarkURL).responseJSON (completionHandler: { response in
             if let value = response.result.value {
-                addBookmark(bookId)
+                self.addBookmark(item)
                 let json = JSON(value)
                     completion(json["msg"].stringValue)
             }
         })
     }
     
-    class func deleteBookmark(bookId: String, completion: String -> ()) {
-        let bookmarkURL = "\(bookmarkAPI)del_bookmark=\(bookId)"
+    func deleteBookmark(identifier: String, completion: String -> ()) {
+        let bookmarkURL = "\(bookmarkAPI)del_bookmark=\(identifier)"
         Alamofire.request(.GET, bookmarkURL).responseString(completionHandler: { response in
-            deleteBookmark(bookId)
-            completion(bookId)
+            self.deleteBookmark(identifier)
+            completion(identifier)
             
         })
     }
     
-    private class func addBookmark(identifier : String) {
-        if let favouriteList = NSUserDefaults.standardUserDefaults().objectForKey(favouriteListIds) as? [String] {
-            var newFavouriteList = favouriteList
-            if !favouriteList.contains(identifier) {
-                newFavouriteList.append(identifier)
-            }
-            NSUserDefaults.standardUserDefaults().setObject(newFavouriteList, forKey: favouriteListIds)
-            NSUserDefaults.standardUserDefaults().synchronize()
-            NSNotificationCenter.defaultCenter().postNotificationName(notificationBookmarkAdded, object: nil)
-        }else {
-            NSUserDefaults.standardUserDefaults().setObject([identifier], forKey: favouriteListIds)
-            NSNotificationCenter.defaultCenter().postNotificationName(notificationBookmarkAdded, object: nil)
-        }
+    private func addBookmark(item: ArchiveItemData) {
+        ArchiveItem.createArchiveItemWithData(item, isFavourite: true)
     }
     
     
-    private class func deleteBookmark(identifier : String) {
-        if let favouriteList = NSUserDefaults.standardUserDefaults().objectForKey(favouriteListIds) as? [String] {
-            var newFavouriteList = favouriteList
-            if favouriteList.contains(identifier) {
-                newFavouriteList.removeObject(identifier)
-            }
-            NSUserDefaults.standardUserDefaults().setObject(newFavouriteList, forKey: favouriteListIds)
-            NSUserDefaults.standardUserDefaults().synchronize()
-            NSNotificationCenter.defaultCenter().postNotificationName(notificationBookmarkRemoved, object: nil)
-        }
+    private func deleteBookmark(identifier: String) {
+        ArchiveItem.deleteItem(identifier)
     }
 
-    class func getBookmarks(userId: String, completion: (NSArray)->()) {
+    func getBookmarks(userId: String, completion: (NSArray)->()) {
         let url = "\(getBookmarkURL)/\(userId)?output=json"
         Alamofire.request(Utils.requestWithURL(url))
             .responseJSON { response in
@@ -73,23 +65,17 @@ class IABookmarkManager {
                             let dictionary = ((JSON as! Array)[index]) as NSDictionary
                             if let mediatype = dictionary.valueForKey("mediatype") as? String{
                                 if mediatype == "texts" {
-                                    collections.addObject(ArchiveItemData(dictionary: dictionary ))
+                                    let item = ArchiveItemData(dictionary: dictionary )
+                                    ArchiveItem.createArchiveItemWithData(item, isFavourite: true)
                                 }
                             }
                         }
-                        synchronizeFavourites(collections)
                         completion(collections)
                     }
                 }
-        }
-    
-    class func synchronizeFavourites(items: NSMutableArray) {
-            var favouriteList = [] as [String]!
-            for item  in items {
-                favouriteList.append(item.identifier!)
-            }
-            NSUserDefaults.standardUserDefaults().setObject(favouriteList, forKey: favouriteListIds)
-            NSUserDefaults.standardUserDefaults().synchronize()
     }
-
+    
+    func deleteAllBookmarks() {
+        ArchiveItem.deleteAllFavourites()
+    }
 }

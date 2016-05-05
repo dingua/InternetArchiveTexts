@@ -135,7 +135,6 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
                             mySelf.currentPage+=1
                         }
                         mySelf.items.addObjectsFromArray(books as [AnyObject])
-                        mySelf.synchronizeFavourites()
                         mySelf.collectionView?.reloadData()
                         mySelf.removeLoadingView()
                         
@@ -149,7 +148,6 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
                             mySelf.currentPage+=1
                         }
                         mySelf.items.addObjectsFromArray(books as [AnyObject])
-                        mySelf.synchronizeFavourites()
                         mySelf.collectionView?.reloadData()
                         mySelf.removeLoadingView()
                     }
@@ -162,7 +160,6 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
                             mySelf.currentPage+=1
                         }
                         mySelf.items.addObjectsFromArray(items as [AnyObject])
-                        mySelf.synchronizeFavourites()
                         mySelf.collectionView?.reloadData()
                         mySelf.removeLoadingView()
                     }
@@ -176,10 +173,9 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     
     func loadBookmarks() {
         self.addLoadingView()
-        IABookmarkManager.getBookmarks(NSUserDefaults.standardUserDefaults().stringForKey("userid")!, completion: {[weak self] items in
+        IABookmarkManager.sharedInstance.getBookmarks(NSUserDefaults.standardUserDefaults().stringForKey("userid")!, completion: {[weak self] items in
             if let mySelf = self {
                 mySelf.items.addObjectsFromArray(items as [AnyObject])
-                mySelf.synchronizeFavourites()
                 mySelf.collectionView?.reloadData()
                 mySelf.removeLoadingView()
             }
@@ -214,12 +210,12 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
             cell.configureWithItem(item, creatorCompletion:  creatorSelectionCompletion, collectionCompletion: collectionSelectionCompletion)
             cell.favouriteSelectionCompletion = {
                 if !item.isFavourite() {
-                    IABookmarkManager.addBookmark(item.identifier!, title: item.title!, completion: { message in
+                    IABookmarkManager.sharedInstance.addBookmark(item, completion: { message in
                         self.collectionView?.reloadItemsAtIndexPaths([indexPath])
                     })
                     
                 }else {
-                    IABookmarkManager.deleteBookmark(item.identifier!, completion: { bookId in
+                    IABookmarkManager.sharedInstance.deleteBookmark(item.identifier!, completion: { bookId in
                         if !self.isFavouriteList {
                             self.collectionView?.reloadItemsAtIndexPaths([indexPath])
                         }
@@ -266,6 +262,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
             let item = items[selectedIndex!.row] as! ArchiveItemData
             bookReader.bookIdentifier = item.identifier!
             bookReader.bookTitle = item.title
+            bookReader.item = item
         }
     }
 
@@ -320,12 +317,4 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     func sortListDidSelectSortOption(option: IASortOption) {
         self.selectedSortDescriptor = option
     }
-    
-    func synchronizeFavourites() {
-        if isFavouriteList {
-           IABookmarkManager.synchronizeFavourites(items)
-        }
-    }
-    
-
 }

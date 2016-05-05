@@ -2,46 +2,47 @@
 //  File.swift
 //  Archive
 //
-//  Created by Mejdi Lassidi on 1/9/16.
+//  Created by Mejdi Lassidi on 5/4/16.
 //  Copyright © 2016 Archive. All rights reserved.
 //
 
+import Foundation
+import CoreData
 import UIKit
 
-class File: NSObject, NSCoding {
-    var identifier: String!
-    var server: String?
-    var directory: String?
-    var subdirectory: String?
-    var uploader: String?
-    var collection: String?
-    var scandata: String?
-    var chapters: [Chapter]?
-    
-    init(identifier: String) {
-        self.identifier = identifier.allowdStringForURL()
-    }
-    
-    required init(coder aDecoder : NSCoder) {
-        self.identifier = aDecoder.decodeObjectForKey("identifier") as! String
-        self.server = aDecoder.decodeObjectForKey("server") as? String
-        self.directory = aDecoder.decodeObjectForKey("directory") as? String
-        self.subdirectory = aDecoder.decodeObjectForKey("subdirectory") as? String
-        self.uploader = aDecoder.decodeObjectForKey("uploader") as? String
-        self.collection = aDecoder.decodeObjectForKey("collection") as? String
-        self.scandata = aDecoder.decodeObjectForKey("scandata") as? String
-        self.chapters = aDecoder.decodeObjectForKey("chapters") as? [Chapter]
+class File: NSManagedObject {
 
-    }
+    static let managedContext :NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
-    func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeObject(self.identifier, forKey: "identifier")
-        aCoder.encodeObject(self.server, forKey: "server")
-        aCoder.encodeObject(self.directory, forKey: "directory")
-        aCoder.encodeObject(self.subdirectory, forKey: "subdirectory")
-        aCoder.encodeObject(self.uploader, forKey: "uploader")
-        aCoder.encodeObject(self.collection, forKey: "collection")
-        aCoder.encodeObject(self.scandata, forKey: "scandata")
-        aCoder.encodeObject(self.chapters, forKey: "chapters")
+    
+    static func createFileWithData(fileData : FileData) {
+        let predicate = NSPredicate(format: "identifier like %@", "\(fileData.identifier!)");
+        
+        let fetchItemWithSameId = NSFetchRequest(entityName: "File")
+        
+        fetchItemWithSameId.predicate = predicate
+        let fetchedItems : NSArray?
+        do {
+            fetchedItems = try self.managedContext.executeFetchRequest(fetchItemWithSameId)
+            if (fetchedItems!.count == 0) {
+                let item = NSEntityDescription.insertNewObjectForEntityForName("File", inManagedObjectContext: managedContext) as! File
+                item.server = fileData.server
+                item.directory = fileData.directory
+                if let archiveItem = ArchiveItem.archiveItem(fileData.identifier) {
+                    item.archiveItem = archiveItem
+                }
+                do {
+                    try self.managedContext.save()
+                }catch let error as NSError {
+                    print("Save managedObjectContext failed: \(error.localizedDescription)")
+                }
+            }else if (fetchedItems!.count > 1) {
+                print("ERROR DUPLICATED FILE ITEMS WITH ID : \(fileData.identifier!)")
+            }
+            
+        } catch let error as NSError {
+            print("Fetch failed: \(error.localizedDescription)")
+        }
     }
+
 }

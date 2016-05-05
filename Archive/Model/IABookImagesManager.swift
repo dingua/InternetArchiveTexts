@@ -32,9 +32,9 @@ class IABookImagesManager: NSObject {
     
     //MARK: - Properties
     
-    var file: File
+    var file: FileData
     var chapterIndex: Int
-    var chapter : Chapter
+    var chapter : ChapterData
     var type : String?
     
     let imageDownloader = ImageDownloader(
@@ -56,7 +56,7 @@ class IABookImagesManager: NSObject {
                 let isStored = NSUserDefaults.standardUserDefaults().boolForKey("\(subdirectory)_\(type)")
                 if isStored {
                     if let unarchivedObject = NSUserDefaults.standardUserDefaults().objectForKey("file_\(self.file.identifier!)") as? NSData {
-                        let file =  NSKeyedUnarchiver.unarchiveObjectWithData(unarchivedObject) as! File
+                        let file =  NSKeyedUnarchiver.unarchiveObjectWithData(unarchivedObject) as! FileData
                         self._numberOfPages = file.chapters![chapterIndex].numberOfPages!
                         return self._numberOfPages
                     }else {
@@ -76,7 +76,7 @@ class IABookImagesManager: NSObject {
     
     //MARK: - Initializer
     
-    init(file : File, chapterIndex : Int) {
+    init(file : FileData, chapterIndex : Int) {
         
         self.file = file
         self.chapterIndex = chapterIndex

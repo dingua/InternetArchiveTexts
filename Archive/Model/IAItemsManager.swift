@@ -31,10 +31,10 @@
     
     //MARK: - File Details
     
-    func getFileDetails(identifier: String, completion:(File)->()){
+    func getFileDetails(identifier: String, completion:(FileData)->()){
         
         if let unarchivedObject = NSUserDefaults.standardUserDefaults().objectForKey("file_\(identifier)") as? NSData {
-            let file =  NSKeyedUnarchiver.unarchiveObjectWithData(unarchivedObject) as! File
+            let file =  NSKeyedUnarchiver.unarchiveObjectWithData(unarchivedObject) as! FileData
             return completion(file)
 
         }else {
@@ -47,7 +47,7 @@
                         let directory = json["dir"].stringValue
                         
                         let docs = json["files"].arrayValue
-                        var chapters : [Chapter] = []
+                        var chapters : [ChapterData] = []
                         for doc in docs {
                             let format = doc["format"].stringValue
                             if format.containsString("Single Page Processed") {
@@ -55,17 +55,17 @@
                                 if type.containsString(" ZIP") {
                                     type = type.substringToIndex((type.rangeOfString(" ZIP")?.startIndex)!)
                                 }
-                                chapters.append(Chapter(zipFile: doc["name"].stringValue,type: type))
+                                chapters.append(ChapterData(zipFile: doc["name"].stringValue,type: type))
                             }
                         }
                         chapters.sortInPlace({$0.name < $1.name })
                         
                         if chapters.count == 0 {
-                            completion(File(identifier: ""))
+                            completion(FileData(identifier: ""))
                             return
                         }
                         
-                        let file = File(identifier: identifier)
+                        let file = FileData(identifier: identifier)
                         file.server = server.allowdStringForURL()
                         file.directory = directory.allowdStringForURL()
                         file.chapters = chapters

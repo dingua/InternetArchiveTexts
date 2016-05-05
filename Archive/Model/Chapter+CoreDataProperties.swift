@@ -1,5 +1,5 @@
 //
-//  ArchiveItem+CoreDataProperties.swift
+//  Chapter+CoreDataProperties.swift
 //  Archive
 //
 //  Created by Mejdi Lassidi on 5/4/16.
@@ -12,14 +12,13 @@
 import Foundation
 import CoreData
 
-extension ArchiveItem {
+extension Chapter {
 
-    @NSManaged var desc: String?
-    @NSManaged var identifier: String?
-    @NSManaged var publicdate: NSDate?
-    @NSManaged var publisher: String?
-    @NSManaged var title: String?
-    @NSManaged var isFavourite: NSNumber?
+    @NSManaged var name: String?
+    @NSManaged var zipFile: String?
+    @NSManaged var subdirectory: String?
+    @NSManaged var type: NSNumber?
+    @NSManaged var numberOfPages: NSNumber?
     @NSManaged var file: File?
 
 }

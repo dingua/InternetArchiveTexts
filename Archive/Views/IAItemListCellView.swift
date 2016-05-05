@@ -46,7 +46,30 @@ class IAItemListCellView : UICollectionViewCell {
         self.contentView.layer.borderWidth = 1.0
         self.contentView.layer.borderColor = UIColor.blackColor().CGColor
     }
-    
+
+    func configureWithArchiveItem(book: ArchiveItem) {
+        self.bookTitleLabel.text = book.title
+        self.bookImageView.image = nil
+        self.bookImageView.image = nil
+        if let url = NSURL(string: "\(imageBaseURL)\(book.identifier!)") {
+            self.bookImageView.af_setImageWithURL(url)
+        }
+        
+        if Utils.isLoggedIn() {
+            if book.isFavourite?.boolValue == true {
+                self.favouriteBtn.setImage(UIImage(named:"favourite_filled"), forState: .Normal)
+            }else {
+                self.favouriteBtn.setImage(UIImage(named:"favourite_empty"), forState: .Normal)
+            }
+            
+        }else {
+            self.favouriteBtn.hidden = true
+        }
+        
+        self.contentView.layer.borderWidth = 1.0
+        self.contentView.layer.borderColor = UIColor.blackColor().CGColor
+    }
+
     func configureWithItem(book: ArchiveItemData,creatorCompletion: (String)->()) {
         self.configureWithItem(book)
     }

@@ -12,11 +12,12 @@ import MBProgressHUD
 
 class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewControllerDataSource {
     //MARK: Variables Declaration
+    var item: ArchiveItemData?
     let bottomMarginReaderPage = 50.0
     var pageController = UIPageViewController(transitionStyle: .PageCurl, navigationOrientation: .Horizontal, options: nil)
     var bookIdentifier : String!
     var bookTitle: String!
-    var file : File? //Book Details
+    var file : FileData? //Book Details
     var numberOfPages = 0 {
         didSet {
             //As soon as page number is set we update page number label
@@ -259,7 +260,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         }else {
             let alert = UIAlertController(title: "Download", message: "To download, you need to add this book to your favourite list", preferredStyle: .Alert )
             let action = UIAlertAction(title: "Yes", style: .Default , handler: { _ in
-                IABookmarkManager.addBookmark(self.bookIdentifier, title: self.bookTitle, completion: { _ in
+                IABookmarkManager.sharedInstance.addBookmark(self.item!, completion: { _ in
                     self.startDownloading()
                 })
             })

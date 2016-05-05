@@ -14,8 +14,8 @@ class IADownloadsManager {
     static let sharedInstance = IADownloadsManager()
     
     struct FileDownloadStatus {
-        var file: File?
-        var chapter: Chapter?
+        var file: FileData?
+        var chapter: ChapterData?
         var totalBytesRead: Int64?
         var totalBytesExpectedToRead: Int64?
     }
@@ -35,7 +35,7 @@ class IADownloadsManager {
     }
     
     
-    func download(chapter: Chapter, file: File) {
+    func download(chapter: ChapterData, file: FileData) {
         let fileStatus = FileDownloadStatus(file: file, chapter: chapter, totalBytesRead: 0, totalBytesExpectedToRead: 0)
         filesQueue?.append(fileStatus)
         let destination = Alamofire.Request.suggestedDownloadDestination(
@@ -68,7 +68,7 @@ class IADownloadsManager {
         
     }
     
-    private func saveStoredFile(file : File!) {
+    private func saveStoredFile(file : FileData!) {
         let fileData = NSKeyedArchiver.archivedDataWithRootObject(file)
         NSUserDefaults.standardUserDefaults().setObject(fileData, forKey: "file_\(file.identifier!)")
         NSUserDefaults.standardUserDefaults().synchronize()
@@ -81,7 +81,7 @@ class IADownloadsManager {
         return paths[0]
     }
     
-    func isChapterStored(chapter: Chapter)->Bool {
+    func isChapterStored(chapter: ChapterData)->Bool {
         let type = chapter.type?.rawValue.lowercaseString
         return NSUserDefaults.standardUserDefaults().boolForKey("\(chapter.subdirectory!)_\(type!)")
     }

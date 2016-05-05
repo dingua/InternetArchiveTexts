@@ -16,7 +16,6 @@ class ArchiveItemData :  NSObject {
     var title: String?
     var desc: String?
     var mediatype: String?
-    var formats: NSSet?
     var collections : NSArray?
     var subjects : NSArray?
     
@@ -38,16 +37,14 @@ class ArchiveItemData :  NSObject {
         }
     }
     
+    
+    init (item: ArchiveItem) {
+        identifier = item.identifier
+        desc = item.desc
+        title = item.title
+    }
+    
     func isFavourite()->Bool {
-        if let favouriteList = NSUserDefaults.standardUserDefaults().objectForKey(favouriteListIds) as? [String] {
-            if !favouriteList.contains(self.identifier!) {
-                return false
-            }else {
-                return true
-            }
-            
-        }else {
-            return false
-        }
+        return ArchiveItem.isFavouriteItem(self.identifier!)
     }
 }
