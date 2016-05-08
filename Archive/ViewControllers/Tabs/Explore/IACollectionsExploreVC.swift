@@ -19,6 +19,7 @@ class IACollectionsExploreVC: UICollectionViewController, IARootVCProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         searchCollections()
+        print("downloaded chapters \(IADownloadsManager.sharedInstance.getDownloadedChapters())")
     }
     
     override func viewWillAppear(animated: Bool) {

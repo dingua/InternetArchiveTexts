@@ -38,8 +38,12 @@
 		3473ACBD1CDA7FD2008FE4C9 /* File+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3473ACB91CDA7FD2008FE4C9 /* File+CoreDataProperties.swift */; };
 		3473ACBE1CDA7FD2008FE4C9 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3473ACBA1CDA7FD2008FE4C9 /* File.swift */; };
 		3473ACC01CDA8A3F008FE4C9 /* IAFavouriteListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3473ACBF1CDA8A3F008FE4C9 /* IAFavouriteListVC.swift */; };
+		3490935C1CDCB0B100FC49A7 /* IADownloadsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3490935B1CDCB0B100FC49A7 /* IADownloadsListVC.swift */; };
+		3490935E1CDCB22700FC49A7 /* IAGenericListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3490935D1CDCB22700FC49A7 /* IAGenericListVC.swift */; };
+		349093601CDCB89100FC49A7 /* IADownloadListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3490935F1CDCB89100FC49A7 /* IADownloadListCollectionViewCell.swift */; };
 		349452F31CD23072007080E7 /* IABookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349452F21CD23072007080E7 /* IABookmarkManager.swift */; };
 		34B9A2A01CD8AEAC00C7D9CD /* IADownloadsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B9A29F1CD8AEAC00C7D9CD /* IADownloadsManager.swift */; };
+		34E78DDB1CDBCF7A00A25D86 /* IAMainFavouriteListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E78DDA1CDBCF7A00A25D86 /* IAMainFavouriteListVC.swift */; };
 		34EB38641C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */; };
 		34EB38701C402D830034F3E4 /* IABookImagesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB386F1C402D830034F3E4 /* IABookImagesManager.swift */; };
 		34EB38721C4175150034F3E4 /* FileData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38711C4175150034F3E4 /* FileData.swift */; };
@@ -105,8 +109,12 @@
 		3473ACB91CDA7FD2008FE4C9 /* File+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "File+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3473ACBA1CDA7FD2008FE4C9 /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		3473ACBF1CDA8A3F008FE4C9 /* IAFavouriteListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAFavouriteListVC.swift; sourceTree = "<group>"; };
+		3490935B1CDCB0B100FC49A7 /* IADownloadsListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IADownloadsListVC.swift; sourceTree = "<group>"; };
+		3490935D1CDCB22700FC49A7 /* IAGenericListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAGenericListVC.swift; sourceTree = "<group>"; };
+		3490935F1CDCB89100FC49A7 /* IADownloadListCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IADownloadListCollectionViewCell.swift; sourceTree = "<group>"; };
 		349452F21CD23072007080E7 /* IABookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IABookmarkManager.swift; sourceTree = "<group>"; };
 		34B9A29F1CD8AEAC00C7D9CD /* IADownloadsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IADownloadsManager.swift; sourceTree = "<group>"; };
+		34E78DDA1CDBCF7A00A25D86 /* IAMainFavouriteListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAMainFavouriteListVC.swift; sourceTree = "<group>"; };
 		34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAItemsManager.swift; sourceTree = "<group>"; };
 		34EB386F1C402D830034F3E4 /* IABookImagesManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IABookImagesManager.swift; sourceTree = "<group>"; };
 		34EB38711C4175150034F3E4 /* FileData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileData.swift; sourceTree = "<group>"; };
@@ -247,7 +255,10 @@
 			children = (
 				3445518A1CD5E0F500FE7C47 /* IAFavoritesVC.swift */,
 				3445518B1CD5E0F500FE7C47 /* IAFavouriteLoginVC.swift */,
+				34E78DDA1CDBCF7A00A25D86 /* IAMainFavouriteListVC.swift */,
 				3473ACBF1CDA8A3F008FE4C9 /* IAFavouriteListVC.swift */,
+				3490935B1CDCB0B100FC49A7 /* IADownloadsListVC.swift */,
+				3490935D1CDCB22700FC49A7 /* IAGenericListVC.swift */,
 			);
 			path = Favourite;
 			sourceTree = "<group>";
@@ -266,6 +277,7 @@
 				3445518F1CD5E0F500FE7C47 /* IACollectionsExploreViewCell.swift */,
 				344551901CD5E0F500FE7C47 /* IAItemListCellView.swift */,
 				344551911CD5E0F500FE7C47 /* IASortListTableViewCell.swift */,
+				3490935F1CDCB89100FC49A7 /* IADownloadListCollectionViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -606,8 +618,11 @@
 				34EBA0031C5A42F300E32BFA /* ChapterData.swift in Sources */,
 				34B9A2A01CD8AEAC00C7D9CD /* IADownloadsManager.swift in Sources */,
 				34EB38721C4175150034F3E4 /* FileData.swift in Sources */,
+				3490935C1CDCB0B100FC49A7 /* IADownloadsListVC.swift in Sources */,
+				3490935E1CDCB22700FC49A7 /* IAGenericListVC.swift in Sources */,
 				3473ACBE1CDA7FD2008FE4C9 /* File.swift in Sources */,
 				3473ACB51CDA7EBC008FE4C9 /* ArchiveItem+CoreDataProperties.swift in Sources */,
+				349093601CDCB89100FC49A7 /* IADownloadListCollectionViewCell.swift in Sources */,
 				3445519D1CD5E0F500FE7C47 /* IASortPresentationDelgate.swift in Sources */,
 				344551961CD5E0F500FE7C47 /* IAReaderCollectionViewController.swift in Sources */,
 				3448CFF31CC3901A001CBB31 /* IALoginManager.swift in Sources */,
@@ -628,6 +643,7 @@
 				3410EC2F1C4CAA710093E7C0 /* ArchiveItemData.swift in Sources */,
 				344551921CD5E0F500FE7C47 /* Constants.swift in Sources */,
 				3445519C1CD5E0F500FE7C47 /* IASortPresentationController.swift in Sources */,
+				34E78DDB1CDBCF7A00A25D86 /* IAMainFavouriteListVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

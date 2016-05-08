@@ -18,7 +18,7 @@ class ArchiveItem: NSManagedObject {
     static let managedContext :NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
 
-    static func createArchiveItemWithData(archiveItemData : ArchiveItemData, isFavourite: Bool) {
+    static func createArchiveItemWithData(archiveItemData : ArchiveItemData, isFavourite: Bool)->ArchiveItem? {
         let predicate = NSPredicate(format: "identifier like %@", "\(archiveItemData.identifier!)");
         
         let fetchItemWithSameId = NSFetchRequest(entityName: "ArchiveItem")
@@ -35,6 +35,7 @@ class ArchiveItem: NSManagedObject {
                 item.isFavourite = isFavourite
                 do {
                     try self.managedContext.save()
+                    return item
                 }catch let error as NSError {
                     print("Save managedObjectContext failed: \(error.localizedDescription)")
                 }
@@ -45,7 +46,7 @@ class ArchiveItem: NSManagedObject {
         } catch let error as NSError {
             print("Fetch failed: \(error.localizedDescription)")
         }
-        
+        return nil
     }
     
     static func archiveItem(identifer: String)->ArchiveItem? {

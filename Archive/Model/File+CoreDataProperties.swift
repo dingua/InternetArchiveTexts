@@ -16,7 +16,6 @@ extension File {
 
     @NSManaged var server: String?
     @NSManaged var directory: String?
-    @NSManaged var chapters: Chapter?
+    @NSManaged var chapters: NSSet?
     @NSManaged var archiveItem: ArchiveItem?
-
 }

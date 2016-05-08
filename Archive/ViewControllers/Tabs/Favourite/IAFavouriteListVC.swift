@@ -12,49 +12,17 @@ import DGActivityIndicatorView
 
 private let reuseIdentifier = "FavouriteListCell"
 
-class IAFavouriteListVC: UICollectionViewController, NSFetchedResultsControllerDelegate, IALoadingViewProtocol {
-
-    let managedContext :NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+class IAFavouriteListVC: IAGenericListVC {
     
-    let fetchRequest: NSFetchRequest  = {
-        let fetch = NSFetchRequest(entityName: "ArchiveItem")
-        fetch.predicate = NSPredicate(format: "isFavourite == YES", argumentArray: nil)
-        let sortDescriptor = NSSortDescriptor(key: "identifier", ascending: true)
-        fetch.sortDescriptors = [sortDescriptor]
-        return fetch
-    }()
-    
-    lazy var fetchedResultController: NSFetchedResultsController = {
-        let fetchController =  NSFetchedResultsController(fetchRequest: self.fetchRequest, managedObjectContext: self.managedContext, sectionNameKeyPath: nil, cacheName: nil)
-        fetchController.delegate = self
-        return fetchController
-    }()
-    
-    var blockOperations: [NSBlockOperation] = []
-
-    deinit {
-        // Cancel all block operations when VC deallocates
-        for operation: NSBlockOperation in blockOperations {
-            operation.cancel()
-        }
-        
-        blockOperations.removeAll(keepCapacity: false)
-    }
-    
-    var activityIndicatorView : DGActivityIndicatorView?
-
     override func viewDidLoad() {
-        super.viewDidLoad()
         
-        activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
+        fetchRequest = NSFetchRequest(entityName: "ArchiveItem")
+        fetchRequest.predicate = NSPredicate(format: "isFavourite == YES", argumentArray: nil)
+        let sortDescriptor = NSSortDescriptor(key: "identifier", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
        
-        performFetch()
-        
-        if Utils.isLoggedIn() {
-            loadBookmarks()
-        }
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAFavoritesVC.userDidLogin), name: notificationUserDidLogin, object: nil)
+        super.viewDidLoad()
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -62,6 +30,10 @@ class IAFavouriteListVC: UICollectionViewController, NSFetchedResultsControllerD
         // Dispose of any resources that can be recreated.
     }
 
+    override func loadData() {
+        loadBookmarks()
+    }
+ 
     func loadBookmarks() {
         self.addLoadingView()
         IABookmarkManager.sharedInstance.getBookmarks(NSUserDefaults.standardUserDefaults().stringForKey("userid")!, completion: {_ in
@@ -70,11 +42,6 @@ class IAFavouriteListVC: UICollectionViewController, NSFetchedResultsControllerD
         
     }
     
-    func performFetch() {
-        do {
-            try fetchedResultController.performFetch()
-        }catch{}
-    }
     
     // MARK: - Navigation
 
@@ -115,107 +82,15 @@ class IAFavouriteListVC: UICollectionViewController, NSFetchedResultsControllerD
         return cell
     }
 
-    
-    func controllerWillChangeContent(controller: NSFetchedResultsController) {
-        blockOperations.removeAll(keepCapacity: false)
-    }
-    
-    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
-        
-        if type == NSFetchedResultsChangeType.Insert {
-            print("Insert Object: \(newIndexPath)")
-            
-            blockOperations.append(
-                NSBlockOperation(block: { [weak self] in
-                    if let this = self {
-                        this.collectionView!.insertItemsAtIndexPaths([newIndexPath!])
-                    }
-                    })
-            )
-        }
-        else if type == NSFetchedResultsChangeType.Update {
-            print("Update Object: \(indexPath)")
-            blockOperations.append(
-                NSBlockOperation(block: { [weak self] in
-                    if let this = self {
-                        this.collectionView!.reloadItemsAtIndexPaths([indexPath!])
-                    }
-                    })
-            )
-        }
-        else if type == NSFetchedResultsChangeType.Move {
-            print("Move Object: \(indexPath)")
-            
-            blockOperations.append(
-                NSBlockOperation(block: { [weak self] in
-                    if let this = self {
-                        this.collectionView!.moveItemAtIndexPath(indexPath!, toIndexPath: newIndexPath!)
-                    }
-                    })
-            )
-        }
-        else if type == NSFetchedResultsChangeType.Delete {
-            print("Delete Object: \(indexPath)")
-            
-            blockOperations.append(
-                NSBlockOperation(block: { [weak self] in
-                    if let this = self {
-                        this.collectionView!.deleteItemsAtIndexPaths([indexPath!])
-                    }
-                    })
-            )
-        }
-    }
-    
-    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
-        
-        if type == NSFetchedResultsChangeType.Insert {
-            print("Insert Section: \(sectionIndex)")
-            
-            blockOperations.append(
-                NSBlockOperation(block: { [weak self] in
-                    if let this = self {
-                        this.collectionView!.insertSections(NSIndexSet(index: sectionIndex))
-                    }
-                    })
-            )
-        }
-        else if type == NSFetchedResultsChangeType.Update {
-            print("Update Section: \(sectionIndex)")
-            blockOperations.append(
-                NSBlockOperation(block: { [weak self] in
-                    if let this = self {
-                        this.collectionView!.reloadSections(NSIndexSet(index: sectionIndex))
-                    }
-                    })
-            )
-        }
-        else if type == NSFetchedResultsChangeType.Delete {
-            print("Delete Section: \(sectionIndex)")
-            
-            blockOperations.append(
-                NSBlockOperation(block: { [weak self] in
-                    if let this = self {
-                        this.collectionView!.deleteSections(NSIndexSet(index: sectionIndex))
-                    }
-                    })
-            )
-        }
-    }
-    
-    func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        collectionView!.performBatchUpdates({ () -> Void in
-            for operation: NSBlockOperation in self.blockOperations {
-                operation.start()
-            }
-            }, completion: { (finished) -> Void in
-                self.blockOperations.removeAll(keepCapacity: false)
-        })
+    func collectionView(collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                               sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        return Utils.isiPad() ? CGSizeMake(235, 394) : CGSizeMake(min(self.view.frame.size.width/2-10,self.view.frame.size.height/2-10), 250)
     }
 
     //MARK: - Notification
     
-    func userDidLogin() {
+    override func userDidLogin() {
         self.loadBookmarks()
     }
 }

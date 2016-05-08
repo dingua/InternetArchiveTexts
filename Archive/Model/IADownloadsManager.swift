@@ -47,11 +47,10 @@ class IADownloadsManager {
         Alamofire.download(.GET, "https://\(file.server!)\(file.directory!)/\(chapter.subdirectory!)_\(type!).zip", destination: destination)
             .response { request, response, _, error in
                 print("unzeep succeed = \(SSZipArchive.unzipFileAtPath((destination(NSURL(string: "")!, response!).absoluteString as NSString).substringFromIndex(7), toDestination: "\(self.docuementsDirectory())"))")
-                NSUserDefaults.standardUserDefaults().setBool(true, forKey: "\(chapter.subdirectory!)_\(type!)")
-
                 self.filesQueue?.indexOf({$0.file?.identifier == file.identifier && $0.chapter?.name == chapter.name}).map({
                     if let file = self.filesQueue![$0].file {
                         self.saveStoredFile(file)
+                        Chapter.markChapterDownloaded(chapter.name!, itemId: file.identifier!)
                     }
                     self.filesQueue!.removeAtIndex($0)
                     if self.filesQueue?.count == 0 {IATabBarController.sharedInstance.downloadProgress = 0}
@@ -69,9 +68,11 @@ class IADownloadsManager {
     }
     
     private func saveStoredFile(file : FileData!) {
-        let fileData = NSKeyedArchiver.archivedDataWithRootObject(file)
-        NSUserDefaults.standardUserDefaults().setObject(fileData, forKey: "file_\(file.identifier!)")
-        NSUserDefaults.standardUserDefaults().synchronize()
+        File.createFileWithData(file)
+    }
+    
+    func getDownloadedChapters()->NSArray? {
+        return Chapter.getDownloadedChapters()
     }
     
     //MARK: - Helpers

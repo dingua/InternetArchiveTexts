@@ -43,7 +43,7 @@ class IABookImagesManager: NSObject {
         maximumActiveDownloads: 4,
         imageCache: AutoPurgingImageCache()
     )
-
+    
     var requests : Array<Alamofire.Request>?
     var pages : [String]?
     private var _numberOfPages : Int?
@@ -52,16 +52,9 @@ class IABookImagesManager: NSObject {
             if let numberOfPages = self._numberOfPages {
                 return numberOfPages
             }
-            if let subdirectory = self.chapter.subdirectory , type = type {
-                let isStored = NSUserDefaults.standardUserDefaults().boolForKey("\(subdirectory)_\(type)")
-                if isStored {
-                    if let unarchivedObject = NSUserDefaults.standardUserDefaults().objectForKey("file_\(self.file.identifier!)") as? NSData {
-                        let file =  NSKeyedUnarchiver.unarchiveObjectWithData(unarchivedObject) as! FileData
-                        self._numberOfPages = file.chapters![chapterIndex].numberOfPages!
-                        return self._numberOfPages
-                    }else {
-                        return getNumberPages()
-                    }
+            if Chapter.isDownloadedChapter(self.chapter.name!) {
+                if let chapter = Chapter.createChapter(self.chapter, file: File.createFileWithData(self.file)!) {
+                    return chapter.numberOfPages?.integerValue
                 }else {
                     return getNumberPages()
                 }
@@ -90,11 +83,11 @@ class IABookImagesManager: NSObject {
     func urlOfPage(number: Int) -> String{
         return urlOfPage(Int(pages![number])!,scale: 2)
     }
-
+    
     func urlOfPage(number: Int, scale: Int) -> String{
         return "https://\(file.server!)\(readerMethod)zip=\(file.directory!)/\(chapter.subdirectory!)_\(type!).zip&file=\(chapter.subdirectory!)_\(type!)/\(chapter.subdirectory!)_\(String(format: "%04d", number)).\(type!)&scale=\(scale)"
     }
-
+    
     func getImages(offset: Int, count:Int,updateImage:(index: Int, image: UIImage)->() , completion:()->()) {
         guard pages != nil && pages?.count>0 else{return}
         let group = dispatch_group_create();
@@ -126,13 +119,12 @@ class IABookImagesManager: NSObject {
                 completion(page: number, image: UIImage(data: NSData(contentsOfFile: "\(self.docuementsDirectory())/\(self.chapter.subdirectory!)_\(type!)/\(chapter.subdirectory!)_\(String(format: "%04d", number)).\(type!)")!)!)
             }else {
                 self.downloadImageAtIndex(number, updateImage: completion)
-        }
+            }
         }
     }
     
     func imageOfPage(number: Int, scale: Int,completion:(image: UIImage , page: Int)->()){
-        let isStored = NSUserDefaults.standardUserDefaults().boolForKey("\(self.chapter.subdirectory!)_\(type!)")
-        if isStored {
+        if isChapterStored() {
             completion(image: UIImage(data: NSData(contentsOfFile: "\(self.docuementsDirectory())/\(self.chapter.subdirectory)/\(String(format: "%04d", number)).\(type!)")!)!,page: number)
         }else {
             imageDownloader.downloadImage(URLRequest: NSURLRequest(URL:NSURL(string: urlOfPage(number))!)) { response in
@@ -141,7 +133,7 @@ class IABookImagesManager: NSObject {
                 }
             }
         }
-    
+        
     }
     
     func downloadImageAtIndex(index: Int, updateImage:(index: Int, image: UIImage)->()) -> RequestReceipt? {
@@ -152,7 +144,7 @@ class IABookImagesManager: NSObject {
         }
         
     }
-
+    
     //MARK: - Get Number Of Pages
     
     func getNumberPages() -> Int? {
@@ -172,14 +164,14 @@ class IABookImagesManager: NSObject {
         return self._numberOfPages
     }
     
-    //MARK: - Get Pages 
+    //MARK: - Get Pages
     
     func getPages(completion : ([String])->()) {
         let scandataURL = "https://\(file.server!)\(file.directory!)/\(chapter.scandata!)"
         Alamofire.request(Utils.requestWithURL(scandataURL)).response { (request, response, data, error) in
             do{
                 let tbxml =  try TBXML(XMLData: data, error: ())
-                let rootEl = tbxml.rootXMLElement 
+                let rootEl = tbxml.rootXMLElement
                 let pageData = TBXML.childElementNamed("pageData", parentElement: rootEl)
                 var  page = TBXML.childElementNamed("page", parentElement: pageData)
                 self.pages = []
@@ -226,6 +218,6 @@ class IABookImagesManager: NSObject {
     }
     
     func isChapterStored()->Bool {
-        return NSUserDefaults.standardUserDefaults().boolForKey("\(self.chapter.subdirectory!)_\(type!)")
+        return Chapter.isDownloadedChapter(chapter.name!)
     }
 }

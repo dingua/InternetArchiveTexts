@@ -31,14 +31,12 @@
     
     //MARK: - File Details
     
-    func getFileDetails(identifier: String, completion:(FileData)->()){
+    func getFileDetails(archiveItem: ArchiveItemData, completion:(FileData)->()){
         
-        if let unarchivedObject = NSUserDefaults.standardUserDefaults().objectForKey("file_\(identifier)") as? NSData {
-            let file =  NSKeyedUnarchiver.unarchiveObjectWithData(unarchivedObject) as! FileData
-            return completion(file)
-
+        if let file = ArchiveItem.archiveItem(archiveItem.identifier!)?.file {
+            return completion(FileData(file: file))
         }else {
-            let url = "\(baseURL)/metadata/\(identifier)"
+            let url = "\(baseURL)/metadata/\(archiveItem.identifier!)"
             Alamofire.request(Utils.requestWithURL(url))
                 .responseJSON { response in
                     if let value = response.result.value {
@@ -65,10 +63,11 @@
                             return
                         }
                         
-                        let file = FileData(identifier: identifier)
+                        let file = FileData(identifier: archiveItem.identifier!)
                         file.server = server.allowdStringForURL()
                         file.directory = directory.allowdStringForURL()
                         file.chapters = chapters
+                        file.archiveItem = archiveItem
                         completion(file)
                     }
             }

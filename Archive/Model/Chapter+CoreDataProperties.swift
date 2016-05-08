@@ -17,8 +17,9 @@ extension Chapter {
     @NSManaged var name: String?
     @NSManaged var zipFile: String?
     @NSManaged var subdirectory: String?
-    @NSManaged var type: NSNumber?
+    @NSManaged var type: String?
     @NSManaged var numberOfPages: NSNumber?
     @NSManaged var file: File?
-
+    @NSManaged var isDownloaded: NSNumber?
+    @NSManaged var scandata: String?
 }

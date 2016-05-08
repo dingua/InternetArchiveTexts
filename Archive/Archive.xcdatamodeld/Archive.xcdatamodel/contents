@@ -11,10 +11,12 @@
         <relationship name="file" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="File" inverseName="archiveItem" inverseEntity="File" syncable="YES"/>
     </entity>
     <entity name="Chapter" representedClassName=".Chapter" syncable="YES">
+        <attribute name="isDownloaded" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="numberOfPages" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="scandata" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="subdirectory" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="type" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="zipFile" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="file" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="File" inverseName="chapters" inverseEntity="File" syncable="YES"/>
     </entity>
@@ -22,11 +24,11 @@
         <attribute name="directory" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="server" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="archiveItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ArchiveItem" inverseName="file" inverseEntity="ArchiveItem" syncable="YES"/>
-        <relationship name="chapters" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Chapter" inverseName="file" inverseEntity="Chapter" syncable="YES"/>
+        <relationship name="chapters" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Chapter" inverseName="file" inverseEntity="Chapter" syncable="YES"/>
     </entity>
     <elements>
         <element name="ArchiveItem" positionX="-63" positionY="-18" width="128" height="165"/>
+        <element name="Chapter" positionX="-45" positionY="54" width="128" height="165"/>
         <element name="File" positionX="-54" positionY="45" width="128" height="105"/>
-        <element name="Chapter" positionX="-45" positionY="54" width="128" height="135"/>
     </elements>
 </model>

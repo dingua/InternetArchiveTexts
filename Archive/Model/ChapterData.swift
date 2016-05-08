@@ -40,6 +40,15 @@ class ChapterData: NSObject, NSCoding {
         self.subdirectory = zipFile.substringToIndex((zipFile.rangeOfString("_\((self.type?.rawValue.lowercaseString)!).zip")?.startIndex)!).allowdStringForURL()
     }
 
+    init(chapter: Chapter) {
+        self.name = chapter.name
+        self.zipFile = chapter.zipFile
+        self.scandata = chapter.scandata
+        self.type = FileType(rawValue: chapter.type!)
+        self.numberOfPages = chapter.numberOfPages?.integerValue
+        self.subdirectory = chapter.subdirectory
+        self.scandata = (zipFile.substringToIndex((zipFile.rangeOfString("_\((self.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)+"_scandata.xml").allowdStringForURL()
+    }
     
     required init(coder aDecoder : NSCoder) {
         self.name = (aDecoder.decodeObjectForKey("name") as? String)

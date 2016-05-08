@@ -15,8 +15,8 @@ class File: NSManagedObject {
     static let managedContext :NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     
-    static func createFileWithData(fileData : FileData) {
-        let predicate = NSPredicate(format: "identifier like %@", "\(fileData.identifier!)");
+    static func createFileWithData(fileData : FileData)->File? {
+        let predicate = NSPredicate(format: "self.archiveItem.identifier like %@", "\(fileData.identifier!)");
         
         let fetchItemWithSameId = NSFetchRequest(entityName: "File")
         
@@ -30,19 +30,30 @@ class File: NSManagedObject {
                 item.directory = fileData.directory
                 if let archiveItem = ArchiveItem.archiveItem(fileData.identifier) {
                     item.archiveItem = archiveItem
+                }else {
+                    if let archiveItem =  ArchiveItem.createArchiveItemWithData(fileData.archiveItem!, isFavourite: false) {
+                        item.archiveItem = archiveItem
+                    }
+                    
                 }
+                
+                item.chapters?.setByAddingObjectsFromArray(fileData.chapters!.map({Chapter.createChapter($0, file: item)!}))
+
                 do {
                     try self.managedContext.save()
+                    return item
                 }catch let error as NSError {
                     print("Save managedObjectContext failed: \(error.localizedDescription)")
                 }
-            }else if (fetchedItems!.count > 1) {
+            }else {
                 print("ERROR DUPLICATED FILE ITEMS WITH ID : \(fileData.identifier!)")
+                return fetchedItems?.firstObject as? File
             }
             
         } catch let error as NSError {
             print("Fetch failed: \(error.localizedDescription)")
         }
+        return nil
     }
 
 }

@@ -50,7 +50,6 @@ class IAItemListCellView : UICollectionViewCell {
     func configureWithArchiveItem(book: ArchiveItem) {
         self.bookTitleLabel.text = book.title
         self.bookImageView.image = nil
-        self.bookImageView.image = nil
         if let url = NSURL(string: "\(imageBaseURL)\(book.identifier!)") {
             self.bookImageView.af_setImageWithURL(url)
         }

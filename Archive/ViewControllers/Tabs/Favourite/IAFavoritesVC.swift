@@ -63,15 +63,8 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
     
     func userDidLogin() {
         updateNavigationItem()
-        if itemsListVC != nil {
-            favouriteLoginContainerView.hidden = true
-            favouriteListContainerView.hidden = false
-            if let username = NSUserDefaults.standardUserDefaults().stringForKey("userid") {
-//                itemsListVC!.loadList("fav-\(username)", type: .Collection)
-            }
-        }else {
-            self.performSegueWithIdentifier("favoritesList", sender: nil)
-        }
+        favouriteLoginContainerView.hidden = true
+        favouriteListContainerView.hidden = false
     }
 
     func userDidLogout() {

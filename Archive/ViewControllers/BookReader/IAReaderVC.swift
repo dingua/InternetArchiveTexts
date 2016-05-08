@@ -65,9 +65,9 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image:UIImage(named: "close_reader"), style: .Plain, target: self, action: #selector(IAReaderVC.dismissViewController))
-        if Utils.isLoggedIn() {
+//        if Utils.isLoggedIn() {
             self.addDownloadButton()
-        }
+//        }
         progressSlider.setThumbImage(UIImage(named: "roundSliderThumb")  ,forState: .Normal)
         progressSlider.userInteractionEnabled = false
         //Get File Details from MetaData WS
@@ -76,7 +76,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     func getFileDetails() {
         self.addLoadingView()
-        archiveItemsManager.getFileDetails(bookIdentifier) { (file) -> () in
+        archiveItemsManager.getFileDetails(item!) { (file) -> () in
             self.removeLoadingView()
             if file.identifier == "" {
                 let alert = UIAlertController(title: "Error", message: "Can not preview this file!", preferredStyle: .Alert)
@@ -255,6 +255,8 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     }
     
     func downloadChapterFiles() {
+        startDownloading()
+        return
         if self.isFavourite() {
             startDownloading()
         }else {
@@ -388,15 +390,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     
     func isFavourite()->Bool {
-        if let favouriteList = NSUserDefaults.standardUserDefaults().objectForKey(favouriteListIds) as? [String] {
-            if !favouriteList.contains(self.bookIdentifier!) {
-                return false
-            }else {
-                return true
-            }
-            
-        }else {
-            return false
-        }
+        return ArchiveItem.isFavouriteItem(bookIdentifier)
     }
 }

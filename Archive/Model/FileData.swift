@@ -10,6 +10,7 @@ import UIKit
 
 class FileData: NSObject, NSCoding {
     var identifier: String!
+    var archiveItem: ArchiveItemData?
     var server: String?
     var directory: String?
     var subdirectory: String?
@@ -22,6 +23,12 @@ class FileData: NSObject, NSCoding {
         self.identifier = identifier.allowdStringForURL()
     }
     
+    init (file: File) {
+        identifier = file.archiveItem?.identifier
+        server = file.server
+        directory = file.directory
+        self.chapters = file.chapters!.map({ChapterData(chapter: $0 as! Chapter)})
+    }
     required init(coder aDecoder : NSCoder) {
         self.identifier = aDecoder.decodeObjectForKey("identifier") as! String
         self.server = aDecoder.decodeObjectForKey("server") as? String

@@ -37,6 +37,11 @@ class Utils {
         request.cachePolicy = Utils.suitableCacheConfiguration()
         return request
     }
+    
+    static func docuementsDirectory()->String {
+        let paths =  NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+        return paths[0]
+    }
 }
 
 
