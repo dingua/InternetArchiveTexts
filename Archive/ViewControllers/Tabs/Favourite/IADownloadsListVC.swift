@@ -12,13 +12,14 @@ import CoreData
 private let reuseIdentifier = "DownloadListCell"
 
 class IADownloadsListVC: IAGenericListVC {
-    override func viewDidLoad() {
-        fetchRequest = NSFetchRequest(entityName: "Chapter")
-        fetchRequest.predicate = NSPredicate(format: "isDownloaded == YES", argumentArray: nil)
-        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
+    var presentationDelegate =  IASortPresentationDelgate()
 
-        
+    
+    override func viewDidLoad() {
+        fetchRequest = NSFetchRequest(entityName: "ArchiveItem")
+        fetchRequest.predicate = NSPredicate(format: "ANY file.chapters.isDownloaded == YES", argumentArray: nil)
+        let sortDescriptor = NSSortDescriptor(key: "identifier", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
         super.viewDidLoad()
     }
 
@@ -51,8 +52,10 @@ class IADownloadsListVC: IAGenericListVC {
 
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! IADownloadListCollectionViewCell
-        let chapter = fetchedResultController.objectAtIndexPath(indexPath) as? Chapter
-        cell.configureCell(chapter!)
+        let archiveItem = fetchedResultController.objectAtIndexPath(indexPath) as? ArchiveItem
+        cell.configureCell(archiveItem!, downloadCompletion: {
+            self.showChaptersList(archiveItem!)
+        })
         return cell
     }
 
@@ -61,5 +64,31 @@ class IADownloadsListVC: IAGenericListVC {
                                sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         return Utils.isiPad() ? CGSizeMake(235, 394) : CGSizeMake(min(self.view.frame.size.width/2-10,self.view.frame.size.height/2-10), 300)
     }
+    
+    //MARK: - Show CHapters
+    
+    func showChaptersList(item: ArchiveItem) {
+        let chaptersListVC = self.storyboard?.instantiateViewControllerWithIdentifier("IADownloadedChaptersListVC") as! IADownloadedChaptersListVC
+        chaptersListVC.transitioningDelegate = presentationDelegate;
+        chaptersListVC.chapters = (item.file?.chapters?.allObjects as! [Chapter]).sort({ $0.name < $1.name})
+        chaptersListVC.modalPresentationStyle = .Custom
+        self.presentViewController(chaptersListVC, animated: true, completion: nil)
+    }
+    
+    // MARK: - Navigation
+    
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "showReader" {
+            let selectedIndex = self.collectionView?.indexPathForCell(sender as! IADownloadListCollectionViewCell)
+            let bookReaderNavController = segue.destinationViewController as! UINavigationController
+            let bookReader = bookReaderNavController.topViewController as! IAReaderVC
+            let item = fetchedResultController.objectAtIndexPath(selectedIndex!) as! ArchiveItem
+            bookReader.bookIdentifier = item.identifier!
+            bookReader.bookTitle = item.title
+            bookReader.item = ArchiveItemData(item: item)
+        }
+    }
+
     
 }

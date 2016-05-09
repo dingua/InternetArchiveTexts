@@ -12,6 +12,7 @@
     </entity>
     <entity name="Chapter" representedClassName=".Chapter" syncable="YES">
         <attribute name="isDownloaded" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isDownloading" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="numberOfPages" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="scandata" optional="YES" attributeType="String" syncable="YES"/>
@@ -28,7 +29,7 @@
     </entity>
     <elements>
         <element name="ArchiveItem" positionX="-63" positionY="-18" width="128" height="165"/>
-        <element name="Chapter" positionX="-45" positionY="54" width="128" height="165"/>
+        <element name="Chapter" positionX="-45" positionY="54" width="128" height="180"/>
         <element name="File" positionX="-54" positionY="45" width="128" height="105"/>
     </elements>
 </model>

@@ -28,6 +28,7 @@ class Chapter: NSManagedObject {
             if (fetchedItems!.count != 0) {
                 let chapter = fetchedItems?.firstObject as! Chapter
                 chapter.isDownloaded = NSNumber(bool: true)
+                chapter.isDownloading = NSNumber(bool: false)
                try self.managedContext.save()
             }
         } catch let error as NSError {
@@ -35,6 +36,26 @@ class Chapter: NSManagedObject {
         }
     }
     
+    static func markChapterDownloadingState(chapterName: String, itemId: String) {
+        let predicate = NSPredicate(format: "name like %@", "\(chapterName)");
+        
+        let fetchRequest = NSFetchRequest(entityName: "Chapter")
+        fetchRequest.predicate = predicate
+        let fetchedItems : NSArray?
+        do {
+            fetchedItems = try self.managedContext.executeFetchRequest(fetchRequest)
+            if (fetchedItems!.count != 0) {
+                let chapter = fetchedItems?.firstObject as! Chapter
+                chapter.isDownloaded = NSNumber(bool: false)
+                chapter.isDownloading = NSNumber(bool: true)
+                try self.managedContext.save()
+            }
+        } catch let error as NSError {
+            print("Fetch failed: \(error.localizedDescription)")
+        }
+    }
+    
+
     static func createChapter(chapterData: ChapterData, file: File)->Chapter? {
         let predicate = NSPredicate(format: "name like %@", "\(chapterData.name!)");
         
@@ -52,6 +73,7 @@ class Chapter: NSManagedObject {
                 item.type = chapterData.type?.rawValue
                 item.numberOfPages = chapterData.numberOfPages
                 item.isDownloaded = NSNumber(bool: false)
+                item.isDownloading = NSNumber(bool: false)
                 item.file = file
                 do {
                     try self.managedContext.save()
@@ -71,6 +93,21 @@ class Chapter: NSManagedObject {
     
     static func getDownloadedChapters() -> NSArray? {
         let predicate = NSPredicate(format: "isDownloaded == YES");
+        
+        let fetchRequest = NSFetchRequest(entityName: "Chapter")
+        fetchRequest.predicate = predicate
+        let fetchedItems : NSArray?
+        do {
+            fetchedItems = try self.managedContext.executeFetchRequest(fetchRequest)
+            return fetchedItems
+        } catch let error as NSError {
+            print("Fetch failed: \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
+    static func getChaptersInDownloadState() -> NSArray? {
+        let predicate = NSPredicate(format: "isDownloading == YES");
         
         let fetchRequest = NSFetchRequest(entityName: "Chapter")
         fetchRequest.predicate = predicate

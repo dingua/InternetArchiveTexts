@@ -122,7 +122,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                 }
                 self.imagesDownloader = IABookImagesManager(file: self.file!, chapterIndex: self.selectedChapterIndex)
               
-                let chapter = file.chapters![chapterIndex]
+                let chapter = file.chapters!.sort({$0.name < $1.name})[chapterIndex]
                 
                 if  let nbrPages = self.imagesDownloader!.numberOfPages {
                     self.numberOfPages = Int(nbrPages)
@@ -245,7 +245,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     @IBAction func chaptersButtonPressed(sender: AnyObject) {
         let chaptersListVC = self.storyboard?.instantiateViewControllerWithIdentifier("chaptersListVC") as! IAReaderChaptersListVC
         chaptersListVC.transitioningDelegate = sortPresentationDelegate;
-        chaptersListVC.chapters = file?.chapters
+        chaptersListVC.chapters = (file?.chapters as [ChapterData]?)?.sort({$0.name < $1.name})
         chaptersListVC.chapterSelectionHandler = { chapterIndex in
             self.setupReaderToChapter(chapterIndex)
         }
@@ -256,20 +256,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     func downloadChapterFiles() {
         startDownloading()
-        return
-        if self.isFavourite() {
-            startDownloading()
-        }else {
-            let alert = UIAlertController(title: "Download", message: "To download, you need to add this book to your favourite list", preferredStyle: .Alert )
-            let action = UIAlertAction(title: "Yes", style: .Default , handler: { _ in
-                IABookmarkManager.sharedInstance.addBookmark(self.item!, completion: { _ in
-                    self.startDownloading()
-                })
-            })
-            alert.addAction(action)
-            alert.addAction(UIAlertAction(title: "No", style: .Cancel, handler: {_ in}))
-            self.presentViewController(alert, animated: true, completion: nil)
-        }
     }
     
     func startDownloading() {

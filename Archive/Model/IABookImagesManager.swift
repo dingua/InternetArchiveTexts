@@ -73,7 +73,7 @@ class IABookImagesManager: NSObject {
         
         self.file = file
         self.chapterIndex = chapterIndex
-        self.chapter = self.file.chapters![chapterIndex]
+        self.chapter = self.file.chapters!.sort({$0.name < $1.name})[chapterIndex]
         self.type = self.chapter.type?.rawValue.lowercaseString
         self.requests = Array()
     }

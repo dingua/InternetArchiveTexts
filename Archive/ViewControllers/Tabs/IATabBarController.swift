@@ -29,6 +29,21 @@ class IATabBarController: UITabBarController {
         }
     }
     
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+//        addProgressView()
+        let downloadsToResume =  IADownloadsManager.sharedInstance.getChaptersInDownloadState()
+        if downloadsToResume?.count > 0 {
+            let alertView = UIAlertController(title: "Resume Download", message: "There are chapters where downloads are not accomplished yet, do you want to resume the downloads ?", preferredStyle: .Alert)
+            alertView.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { (_) in
+                IADownloadsManager.sharedInstance.resumeDownloads()
+            }))
+            alertView.addAction(UIAlertAction(title: "No", style: .Cancel, handler: {_ in}))
+            self.presentViewController(alertView, animated: true, completion: nil)
+        }
+    }
+    
     func addProgressView() {
         let window = UIApplication.sharedApplication().keyWindow!
         progressView = UIProgressView(progressViewStyle: .Default)

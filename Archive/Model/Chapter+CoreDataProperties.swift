@@ -21,5 +21,6 @@ extension Chapter {
     @NSManaged var numberOfPages: NSNumber?
     @NSManaged var file: File?
     @NSManaged var isDownloaded: NSNumber?
+    @NSManaged var isDownloading: NSNumber?
     @NSManaged var scandata: String?
 }
