@@ -6,7 +6,6 @@
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
@@ -48,9 +47,6 @@
                                             <constraint firstAttribute="height" constant="30" id="T2E-42-Ubc"/>
                                         </constraints>
                                         <state key="normal" title="Button"/>
-                                        <connections>
-                                            <segue destination="8o2-sy-kOQ" kind="presentation" identifier="presentCollection" id="nxn-68-Vh7"/>
-                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -660,102 +656,6 @@
             </objects>
             <point key="canvasLocation" x="-970" y="4923"/>
         </scene>
-        <!--Reader Collection View Controller-->
-        <scene sceneID="XYt-Cb-fXR">
-            <objects>
-                <collectionViewController storyboardIdentifier="ReaderCollection" id="eNA-m5-259" customClass="IAReaderCollectionViewController" customModule="Archive" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="irj-qR-omh">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="7ml-jD-Da6">
-                            <size key="itemSize" width="103" height="135"/>
-                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                        </collectionViewFlowLayout>
-                        <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ReaderCell" id="sly-u2-8H0" customClass="IAReaderCollectionCellView" customModule="Archive" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="44" width="103" height="135"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="103" height="135"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bwR-OF-R8D">
-                                            <rect key="frame" x="0.0" y="0.0" width="103" height="115"/>
-                                        </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XlT-eX-Xg5">
-                                            <rect key="frame" x="0.0" y="120" width="103" height="13"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="15" id="swS-vg-TxO"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <nil key="highlightedColor"/>
-                                            <variation key="default">
-                                                <mask key="constraints">
-                                                    <exclude reference="swS-vg-TxO"/>
-                                                </mask>
-                                            </variation>
-                                        </label>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                                <color key="backgroundColor" red="0.87440621893335069" green="0.32825072114329834" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstItem="XlT-eX-Xg5" firstAttribute="leading" secondItem="sly-u2-8H0" secondAttribute="leading" id="025-5M-3Um"/>
-                                    <constraint firstItem="bwR-OF-R8D" firstAttribute="height" secondItem="sly-u2-8H0" secondAttribute="height" multiplier="0.85" id="7jf-h6-9NT"/>
-                                    <constraint firstAttribute="bottom" secondItem="XlT-eX-Xg5" secondAttribute="bottom" constant="2" id="PhP-mo-54a"/>
-                                    <constraint firstItem="bwR-OF-R8D" firstAttribute="centerY" secondItem="sly-u2-8H0" secondAttribute="centerYWithinMargins" id="acm-47-Mwh"/>
-                                    <constraint firstItem="XlT-eX-Xg5" firstAttribute="width" secondItem="sly-u2-8H0" secondAttribute="width" id="cC4-1P-KeJ"/>
-                                    <constraint firstItem="XlT-eX-Xg5" firstAttribute="height" secondItem="sly-u2-8H0" secondAttribute="height" multiplier="0.1" id="dCy-1D-ktg"/>
-                                    <constraint firstItem="bwR-OF-R8D" firstAttribute="top" secondItem="sly-u2-8H0" secondAttribute="top" id="iHK-ek-Fkh"/>
-                                    <constraint firstItem="bwR-OF-R8D" firstAttribute="width" secondItem="sly-u2-8H0" secondAttribute="width" id="iMD-Ur-RDs"/>
-                                    <constraint firstItem="bwR-OF-R8D" firstAttribute="centerX" secondItem="sly-u2-8H0" secondAttribute="centerXWithinMargins" id="o47-lh-e7E"/>
-                                    <constraint firstItem="bwR-OF-R8D" firstAttribute="leading" secondItem="sly-u2-8H0" secondAttribute="leading" id="xkm-Ne-x20"/>
-                                </constraints>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="acm-47-Mwh"/>
-                                        <exclude reference="o47-lh-e7E"/>
-                                    </mask>
-                                </variation>
-                                <connections>
-                                    <outlet property="imageView" destination="bwR-OF-R8D" id="yNy-MT-gWv"/>
-                                    <outlet property="pageNumberLabel" destination="XlT-eX-Xg5" id="RPA-Nh-RMQ"/>
-                                </connections>
-                            </collectionViewCell>
-                        </cells>
-                        <connections>
-                            <outlet property="dataSource" destination="eNA-m5-259" id="d3g-cE-gCL"/>
-                            <outlet property="delegate" destination="eNA-m5-259" id="JVc-k5-5eg"/>
-                        </connections>
-                    </collectionView>
-                    <navigationItem key="navigationItem" id="jvk-g9-fmn"/>
-                </collectionViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="43v-j9-ZhO" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="4417" y="3499"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="857-h6-v8Z">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="8o2-sy-kOQ" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="CmM-rQ-V8L">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="eNA-m5-259" kind="relationship" relationship="rootViewController" id="sGN-ZY-kKb"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="qsd-mB-Ijk" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3753" y="3491"/>
-        </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="8YW-ks-FTa">
             <objects>
@@ -959,70 +859,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="52V-xK-RWM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="153" y="1926"/>
-        </scene>
-        <!--LoginVC-->
-        <scene sceneID="jzm-eg-iwq">
-            <objects>
-                <viewController id="I8V-Vu-vFj" customClass="IALoginVC" customModule="Archive" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="dNy-f4-0KR"/>
-                        <viewControllerLayoutGuide type="bottom" id="YIU-RD-JbP"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Hqg-zY-Alm">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="v3f-FH-149">
-                                <rect key="frame" x="150" y="389" width="300" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="300" id="owN-pn-7JA"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Internet-Archive-Logo" translatesAutoresizingMaskIntoConstraints="NO" id="E6m-dF-6db">
-                                <rect key="frame" x="224" y="70" width="153" height="153"/>
-                            </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cap-Iy-4Wz">
-                                <rect key="frame" x="258" y="449" width="85" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="85" id="1S1-U7-d5s"/>
-                                    <constraint firstAttribute="height" constant="30" id="cnz-Ss-Dgr"/>
-                                </constraints>
-                                <state key="normal" title="Login"/>
-                                <connections>
-                                    <action selector="login:" destination="I8V-Vu-vFj" eventType="touchUpInside" id="Yd3-ev-U4X"/>
-                                </connections>
-                            </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xFT-gK-AXt">
-                                <rect key="frame" x="150" y="323" width="300" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="300" id="Oyv-Zv-iYc"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="v3f-FH-149" firstAttribute="centerX" secondItem="Hqg-zY-Alm" secondAttribute="centerX" id="0GQ-BC-qCx"/>
-                            <constraint firstItem="E6m-dF-6db" firstAttribute="top" secondItem="dNy-f4-0KR" secondAttribute="bottom" constant="50" id="9au-XG-7ie"/>
-                            <constraint firstItem="E6m-dF-6db" firstAttribute="centerX" secondItem="Hqg-zY-Alm" secondAttribute="centerX" id="BLh-l5-URI"/>
-                            <constraint firstItem="cap-Iy-4Wz" firstAttribute="top" secondItem="v3f-FH-149" secondAttribute="bottom" constant="30" id="Bmp-Hb-ndS"/>
-                            <constraint firstItem="xFT-gK-AXt" firstAttribute="top" secondItem="E6m-dF-6db" secondAttribute="bottom" constant="100" id="EBd-xo-XCb"/>
-                            <constraint firstItem="cap-Iy-4Wz" firstAttribute="centerX" secondItem="Hqg-zY-Alm" secondAttribute="centerX" id="g1i-LS-MIv"/>
-                            <constraint firstItem="xFT-gK-AXt" firstAttribute="centerX" secondItem="Hqg-zY-Alm" secondAttribute="centerX" id="pxu-0t-4DF"/>
-                            <constraint firstItem="v3f-FH-149" firstAttribute="top" secondItem="xFT-gK-AXt" secondAttribute="bottom" constant="36" id="vy8-T6-fmA"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="passwordField" destination="v3f-FH-149" id="vcF-hX-hzH"/>
-                        <outlet property="usernameField" destination="xFT-gK-AXt" id="YzI-gA-cbw"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="IFd-YW-1X7" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="911" y="1926"/>
         </scene>
         <!--LoginVC-->
         <scene sceneID="Nex-um-YT5">
@@ -1529,7 +1365,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Internet-Archive-Logo" width="153" height="153"/>
         <image name="Login Button" width="100" height="55"/>
         <image name="done_btn" width="32" height="32"/>
         <image name="down_sort" width="32" height="32"/>
@@ -1541,7 +1376,7 @@
         <image name="sort" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="hcH-bk-YTz"/>
         <segue reference="tge-dc-5FS"/>
+        <segue reference="yM6-r5-4I3"/>
     </inferredMetricsTieBreakers>
 </document>
