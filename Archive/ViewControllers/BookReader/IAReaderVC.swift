@@ -64,9 +64,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image:UIImage(named: "close_reader"), style: .Plain, target: self, action: #selector(IAReaderVC.dismissViewController))
-//        if Utils.isLoggedIn() {
-            self.addDownloadButton()
-//        }
         progressSlider.setThumbImage(UIImage(named: "roundSliderThumb")  ,forState: .Normal)
         progressSlider.userInteractionEnabled = false
         //Get File Details from MetaData WS
@@ -88,6 +85,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
 //                return
 //            }
             self.item!.file = file
+            self.addDownloadButton()
             if (file.chapters?.count)! > 0 {
                 self.setupReaderToChapter(0)
             }
@@ -376,7 +374,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                 return
             }
             self.pageNumberLabel.text = "\(self.pageNumber+1)/\(self.numberOfPages)"
-            let percentage = Float(self.pageNumber)/Float(self.numberOfPages) as Float?
+            let percentage = Float(self.pageNumber)/Float(self.numberOfPages-1) as Float?
             self.progressSlider.value = percentage!
             self.pageNumberLabel.hidden = false
             self.progressSlider.hidden = false
