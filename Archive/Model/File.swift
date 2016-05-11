@@ -9,51 +9,48 @@
 import Foundation
 import CoreData
 import UIKit
+import SwiftyJSON
 
 class File: NSManagedObject {
 
-    static let managedContext :NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    static let managedContext :NSManagedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
     
-    
-    static func createFileWithData(fileData : FileData)->File? {
-        let predicate = NSPredicate(format: "self.archiveItem.identifier like %@", "\(fileData.identifier!)");
+    static func createFile(dictionary: [String:AnyObject], archiveItem: ArchiveItem, managedObjectContext : NSManagedObjectContext, temporary: Bool)->File? {
+        let predicate = NSPredicate(format: "self.archiveItem.identifier like %@", "\(archiveItem.identifier!)")
         
         let fetchItemWithSameId = NSFetchRequest(entityName: "File")
         
         fetchItemWithSameId.predicate = predicate
         let fetchedItems : NSArray?
         do {
-            fetchedItems = try self.managedContext.executeFetchRequest(fetchItemWithSameId)
+            fetchedItems = try managedObjectContext.executeFetchRequest(fetchItemWithSameId)
             if (fetchedItems!.count == 0) {
-                let item = NSEntityDescription.insertNewObjectForEntityForName("File", inManagedObjectContext: managedContext) as! File
-                item.server = fileData.server
-                item.directory = fileData.directory
-                if let archiveItem = ArchiveItem.archiveItem(fileData.identifier) {
-                    item.archiveItem = archiveItem
-                }else {
-                    if let archiveItem =  ArchiveItem.createArchiveItemWithData(fileData.archiveItem!, isFavourite: false) {
-                        item.archiveItem = archiveItem
-                    }
-                    
-                }
-                
-                item.chapters?.setByAddingObjectsFromArray(fileData.chapters!.map({Chapter.createChapter($0, file: item)!}))
+                let entity = NSEntityDescription.entityForName("File", inManagedObjectContext: managedObjectContext)!
+                let file = NSManagedObject(entity: entity, insertIntoManagedObjectContext: temporary ? nil : managedObjectContext) as! File
 
-                do {
-                    try self.managedContext.save()
-                    return item
-                }catch let error as NSError {
-                    print("Save managedObjectContext failed: \(error.localizedDescription)")
+                let json = JSON(dictionary)
+                file.server = json["server"].stringValue
+                file.directory = json["dir"].stringValue
+                let docs = json["files"].arrayValue
+                file.archiveItem = archiveItem
+                for doc in docs {
+                    let format = doc["format"].stringValue
+                    if format.containsString("Single Page Processed") {
+                        var type = format.substringFromIndex((format.rangeOfString("Single Page Processed ")?.endIndex)!)
+                        if type.containsString(" ZIP") {
+                            type = type.substringToIndex((type.rangeOfString(" ZIP")?.startIndex)!)
+                        }
+                        let chapter = Chapter.createChapter(doc["name"].stringValue,type: type, file: file, managedObjectContext: managedObjectContext, temporary: temporary)!
+                        file.addChaptersObject(chapter)
+                    }
                 }
+                return file
             }else {
-                print("ERROR DUPLICATED FILE ITEMS WITH ID : \(fileData.identifier!)")
                 return fetchedItems?.firstObject as? File
             }
-            
-        } catch let error as NSError {
+        }catch let error as NSError {
             print("Fetch failed: \(error.localizedDescription)")
         }
         return nil
     }
-
 }

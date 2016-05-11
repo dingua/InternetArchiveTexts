@@ -20,9 +20,14 @@ class IADownloadsListVC: IAGenericListVC {
         fetchRequest.predicate = NSPredicate(format: "ANY file.chapters.isDownloaded == YES", argumentArray: nil)
         let sortDescriptor = NSSortDescriptor(key: "identifier", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IADownloadsListVC.performFetch), name: notificationDownloadedAdded, object: nil)
         super.viewDidLoad()
     }
 
+    deinit{
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -65,7 +70,7 @@ class IADownloadsListVC: IAGenericListVC {
         return Utils.isiPad() ? CGSizeMake(235, 394) : CGSizeMake(min(self.view.frame.size.width/2-10,self.view.frame.size.height/2-10), 300)
     }
     
-    //MARK: - Show CHapters
+    //MARK: - Show Chapters
     
     func showChaptersList(item: ArchiveItem) {
         let chaptersListVC = self.storyboard?.instantiateViewControllerWithIdentifier("IADownloadedChaptersListVC") as! IADownloadedChaptersListVC
@@ -86,7 +91,7 @@ class IADownloadsListVC: IAGenericListVC {
             let item = fetchedResultController.objectAtIndexPath(selectedIndex!) as! ArchiveItem
             bookReader.bookIdentifier = item.identifier!
             bookReader.bookTitle = item.title
-            bookReader.item = ArchiveItemData(item: item)
+            bookReader.item = item
         }
     }
 

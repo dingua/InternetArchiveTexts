@@ -25,7 +25,7 @@ class IADownloadListCollectionViewCell: UICollectionViewCell {
     }
     
     func urlFirstChapterPage(chapter: Chapter)->String {
-        let type =  FileType(rawValue: chapter.type!)
+        let type =  chapter.type
         return "\(Utils.docuementsDirectory())/\(chapter.subdirectory!)_\(type!)/\(chapter.subdirectory!)_\(String(format: "%04d", 0)).\(type!)"
     }
     @IBAction func downloadButtonPressed() {

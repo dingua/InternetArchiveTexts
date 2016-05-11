@@ -13,8 +13,7 @@ private let reuseIdentifier = "collectionExploreCell"
 class IACollectionsExploreVC: UICollectionViewController, IARootVCProtocol {
     
     var searchManager = IAItemsManager()
-    var collections = NSMutableArray()
-    var selectedCollection: ArchiveItemData?
+    var collections = [ArchiveItem]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,8 +34,12 @@ class IACollectionsExploreVC: UICollectionViewController, IARootVCProtocol {
                     "identifier": "texts",
                     "title": "All Texts"
                 ]
-                mySelf.collections.addObject(ArchiveItemData(dictionary: allTextsDictionary))
-                mySelf.collections.addObjectsFromArray(collections as! [ArchiveItemData])
+                do {
+                    let managedCtx = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
+                    mySelf.collections.append(ArchiveItem.createArchiveItem(allTextsDictionary, managedObjectContext: managedCtx, temporary: true)!)
+                
+                }catch{}
+                mySelf.collections.appendContentsOf(collections)
                 mySelf.collectionView!.reloadData()
             }
         }
@@ -62,7 +65,7 @@ class IACollectionsExploreVC: UICollectionViewController, IARootVCProtocol {
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! IACollectionsExploreViewCell
-        cell.configureWithItem(collections[indexPath.row] as! ArchiveItemData)
+        cell.configureWithItem(collections[indexPath.row])
         return cell
     }
     
@@ -72,7 +75,7 @@ class IACollectionsExploreVC: UICollectionViewController, IARootVCProtocol {
         if segue.identifier == "showCollectionItems" {
             let selectedIndex = self.collectionView?.indexPathForCell(sender as! IACollectionsExploreViewCell)
             let vc  = segue.destinationViewController as! IAItemsListVC
-            let collectionData = collections[selectedIndex!.row] as! ArchiveItemData
+            let collectionData = collections[selectedIndex!.row]
             vc.loadList(collectionData.identifier!, type: .Collection)
             vc.title = collectionData.title
         }

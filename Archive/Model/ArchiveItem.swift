@@ -12,14 +12,13 @@ import UIKit
 
 @objc(ArchiveItem)
 class ArchiveItem: NSManagedObject {
-
-// Insert code here to add functionality to your managed object subclass
-
-    static let managedContext :NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
-
-
-    static func createArchiveItemWithData(archiveItemData : ArchiveItemData, isFavourite: Bool)->ArchiveItem? {
-        let predicate = NSPredicate(format: "identifier like %@", "\(archiveItemData.identifier!)");
+    
+    // Insert code here to add functionality to your managed object subclass
+    
+    static let managedContext :NSManagedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
+    
+    static func createArchiveItem(dictionary: [String:AnyObject], managedObjectContext : NSManagedObjectContext, temporary: Bool)->ArchiveItem? {
+        let predicate = NSPredicate(format: "identifier like %@", "\(dictionary["identifier"]!)");
         
         let fetchItemWithSameId = NSFetchRequest(entityName: "ArchiveItem")
         
@@ -28,82 +27,57 @@ class ArchiveItem: NSManagedObject {
         do {
             fetchedItems = try self.managedContext.executeFetchRequest(fetchItemWithSameId)
             if (fetchedItems!.count == 0) {
-                let item = NSEntityDescription.insertNewObjectForEntityForName("ArchiveItem", inManagedObjectContext: managedContext) as! ArchiveItem
-                item.identifier = archiveItemData.identifier
-                item.desc = archiveItemData.desc
-                item.title = archiveItemData.title
-                item.isFavourite = isFavourite
-                do {
-                    try self.managedContext.save()
-                    return item
+                let entity = NSEntityDescription.entityForName("ArchiveItem", inManagedObjectContext: managedObjectContext)!
+                let item = NSManagedObject(entity: entity, insertIntoManagedObjectContext: temporary ? nil : managedObjectContext) as! ArchiveItem
+                item.identifier = dictionary["identifier"] as? String
+                item.desc = dictionary["description"] as? String
+                item.title = dictionary["title"] as? String
+                item.mediatype = dictionary["mediatype"] as? String
+                item.isFavourite = NSNumber(bool: false)
+                do{
+                    if !temporary {
+                        try managedObjectContext.save()
+                    }
                 }catch let error as NSError {
                     print("Save managedObjectContext failed: \(error.localizedDescription)")
                 }
-            }else if (fetchedItems!.count > 1) {
-                print("ERROR DUPLICATED ARCHIVE ITEMS WITH ID : \(archiveItemData.identifier!)")
+                return item
+            }else {
+                return fetchedItems?.firstObject as? ArchiveItem
             }
-            
-        } catch let error as NSError {
+        }catch let error as NSError {
             print("Fetch failed: \(error.localizedDescription)")
         }
         return nil
     }
-    
-    static func archiveItem(identifer: String)->ArchiveItem? {
-        let predicate = NSPredicate(format: "identifier like %@", "\(identifer)");
-        
-        let fetchItemWithSameId = NSFetchRequest(entityName: "ArchiveItem")
-        
-        fetchItemWithSameId.predicate = predicate
-        let fetchedItems : NSArray?
-        do {
-            fetchedItems = try self.managedContext.executeFetchRequest(fetchItemWithSameId)
-            if (fetchedItems!.count != 0) {
-                return fetchedItems?.firstObject as? ArchiveItem
-            }else {
-                return nil
-            }
-        } catch let error as NSError {
-            print("Fetch failed: \(error.localizedDescription)")
-            return nil
-        }
-    }
-    
-    static func deleteItem(identifier: String)->Bool {
-        if  let item = ArchiveItem.archiveItem(identifier) {
-            managedContext.deleteObject(item)
-            do {
-                try managedContext.save()
-                return true
-            }catch {
-                return false
-            }
-        }else {
-            return false
-        }
-    }
-    
-    static func isFavouriteItem(identifer : String)->Bool {
-        let predicate = NSPredicate(format: "identifier like %@ AND self.isFavourite == YES", "\(identifer)");
-        
-        let fetchItemWithSameId = NSFetchRequest(entityName: "ArchiveItem")
-        
-        fetchItemWithSameId.predicate = predicate
-        let fetchedItems : NSArray?
-        do {
-            fetchedItems = try self.managedContext.executeFetchRequest(fetchItemWithSameId)
-            if (fetchedItems!.count != 0) {
-                 return true
-            }else {
-                return false
-            }
-        } catch let error as NSError {
-            print("Fetch failed: \(error.localizedDescription)")
-            return false
-        }
-    }
 
-    static func deleteAllFavourites() {
+    func markAsFavourite(favourite: Bool) {
+        do{
+            if let managedObjectContext = self.managedObjectContext {
+                self.isFavourite = NSNumber(bool: favourite)
+                try managedObjectContext.save()
+                
+            }else {
+                let managedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
+                managedObjectContext.insertObject(self)
+                if let file = self.file {
+                    managedObjectContext.insertObject(file)
+                    if let chapters = file.chapters {
+                        for chapter in chapters.allObjects {
+                            managedObjectContext.insertObject(chapter as! Chapter)
+                        }
+                    }
+                }
+                self.isFavourite = NSNumber(bool: favourite)
+                try CoreDataStackManager.sharedManager.managedObjectContext.save()
+            }
+        }catch let error as NSError {
+            print("Error \(error.localizedDescription) can not save")
+        }
+    }
+    
+    
+   static func deleteAllFavourites() {
         let predicate = NSPredicate(format: "self.isFavourite == YES");
         
         let fetchItemWithSameId = NSFetchRequest(entityName: "ArchiveItem")

@@ -18,6 +18,7 @@ extension ArchiveItem {
     @NSManaged var identifier: String?
     @NSManaged var publicdate: NSDate?
     @NSManaged var publisher: String?
+    @NSManaged var mediatype: String?
     @NSManaged var title: String?
     @NSManaged var isFavourite: NSNumber?
     @NSManaged var file: File?

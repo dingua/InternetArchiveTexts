@@ -14,12 +14,12 @@ private let reuseIdentifier = "Cell"
 
 class IAGenericListVC: UICollectionViewController, NSFetchedResultsControllerDelegate, IALoadingViewProtocol {
 
-    let managedContext :NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+//    let managedContext :NSManagedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
     
     var fetchRequest: NSFetchRequest = NSFetchRequest()
     
     lazy var fetchedResultController: NSFetchedResultsController = {
-        let fetchController =  NSFetchedResultsController(fetchRequest: self.fetchRequest, managedObjectContext: self.managedContext, sectionNameKeyPath: nil, cacheName: nil)
+        let fetchController =  NSFetchedResultsController(fetchRequest: self.fetchRequest, managedObjectContext: CoreDataStackManager.sharedManager.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
         fetchController.delegate = self
         return fetchController
     }()

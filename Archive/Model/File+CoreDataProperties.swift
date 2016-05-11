@@ -18,4 +18,7 @@ extension File {
     @NSManaged var directory: String?
     @NSManaged var chapters: NSSet?
     @NSManaged var archiveItem: ArchiveItem?
+   
+    @NSManaged func addChaptersObject(chapter: Chapter)
+    @NSManaged func removeChaptersObject(chapter: Chapter)
 }

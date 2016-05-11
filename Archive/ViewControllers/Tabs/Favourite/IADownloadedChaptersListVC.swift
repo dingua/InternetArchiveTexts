@@ -83,7 +83,7 @@ class IADownloadedChaptersListVC: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let chapter = chapters![indexPath.row] as! Chapter
         if !((chapter.isDownloaded?.boolValue)!) {
-            IADownloadsManager.sharedInstance.download(ChapterData(chapter: chapter), file: FileData(file: chapter.file!))
+            IADownloadsManager.sharedInstance.download(chapter, file: chapter.file!)
         }
     }
 

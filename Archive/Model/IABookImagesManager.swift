@@ -32,9 +32,9 @@ class IABookImagesManager: NSObject {
     
     //MARK: - Properties
     
-    var file: FileData
+    var file: File
     var chapterIndex: Int
-    var chapter : ChapterData
+    var chapter : Chapter
     var type : String?
     
     let imageDownloader = ImageDownloader(
@@ -52,15 +52,11 @@ class IABookImagesManager: NSObject {
             if let numberOfPages = self._numberOfPages {
                 return numberOfPages
             }
-            if Chapter.isDownloadedChapter(self.chapter.name!) {
-                if let chapter = Chapter.createChapter(self.chapter, file: File.createFileWithData(self.file)!) {
+            if (self.chapter.isDownloaded?.boolValue)! {
                     return chapter.numberOfPages?.integerValue
                 }else {
                     return getNumberPages()
                 }
-            }else {
-                return getNumberPages()
-            }
         }
         set {
             self._numberOfPages = newValue
@@ -69,11 +65,11 @@ class IABookImagesManager: NSObject {
     
     //MARK: - Initializer
     
-    init(file : FileData, chapterIndex : Int) {
+    init(file : File, chapterIndex : Int) {
         
         self.file = file
         self.chapterIndex = chapterIndex
-        self.chapter = self.file.chapters!.sort({$0.name < $1.name})[chapterIndex]
+        self.chapter = self.file.chapters!.sort({$0.name < $1.name})[chapterIndex] as! Chapter
         self.type = self.chapter.type?.rawValue.lowercaseString
         self.requests = Array()
     }
@@ -218,6 +214,6 @@ class IABookImagesManager: NSObject {
     }
     
     func isChapterStored()->Bool {
-        return Chapter.isDownloadedChapter(chapter.name!)
+        return (chapter.isDownloaded?.boolValue)!
     }
 }

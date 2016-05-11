@@ -12,52 +12,11 @@ import UIKit
 
 
 class Chapter: NSManagedObject {
-
-    static let managedContext :NSManagedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
-
-// Insert code here to add functionality to your managed object subclass
-
-    static func markChapterDownloaded(chapterName: String, itemId: String) {
-        let predicate = NSPredicate(format: "name like %@", "\(chapterName)");
-        
-        let fetchRequest = NSFetchRequest(entityName: "Chapter")
-        fetchRequest.predicate = predicate
-        let fetchedItems : NSArray?
-        do {
-            fetchedItems = try self.managedContext.executeFetchRequest(fetchRequest)
-            if (fetchedItems!.count != 0) {
-                let chapter = fetchedItems?.firstObject as! Chapter
-                chapter.isDownloaded = NSNumber(bool: true)
-                chapter.isDownloading = NSNumber(bool: false)
-               try self.managedContext.save()
-            }
-        } catch let error as NSError {
-            print("Fetch failed: \(error.localizedDescription)")
-        }
-    }
     
-    static func markChapterDownloadingState(chapterName: String, itemId: String) {
-        let predicate = NSPredicate(format: "name like %@", "\(chapterName)");
+    static let managedContext :NSManagedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
         
-        let fetchRequest = NSFetchRequest(entityName: "Chapter")
-        fetchRequest.predicate = predicate
-        let fetchedItems : NSArray?
-        do {
-            fetchedItems = try self.managedContext.executeFetchRequest(fetchRequest)
-            if (fetchedItems!.count != 0) {
-                let chapter = fetchedItems?.firstObject as! Chapter
-                chapter.isDownloaded = NSNumber(bool: false)
-                chapter.isDownloading = NSNumber(bool: true)
-                try self.managedContext.save()
-            }
-        } catch let error as NSError {
-            print("Fetch failed: \(error.localizedDescription)")
-        }
-    }
-    
-
-    static func createChapter(chapterData: ChapterData, file: File)->Chapter? {
-        let predicate = NSPredicate(format: "name like %@", "\(chapterData.name!)");
+    static func createChapter(zipFile: String, type: String, file: File, managedObjectContext: NSManagedObjectContext, temporary: Bool)->Chapter? {
+        let predicate = NSPredicate(format: "zipFile like %@", "\(zipFile.allowdStringForURL())");
         
         let fetchItemWithSameId = NSFetchRequest(entityName: "Chapter")
         
@@ -66,29 +25,77 @@ class Chapter: NSManagedObject {
         do {
             fetchedItems = try self.managedContext.executeFetchRequest(fetchItemWithSameId)
             if (fetchedItems!.count == 0) {
-                let item = NSEntityDescription.insertNewObjectForEntityForName("Chapter", inManagedObjectContext: managedContext) as! Chapter
-                item.name = chapterData.name
-                item.zipFile = chapterData.zipFile
-                item.subdirectory = chapterData.subdirectory
-                item.type = chapterData.type?.rawValue
-                item.numberOfPages = chapterData.numberOfPages
-                item.isDownloaded = NSNumber(bool: false)
-                item.isDownloading = NSNumber(bool: false)
-                item.file = file
-                do {
-                    try self.managedContext.save()
-                    return item
-                }catch let error as NSError {
-                    print("Save managedObjectContext failed: \(error.localizedDescription)")
+                let entity = NSEntityDescription.entityForName("Chapter", inManagedObjectContext: managedObjectContext)!
+                let chapter = NSManagedObject(entity: entity, insertIntoManagedObjectContext: temporary ? nil : managedObjectContext) as! Chapter
+                
+                chapter.zipFile = zipFile.allowdStringForURL()
+                if type == "JP2" || type == "JPEG" {
+                    chapter.type = .JP2
+                }else if type == "TIFF" {
+                    chapter.type = .TIFF
+                }else if type == "PDF" {
+                    chapter.type = .PDF
                 }
-            }else if (fetchedItems!.count > 1) {
-                print("ERROR DUPLICATED CHAPTERS WITH name : \(chapterData.name!)")
+                chapter.scandata = (zipFile.substringToIndex((zipFile.rangeOfString("_\((chapter.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)+"_scandata.xml").allowdStringForURL()
+                chapter.name = zipFile.substringToIndex((zipFile.rangeOfString("\((chapter.type?.rawValue.lowercaseString)!).zip")?.startIndex)!).allowdStringForURL()
+                chapter.subdirectory = zipFile.substringToIndex((zipFile.rangeOfString("_\((chapter.type?.rawValue.lowercaseString)!).zip")?.startIndex)!).allowdStringForURL()
+                chapter.isDownloaded = NSNumber(bool: false)
+                chapter.isDownloading = NSNumber(bool: false)
+                chapter.file = file
+                return chapter
+            }else {
+                return fetchedItems?.firstObject as? Chapter
             }
-            
-        } catch let error as NSError {
-            print("Fetch failed: \(error.localizedDescription)")
-        }
+        }catch {}
         return nil
+    }
+    
+    // Insert code here to add functionality to your managed object subclass
+    
+    func markDownloaded() {
+        do{
+            if let managedObjectContext = self.managedObjectContext {
+                self.isDownloaded = NSNumber(bool: true)
+                self.isDownloading = NSNumber(bool: false)
+                try managedObjectContext.save()
+                
+            }else {
+                let managedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
+                managedObjectContext.insertObject(self.file!)
+                managedObjectContext.insertObject(self.file!.archiveItem!)
+                for chapter in (self.file!.chapters?.allObjects)! {
+                    managedObjectContext.insertObject(chapter as! Chapter)
+                }
+                self.isDownloaded = NSNumber(bool: true)
+                self.isDownloading = NSNumber(bool: false)
+                try CoreDataStackManager.sharedManager.managedObjectContext.save()
+            }
+        }catch let error as NSError {
+            print("Error \(error.localizedDescription) can not save")
+        }
+    }
+    
+    func markInDownloadingState() {
+        do{
+            if let managedObjectContext = self.managedObjectContext {
+                self.isDownloaded = NSNumber(bool: false)
+                self.isDownloading = NSNumber(bool: true)
+                try managedObjectContext.save()
+                
+            }else {
+                let managedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
+                managedObjectContext.insertObject(self.file!)
+                managedObjectContext.insertObject(self.file!.archiveItem!)
+                for chapter in (self.file!.chapters?.allObjects)! {
+                    managedObjectContext.insertObject(chapter as! Chapter)
+                }
+                self.isDownloaded = NSNumber(bool: false)
+                self.isDownloading = NSNumber(bool: true)
+                try CoreDataStackManager.sharedManager.managedObjectContext.save()
+            }
+        }catch let error as NSError {
+            print("Error \(error.localizedDescription) can not save")
+        }
     }
     
     static func getDownloadedChapters() -> NSArray? {
@@ -120,26 +127,5 @@ class Chapter: NSManagedObject {
             return nil
         }
     }
-
-    static func isDownloadedChapter(chapterName : String)->Bool {
-        let predicate = NSPredicate(format: "name like %@ AND isDownloaded == YES", "\(chapterName)");
-        
-        let fetchItemWithSameId = NSFetchRequest(entityName: "Chapter")
-        
-        fetchItemWithSameId.predicate = predicate
-        let fetchedItems : NSArray?
-        do {
-            fetchedItems = try self.managedContext.executeFetchRequest(fetchItemWithSameId)
-            if (fetchedItems!.count != 0) {
-                return true
-            }else {
-                return false
-            }
-        } catch let error as NSError {
-            print("Fetch failed: \(error.localizedDescription)")
-            return false
-        }
-    }
-
     
 }

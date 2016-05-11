@@ -12,10 +12,10 @@ import SSZipArchive
 
 class IADownloadsManager {
     static let sharedInstance = IADownloadsManager()
-    
+    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     struct FileDownloadStatus {
-        var file: FileData?
-        var chapter: ChapterData?
+        var file: File?
+        var chapter: Chapter?
         var totalBytesRead: Int64?
         var totalBytesExpectedToRead: Int64?
     }
@@ -35,7 +35,7 @@ class IADownloadsManager {
     }
     
     
-    func download(chapter: ChapterData, file: FileData) {
+    func download(chapter: Chapter, file: File) {
         let fileStatus = FileDownloadStatus(file: file, chapter: chapter, totalBytesRead: 0, totalBytesExpectedToRead: 0)
         filesQueue?.append(fileStatus)
         let destination = Alamofire.Request.suggestedDownloadDestination(
@@ -43,37 +43,34 @@ class IADownloadsManager {
             domain: .UserDomainMask
         )
         let type = chapter.type?.rawValue.lowercaseString
-        self.saveStoredFile(file)
-        Chapter.markChapterDownloadingState(chapter.name!, itemId: file.identifier!)
+        chapter.markInDownloadingState()
         Alamofire.download(.GET, "https://\(file.server!)\(file.directory!)/\(chapter.subdirectory!)_\(type!).zip", destination: destination)
             .response { request, response, _, error in
                 let unzipSucceed = (SSZipArchive.unzipFileAtPath((destination(NSURL(string: "")!, response!).absoluteString as NSString).substringFromIndex(7), toDestination: "\(self.docuementsDirectory())"))
                 if unzipSucceed {
-                    self.filesQueue?.indexOf({$0.file?.identifier == file.identifier && $0.chapter?.name == chapter.name}).map({
-                        if let file = self.filesQueue![$0].file {
-                            Chapter.markChapterDownloaded(chapter.name!, itemId: file.identifier!)
+                    self.filesQueue?.indexOf({$0.file?.archiveItem?.identifier == file.archiveItem!.identifier && $0.chapter?.name == chapter.name}).map({
+                        if let chapter = self.filesQueue![$0].chapter {
+                            chapter.markDownloaded()
                         }
                         self.filesQueue!.removeAtIndex($0)
-                        if self.filesQueue?.count == 0 {IATabBarController.sharedInstance.downloadProgress = 0}
-                        IATabBarController.sharedInstance.downloadDone()
+                        if self.filesQueue?.count == 0 {self.appDelegate.downloadProgress = 0}
+                        self.appDelegate.downloadDone()
                         NSNotificationCenter.defaultCenter().postNotificationName("\(chapter.name!)_finished", object:  nil)
+//                        NSNotificationCenter.defaultCenter().postNotificationName(notificationDownloadedAdded, object: nil)
                         
                     })
                 }
-            }.progress{ bytesRead, totalBytesRead, totalBytesExpectedToRead in
-                self.filesQueue?.indexOf({$0.file?.identifier == file.identifier && $0.chapter?.name == chapter.name}).map({
+            }
+            .progress{ bytesRead, totalBytesRead, totalBytesExpectedToRead in
+                self.filesQueue?.indexOf({$0.file?.archiveItem!.identifier == file.archiveItem!.identifier && $0.chapter?.name == chapter.name}).map({
                     self.filesQueue![$0].totalBytesRead = totalBytesRead
                     self.filesQueue![$0].totalBytesExpectedToRead = totalBytesExpectedToRead
-                    IATabBarController.sharedInstance.downloadProgress = Float(self.totalProgress!)
+                    self.appDelegate.downloadProgress = Float(self.totalProgress!)
                     NSNotificationCenter.defaultCenter().postNotificationName("\(chapter.name!)_progress", object:  Double(Float(totalBytesRead)/Float(totalBytesExpectedToRead)))
                     }
                 )
         }
         
-    }
-    
-    private func saveStoredFile(file : FileData!) {
-        File.createFileWithData(file)
     }
     
     func getDownloadedChapters()->NSArray? {
@@ -92,7 +89,7 @@ class IADownloadsManager {
         print("cache = \(NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)[0])")
         let chaptersInDownloadState = self.getChaptersInDownloadState()
         for chapter in chaptersInDownloadState as! [Chapter] {
-            self.download(ChapterData(chapter: chapter), file: FileData(file: chapter.file!))
+            self.download(chapter, file: chapter.file!)
         }
     }
     
@@ -106,10 +103,5 @@ class IADownloadsManager {
     func pathInDownloadChapter(chapter: Chapter) -> String?{
         let cacheDirectoryPath = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)[0]
         return "\(cacheDirectoryPath)/\(chapter.name!)"
-    }
-    
-    func isChapterStored(chapter: ChapterData)->Bool {
-        let type = chapter.type?.rawValue.lowercaseString
-        return NSUserDefaults.standardUserDefaults().boolForKey("\(chapter.subdirectory!)_\(type!)")
     }
 }

@@ -24,7 +24,7 @@ class IAItemListCellView : UICollectionViewCell {
     
     //MARK: - Cell Configuration
     
-    func configureWithItem(book: ArchiveItemData) {
+    func configureWithItem(book: ArchiveItem) {
         self.bookTitleLabel.text = book.title
         self.bookImageView.image = nil
         self.bookImageView.image = nil
@@ -33,7 +33,7 @@ class IAItemListCellView : UICollectionViewCell {
         }
         
         if Utils.isLoggedIn() {
-            if book.isFavourite() {
+            if (book.isFavourite?.boolValue)! {
                 self.favouriteBtn.setImage(UIImage(named:"favourite_filled"), forState: .Normal)
             }else {
                 self.favouriteBtn.setImage(UIImage(named:"favourite_empty"), forState: .Normal)
@@ -69,11 +69,11 @@ class IAItemListCellView : UICollectionViewCell {
         self.contentView.layer.borderColor = UIColor.blackColor().CGColor
     }
 
-    func configureWithItem(book: ArchiveItemData,creatorCompletion: (String)->()) {
+    func configureWithItem(book: ArchiveItem,creatorCompletion: (String)->()) {
         self.configureWithItem(book)
     }
     
-    func configureWithItem(book: ArchiveItemData,creatorCompletion: (String)->(), collectionCompletion: (String)->()) {
+    func configureWithItem(book: ArchiveItem,creatorCompletion: (String)->(), collectionCompletion: (String)->()) {
         self.configureWithItem(book ,creatorCompletion: creatorCompletion)
     }
     
