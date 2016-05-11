@@ -22,5 +22,14 @@ extension ArchiveItem {
     @NSManaged var title: String?
     @NSManaged var isFavourite: NSNumber?
     @NSManaged var file: File?
+    
+    var isFavorite: Bool {
+        get {
+            return (isFavourite?.boolValue == true)
+        }
+        set {
+            isFavourite = NSNumber(bool: newValue)
+        }
+    }
 
 }
