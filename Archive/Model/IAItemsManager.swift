@@ -49,6 +49,7 @@
                                 let managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
                                 if let file = File.createFile(value as! [String : AnyObject], archiveItem: archiveItem, managedObjectContext: managedObjectContext, temporary: !(archiveItem.isFavourite!.boolValue)) {
                                     completion(file)
+                                    managedObjectContext.reset()
                                 }
                             }catch let error as NSError{
                                 print("could not create managed object context \(error.localizedDescription)")
@@ -79,6 +80,7 @@
                                 collections.append(ArchiveItem.createArchiveItem(doc.dictionaryObject!, managedObjectContext: managedObjectContext, temporary: true)!)
                             }
                             completion(collections)
+                            managedObjectContext.reset()
                         }
                     }
                 }catch{
@@ -175,6 +177,7 @@
                                 collections.append(ArchiveItem.createArchiveItem(doc.dictionaryObject!, managedObjectContext: managedObjectContext, temporary: true)!)
                             }
                             completion(collections)
+                            managedObjectContext.reset()
                         }
                     }
                 }catch{
