@@ -12,12 +12,11 @@ import MBProgressHUD
 
 class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewControllerDataSource {
     //MARK: Variables Declaration
-    var item: ArchiveItemData?
+    var item: ArchiveItem?
     let bottomMarginReaderPage = 50.0
     var pageController = UIPageViewController(transitionStyle: .PageCurl, navigationOrientation: .Horizontal, options: nil)
     var bookIdentifier : String!
     var bookTitle: String!
-    var file : FileData? //Book Details
     var numberOfPages = 0 {
         didSet {
             //As soon as page number is set we update page number label
@@ -34,7 +33,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     var selectedChapterIndex = 0
     lazy var activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
     
-    var sortPresentationDelegate =  IASortPresentationDelgate()
+    var presentationDelegate =  IASortPresentationDelgate()
     //IBOutlets
     @IBOutlet weak var bottomMenu: UIView!
     @IBOutlet weak var pageNumberLabel: UILabel!
@@ -78,21 +77,21 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         self.addLoadingView()
         archiveItemsManager.getFileDetails(item!) { (file) -> () in
             self.removeLoadingView()
-            if file.identifier == "" {
-                let alert = UIAlertController(title: "Error", message: "Can not preview this file!", preferredStyle: .Alert)
-                let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
-                    self.dismissViewControllerAnimated(false, completion: nil)
-                }
-                alert.addAction(cancelAction)
-                self.presentViewController(alert, animated: true, completion:nil)
-                
-                return
-            }
-            self.file = file
-            if file.chapters?.count>0 {
+//            if file.identifier == "" {
+//                let alert = UIAlertController(title: "Error", message: "Can not preview this file!", preferredStyle: .Alert)
+//                let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
+//                    self.dismissViewControllerAnimated(false, completion: nil)
+//                }
+//                alert.addAction(cancelAction)
+//                self.presentViewController(alert, animated: true, completion:nil)
+//                
+//                return
+//            }
+            self.item!.file = file
+            if (file.chapters?.count)! > 0 {
                 self.setupReaderToChapter(0)
             }
-            if file.chapters?.count > 1 {
+            if (file.chapters?.count)! > 1 {
                 self.addChaptersButton()
             }
             self.progressSlider.userInteractionEnabled = true
@@ -114,19 +113,19 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     }
     
     func setupReaderToChapter(chapterIndex: Int) {
-        if let file = self.file {
+        if let file = item!.file {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), {
                 self.selectedChapterIndex = chapterIndex
                 if let oldImagesDownloader = self.imagesDownloader{
                     oldImagesDownloader.cancelAllRequests()
                 }
-                self.imagesDownloader = IABookImagesManager(file: self.file!, chapterIndex: self.selectedChapterIndex)
+                self.imagesDownloader = IABookImagesManager(file: file, chapterIndex: self.selectedChapterIndex)
               
-                let chapter = file.chapters!.sort({$0.name < $1.name})[chapterIndex]
+                let chapter = file.chapters!.sort({$0.name < $1.name})[chapterIndex] as! Chapter
                 
                 if  let nbrPages = self.imagesDownloader!.numberOfPages {
                     self.numberOfPages = Int(nbrPages)
-                    chapter.numberOfPages = self.numberOfPages
+                    chapter.numberOfPages = NSNumber(integer: self.numberOfPages)
                 }
                 
                 self.pageNumber = 0
@@ -244,8 +243,8 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     @IBAction func chaptersButtonPressed(sender: AnyObject) {
         let chaptersListVC = self.storyboard?.instantiateViewControllerWithIdentifier("chaptersListVC") as! IAReaderChaptersListVC
-        chaptersListVC.transitioningDelegate = sortPresentationDelegate;
-        chaptersListVC.chapters = (file?.chapters as [ChapterData]?)?.sort({$0.name < $1.name})
+        chaptersListVC.transitioningDelegate = presentationDelegate
+        chaptersListVC.chapters = (item!.file?.chapters!.allObjects as! [Chapter]?)?.sort({$0.name < $1.name})
         chaptersListVC.chapterSelectionHandler = { chapterIndex in
             self.setupReaderToChapter(chapterIndex)
         }
@@ -255,15 +254,25 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     }
     
     func downloadChapterFiles() {
-        startDownloading()
+        showChaptersList()
     }
     
     func startDownloading() {
-        if let chapter = self.imagesDownloader?.chapter , file = self.imagesDownloader?.file {
+        if let chapter = self.imagesDownloader?.chapter , file = item!.file {
             IADownloadsManager.sharedInstance.download(chapter, file: file)
         }
     }
     
+    //MARK: - Show Chapters
+    
+    func showChaptersList() {
+        let chaptersListVC = self.storyboard?.instantiateViewControllerWithIdentifier("IADownloadedChaptersListVC") as! IADownloadedChaptersListVC
+        chaptersListVC.transitioningDelegate = presentationDelegate;
+        chaptersListVC.chapters = item?.file?.chapters?.sort({ $0.name < $1.name})
+        chaptersListVC.modalPresentationStyle = .Custom
+        self.presentViewController(chaptersListVC, animated: true, completion: nil)
+    }
+
     
     func updateUIAfterPageSeek(toNextPage: Bool) {
         let pageVC = self.pageVCWithNumber(self.pageNumber)
@@ -376,6 +385,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     
     func isFavourite()->Bool {
-        return ArchiveItem.isFavouriteItem(bookIdentifier)
+        return (item?.isFavourite?.boolValue)!
     }
 }

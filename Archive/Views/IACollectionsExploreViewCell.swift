@@ -15,7 +15,7 @@ class IACollectionsExploreViewCell: UICollectionViewCell {
     @IBOutlet weak var numberItemsLabel: UILabel!
     
     //MARK: - Cell Configuration
-    func configureWithItem(collection: ArchiveItemData) {
+    func configureWithItem(collection: ArchiveItem) {
         
         self.titleLabel.text = collection.title
         self.imageView.image = nil

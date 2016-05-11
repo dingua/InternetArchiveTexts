@@ -17,7 +17,7 @@
         <attribute name="numberOfPages" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="scandata" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="subdirectory" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="typeValue" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="zipFile" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="file" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="File" inverseName="chapters" inverseEntity="File" syncable="YES"/>
     </entity>

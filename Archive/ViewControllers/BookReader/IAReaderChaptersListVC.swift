@@ -41,7 +41,7 @@ class IAReaderChaptersListVC: UITableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentfier)! as! IASortListTableViewCell
-        let chapter = chapters![indexPath.row] as! ChapterData
+        let chapter = chapters![indexPath.row] as! Chapter
         cell.optionLabel?.text = chapter.name
         if indexPath.row == selectedChapterIndex {
             cell.optionImageView?.image = UIImage(named: "checkmark")

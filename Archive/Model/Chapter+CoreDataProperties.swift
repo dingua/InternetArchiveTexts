@@ -12,15 +12,29 @@
 import Foundation
 import CoreData
 
+enum Type: String {
+    case JP2 = "JP2"
+    case TIFF = "TIF"
+    case PDF = "PDF"
+}
+
 extension Chapter {
 
     @NSManaged var name: String?
     @NSManaged var zipFile: String?
     @NSManaged var subdirectory: String?
-    @NSManaged var type: String?
+    @NSManaged var typeValue: String?
     @NSManaged var numberOfPages: NSNumber?
     @NSManaged var file: File?
     @NSManaged var isDownloaded: NSNumber?
     @NSManaged var isDownloading: NSNumber?
     @NSManaged var scandata: String?
+    var type: Type? {
+        get {
+            return Type(rawValue: typeValue!)
+        }
+        set {
+            self.typeValue = newValue!.rawValue
+        }
+    }
 }

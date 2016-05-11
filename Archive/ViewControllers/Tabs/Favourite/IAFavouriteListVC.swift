@@ -54,7 +54,7 @@ class IAFavouriteListVC: IAGenericListVC {
             let item = fetchedResultController.objectAtIndexPath(selectedIndex!) as! ArchiveItem
             bookReader.bookIdentifier = item.identifier!
             bookReader.bookTitle = item.title
-            bookReader.item = ArchiveItemData(item: item)
+            bookReader.item = item
         }
     }
     
@@ -76,7 +76,7 @@ class IAFavouriteListVC: IAGenericListVC {
         let item = fetchedResultController.objectAtIndexPath(indexPath) as? ArchiveItem
         cell.configureWithArchiveItem(item!)
         cell.favouriteSelectionCompletion = {
-            IABookmarkManager.sharedInstance.deleteBookmark(item!.identifier!, completion: {_ in} )
+            IABookmarkManager.sharedInstance.deleteBookmark(item!, completion: {_ in} )
         }
     
         return cell
