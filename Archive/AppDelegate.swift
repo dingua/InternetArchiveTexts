@@ -85,16 +85,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window.addConstraint(NSLayoutConstraint(item: progressView!  , attribute: .Top , relatedBy: .Equal, toItem: window, attribute: .Top, multiplier: 1.0, constant: 64))
     }
     
+   
     func downloadDone() {
         let window = UIApplication.sharedApplication().keyWindow!
         let doneView = MBProgressHUD.showHUDAddedTo(window, animated: true)
         doneView.mode = .CustomView
         doneView.labelText = "Done"
-        doneView.customView = UIImageView(image: UIImage(named: "done_btn"))
+        doneView.customView = UIImageView(image: UIImage(named: "done_btn")?.imageWithTintColor(UIColor.whiteColor()))
         let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(2 * Double(NSEC_PER_SEC)))
         dispatch_after(popTime, dispatch_get_main_queue(),{
             MBProgressHUD.hideHUDForView(window ,animated:true)
         })
     }
+    
+    
 }
 
