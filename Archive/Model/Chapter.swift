@@ -32,7 +32,7 @@ class Chapter: NSManagedObject {
                 if type == "JP2" || type == "JPEG" {
                     chapter.type = .JP2
                 }else if type == "TIFF" {
-                    chapter.type = .TIFF
+                    chapter.type = .TIF
                 }else if type == "PDF" {
                     chapter.type = .PDF
                 }
