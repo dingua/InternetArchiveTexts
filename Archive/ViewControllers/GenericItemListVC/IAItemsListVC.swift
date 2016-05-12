@@ -36,8 +36,6 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
 
     lazy var activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
 
-    var creatorSelectionCompletion: ((String) -> ())!
-    var collectionSelectionCompletion: ((String) -> ())!
     var sortPresentationDelegate =  IASortPresentationDelgate()
    
     //sort option in which we base our request
@@ -84,24 +82,6 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     required init(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)!
-        creatorSelectionCompletion = { [weak self]creator in
-            if let mySelf = self {
-                if mySelf.searchText == nil || mySelf.type != .Creator || mySelf.searchText != creator {
-                    let vc = mySelf.storyboard?.instantiateViewControllerWithIdentifier("bookListVC") as! IAItemsListVC
-                    vc.loadList(creator, type: .Creator)
-                    mySelf.navigationController?.pushViewController(vc, animated: true)
-                }
-            }
-        }
-        collectionSelectionCompletion = { [weak self]collection in
-            if let mySelf = self {
-                if mySelf.searchText == nil || mySelf.type != .Collection || mySelf.searchText != collection {
-                    let vc = mySelf.storyboard?.instantiateViewControllerWithIdentifier("bookListVC") as! IAItemsListVC
-                    vc.loadList(collection, type: .Collection)
-                    mySelf.navigationController?.pushViewController(vc, animated: true)
-                }
-            }
-        }
         sortOption = .DownloadsDescendant
         selectedSortDescriptor = .Downloads
     }
@@ -207,8 +187,8 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
             return cell
         }else {
             let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! IAItemListCellView
-            cell.configureWithItem(item, creatorCompletion:  creatorSelectionCompletion, collectionCompletion: collectionSelectionCompletion)
-            cell.favouriteSelectionCompletion = {
+            cell.configureWithItem(item)
+            cell.favoriteClosure = {
                 if !((item.isFavourite?.boolValue)!) {
                     IABookmarkManager.sharedInstance.addBookmark(item, completion: { message in
                         self.collectionView?.reloadItemsAtIndexPaths([indexPath])

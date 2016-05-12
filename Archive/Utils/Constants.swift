@@ -14,3 +14,22 @@ let favouriteListIds = "favouriteIds"
 let notificationBookmarkAdded = "bookMarkAdded"
 let notificationBookmarkRemoved = "bookMarkRemoved"
 let notificationDownloadedAdded = "donloadAdded"
+
+struct Constants {
+    
+    struct URL {
+        static let BaseURL = "https://archive.org"
+        static let ImageURL = BaseURL + "/services/img/"
+    }
+    
+    static func ImageURL(identifier: String) -> NSURL {
+        let urlString = URL.ImageURL + identifier
+        return NSURL(string: urlString)!
+    }
+    
+    struct Notification {
+        static let UserDidLogIn  = "UserDidLogInNotification"
+        static let UserDidLogOut = "UserDidLogOutNotification"
+    }
+    
+}
