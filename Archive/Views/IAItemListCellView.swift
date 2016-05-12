@@ -12,74 +12,34 @@ class IAItemListCellView : UICollectionViewCell {
     @IBOutlet weak var bookImageView: UIImageView!
     @IBOutlet weak var bookTitleLabel: UILabel!
     @IBOutlet weak var favouriteBtn: UIButton!
-    var favouriteSelectionCompletion: (()->())?
-    //MARK: - Init
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+    var favoriteClosure: (()->())?
+    
+    override func prepareForReuse() {
+        bookImageView.image = nil
     }
     
     //MARK: - Cell Configuration
     
     func configureWithItem(book: ArchiveItem) {
         self.bookTitleLabel.text = book.title
-        self.bookImageView.image = nil
-        self.bookImageView.image = nil
-        if let url = NSURL(string: "\(imageBaseURL)\(book.identifier!)") {
-            self.bookImageView.af_setImageWithURL(url)
-        }
+        
+        self.bookImageView.af_setImageWithURL(Constants.ImageURL(book.identifier!))
         
         if Utils.isLoggedIn() {
-            if (book.isFavourite?.boolValue)! {
-                self.favouriteBtn.setImage(UIImage(named:"favourite_filled"), forState: .Normal)
-            }else {
-                self.favouriteBtn.setImage(UIImage(named:"favourite_empty"), forState: .Normal)
-            }
-
-        }else {
-            self.favouriteBtn.hidden = true
+            let imageName = book.isFavorite ? "favourite_filled" : "favourite_empty"
+            favouriteBtn.setImage(UIImage(named:imageName), forState: .Normal)
+        } else {
+            favouriteBtn.hidden = true
         }
         
-        self.contentView.layer.borderWidth = 1.0
-        self.contentView.layer.borderColor = UIColor.blackColor().CGColor
-    }
-
-    func configureWithArchiveItem(book: ArchiveItem) {
-        self.bookTitleLabel.text = book.title
-        self.bookImageView.image = nil
-        if let url = NSURL(string: "\(imageBaseURL)\(book.identifier!)") {
-            self.bookImageView.af_setImageWithURL(url)
-        }
-        
-        if Utils.isLoggedIn() {
-            if book.isFavourite?.boolValue == true {
-                self.favouriteBtn.setImage(UIImage(named:"favourite_filled"), forState: .Normal)
-            }else {
-                self.favouriteBtn.setImage(UIImage(named:"favourite_empty"), forState: .Normal)
-            }
-            
-        }else {
-            self.favouriteBtn.hidden = true
-        }
-        
-        self.contentView.layer.borderWidth = 1.0
-        self.contentView.layer.borderColor = UIColor.blackColor().CGColor
-    }
-
-    func configureWithItem(book: ArchiveItem,creatorCompletion: (String)->()) {
-        self.configureWithItem(book)
-    }
-    
-    func configureWithItem(book: ArchiveItem,creatorCompletion: (String)->(), collectionCompletion: (String)->()) {
-        self.configureWithItem(book ,creatorCompletion: creatorCompletion)
+        contentView.layer.borderWidth = 1.0
+        contentView.layer.borderColor = UIColor.blackColor().CGColor
     }
     
     @IBAction func favouriteBtnPressed(sender: AnyObject) {
-        if let favCompletion = favouriteSelectionCompletion {
-            favCompletion()
+        if favoriteClosure != nil {
+            favoriteClosure!()
         }
     }
 }

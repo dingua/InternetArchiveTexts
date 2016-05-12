@@ -74,8 +74,8 @@ class IAFavouriteListVC: IAGenericListVC {
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! IAItemListCellView
         let item = fetchedResultController.objectAtIndexPath(indexPath) as? ArchiveItem
-        cell.configureWithArchiveItem(item!)
-        cell.favouriteSelectionCompletion = {
+        cell.configureWithItem(item!)
+        cell.favoriteClosure = {
             IABookmarkManager.sharedInstance.deleteBookmark(item!, completion: {_ in} )
         }
     
