@@ -44,6 +44,7 @@ class Utils {
     }
 }
 
+// MARK: - Extensions
 
 extension String {
     func allowdStringForURL() -> String {
@@ -61,5 +62,11 @@ extension UIImage {
         image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return  image
+    }
+}
+
+extension UIViewController {
+    func registerForNotification(name: String, action: Selector) {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: action, name: name, object: nil)
     }
 }
