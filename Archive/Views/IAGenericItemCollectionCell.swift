@@ -46,16 +46,14 @@ class IAGenericItemCollectionCell: UICollectionViewCell {
         if type       != nil { buttonType    = type }
         if completion != nil { actionClosure = completion }
         
+        titleLabel.text = item.title
+        
         if let bookID = item.identifier {
             mainImageView.af_setImageWithURL(Constants.ImageURL(bookID))
         }
         
         if buttonType == .Favorite && item.isFavorite {
             actionButton.setImage(UIImage(named: "favourite_filled"), forState: .Normal)
-            
-            if item.isFavorite {
-                
-            }
         }
     }
     
