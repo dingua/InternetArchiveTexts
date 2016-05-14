@@ -17,13 +17,16 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAFavoritesVC.userDidLogin), name: notificationUserDidLogin, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAFavoritesVC.userDidLogout), name: notificationUserDidLogout, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAFavoritesVC.bookmarkChanged), name: notificationBookmarkAdded, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAFavoritesVC.bookmarkChanged), name: notificationBookmarkRemoved, object: nil)
-
+        
+        registerForNotification(notificationUserDidLogin,   action: .userDidLogin)
+        registerForNotification(notificationUserDidLogout,  action: .userDidLogout)
+        registerForNotification(notificationBookmarkAdded,  action: .bookmarkChanged)
+        registerForNotification(notificationBookmarkRemoved,action: .bookmarkChanged)
     }
-
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -87,4 +90,10 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
     func logoutAction() {
         logout()
     }
+}
+
+private extension Selector {
+    static let userDidLogin     = #selector(IAFavoritesVC.userDidLogin)
+    static let userDidLogout    = #selector(IAFavoritesVC.userDidLogout)
+    static let bookmarkChanged  = #selector(IAFavoritesVC.bookmarkChanged)
 }

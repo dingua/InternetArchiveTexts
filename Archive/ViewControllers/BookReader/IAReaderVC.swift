@@ -254,7 +254,8 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     //MARK: - Show Chapters
     
     func showChaptersList() {
-        let chaptersListVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("IADownloadedChaptersListVC") as! IADownloadedChaptersListVC
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let chaptersListVC = storyboard.instantiateViewControllerWithIdentifier("IADownloadedChaptersListVC") as! IADownloadedChaptersListVC
         chaptersListVC.transitioningDelegate = presentationDelegate;
         chaptersListVC.chapters = item?.file?.chapters?.sort({ $0.name < $1.name})
         chaptersListVC.modalPresentationStyle = .Custom

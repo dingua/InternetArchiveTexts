@@ -42,7 +42,6 @@
 		347C49521CE44A2700145288 /* Page+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347C49501CE44A2700145288 /* Page+CoreDataProperties.swift */; };
 		347C49531CE44A2700145288 /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347C49511CE44A2700145288 /* Page.swift */; };
 		34832A5F1CE1A98100B02158 /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34832A5E1CE1A98100B02158 /* CoreDataStackManager.swift */; };
-		3490935C1CDCB0B100FC49A7 /* IADownloadsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3490935B1CDCB0B100FC49A7 /* IADownloadsListVC.swift */; };
 		3490935E1CDCB22700FC49A7 /* IAGenericListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3490935D1CDCB22700FC49A7 /* IAGenericListVC.swift */; };
 		349093601CDCB89100FC49A7 /* IADownloadListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3490935F1CDCB89100FC49A7 /* IADownloadListCollectionViewCell.swift */; };
 		349452F31CD23072007080E7 /* IABookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349452F21CD23072007080E7 /* IABookmarkManager.swift */; };
@@ -60,6 +59,9 @@
 		A61CE29D1CE20CE400E89D3C /* Reader.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A61CE29B1CE20CE400E89D3C /* Reader.storyboard */; };
 		A61CE2A21CE2F6F800E89D3C /* IAGenericItemCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61CE2A11CE2F6F800E89D3C /* IAGenericItemCollectionVC.swift */; };
 		A61CE2A41CE2F71600E89D3C /* IAGenericItemCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A61CE2A31CE2F71600E89D3C /* IAGenericItemCollectionCell.swift */; };
+		A6D598761CE48C8B0027174E /* IADownloadCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6D598751CE48C8B0027174E /* IADownloadCollectionVC.swift */; };
+		A6F42BF71CE4497300F0D2C2 /* IAFavoriteCollectoinVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6F42BF61CE4497300F0D2C2 /* IAFavoriteCollectoinVC.swift */; };
+		A6F42BF91CE451A000F0D2C2 /* CoreDataCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6F42BF81CE451A000F0D2C2 /* CoreDataCollectionViewController.swift */; };
 		A8261DEB59216B6B2CCCAE6B /* Pods_Archive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF5E248ED2DD9AFDA9C332BB /* Pods_Archive.framework */; };
 /* End PBXBuildFile section */
 
@@ -118,7 +120,6 @@
 		347C49501CE44A2700145288 /* Page+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Page+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		347C49511CE44A2700145288 /* Page.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
 		34832A5E1CE1A98100B02158 /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStackManager.swift; sourceTree = "<group>"; };
-		3490935B1CDCB0B100FC49A7 /* IADownloadsListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IADownloadsListVC.swift; sourceTree = "<group>"; };
 		3490935D1CDCB22700FC49A7 /* IAGenericListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAGenericListVC.swift; sourceTree = "<group>"; };
 		3490935F1CDCB89100FC49A7 /* IADownloadListCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IADownloadListCollectionViewCell.swift; sourceTree = "<group>"; };
 		349452F21CD23072007080E7 /* IABookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IABookmarkManager.swift; sourceTree = "<group>"; };
@@ -142,6 +143,9 @@
 		A61CE29C1CE20CE400E89D3C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Reader.storyboard; sourceTree = "<group>"; };
 		A61CE2A11CE2F6F800E89D3C /* IAGenericItemCollectionVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAGenericItemCollectionVC.swift; sourceTree = "<group>"; };
 		A61CE2A31CE2F71600E89D3C /* IAGenericItemCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAGenericItemCollectionCell.swift; sourceTree = "<group>"; };
+		A6D598751CE48C8B0027174E /* IADownloadCollectionVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IADownloadCollectionVC.swift; sourceTree = "<group>"; };
+		A6F42BF61CE4497300F0D2C2 /* IAFavoriteCollectoinVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAFavoriteCollectoinVC.swift; sourceTree = "<group>"; };
+		A6F42BF81CE451A000F0D2C2 /* CoreDataCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataCollectionViewController.swift; sourceTree = "<group>"; };
 		B77D65213784DB4BDBCA5418 /* Pods-Archive.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Archive.release.xcconfig"; path = "Pods/Target Support Files/Pods-Archive/Pods-Archive.release.xcconfig"; sourceTree = "<group>"; };
 		CF5E248ED2DD9AFDA9C332BB /* Pods_Archive.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Archive.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -209,8 +213,9 @@
 		3445517C1CD5E0F500FE7C47 /* GenericItemListVC */ = {
 			isa = PBXGroup;
 			children = (
-				A61CE2A11CE2F6F800E89D3C /* IAGenericItemCollectionVC.swift */,
 				3445517D1CD5E0F500FE7C47 /* IAItemsListVC.swift */,
+				A61CE2A11CE2F6F800E89D3C /* IAGenericItemCollectionVC.swift */,
+				A6F42BF81CE451A000F0D2C2 /* CoreDataCollectionViewController.swift */,
 			);
 			path = GenericItemListVC;
 			sourceTree = "<group>";
@@ -268,7 +273,8 @@
 				3445518B1CD5E0F500FE7C47 /* IAFavouriteLoginVC.swift */,
 				34E78DDA1CDBCF7A00A25D86 /* IAMainFavouriteListVC.swift */,
 				3473ACBF1CDA8A3F008FE4C9 /* IAFavouriteListVC.swift */,
-				3490935B1CDCB0B100FC49A7 /* IADownloadsListVC.swift */,
+				A6F42BF61CE4497300F0D2C2 /* IAFavoriteCollectoinVC.swift */,
+				A6D598751CE48C8B0027174E /* IADownloadCollectionVC.swift */,
 				3490935D1CDCB22700FC49A7 /* IAGenericListVC.swift */,
 				34147CAB1CDF84E800230C20 /* IADownloadedChaptersListVC.swift */,
 			);
@@ -634,10 +640,10 @@
 				3473ACAE1CD8C436008FE4C9 /* IATabBarController.swift in Sources */,
 				34EB38641C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */,
 				34B9A2A01CD8AEAC00C7D9CD /* IADownloadsManager.swift in Sources */,
-				3490935C1CDCB0B100FC49A7 /* IADownloadsListVC.swift in Sources */,
 				3490935E1CDCB22700FC49A7 /* IAGenericListVC.swift in Sources */,
 				347C49521CE44A2700145288 /* Page+CoreDataProperties.swift in Sources */,
 				3473ACBE1CDA7FD2008FE4C9 /* File.swift in Sources */,
+				A6F42BF91CE451A000F0D2C2 /* CoreDataCollectionViewController.swift in Sources */,
 				3473ACB51CDA7EBC008FE4C9 /* ArchiveItem+CoreDataProperties.swift in Sources */,
 				34832A5F1CE1A98100B02158 /* CoreDataStackManager.swift in Sources */,
 				349093601CDCB89100FC49A7 /* IADownloadListCollectionViewCell.swift in Sources */,
@@ -648,6 +654,7 @@
 				344551A41CD5E0F500FE7C47 /* IAItemListCellView.swift in Sources */,
 				3445519E1CD5E0F500FE7C47 /* IALoginVC.swift in Sources */,
 				3445519B1CD5E0F500FE7C47 /* IASortPresentationAnimatedTransitioning.swift in Sources */,
+				A6D598761CE48C8B0027174E /* IADownloadCollectionVC.swift in Sources */,
 				3473ACBB1CDA7FD2008FE4C9 /* Chapter+CoreDataProperties.swift in Sources */,
 				349452F31CD23072007080E7 /* IABookmarkManager.swift in Sources */,
 				A612090F1C3D2EA30017A928 /* AppDelegate.swift in Sources */,
@@ -664,6 +671,7 @@
 				344551921CD5E0F500FE7C47 /* Constants.swift in Sources */,
 				3445519C1CD5E0F500FE7C47 /* IASortPresentationController.swift in Sources */,
 				34E78DDB1CDBCF7A00A25D86 /* IAMainFavouriteListVC.swift in Sources */,
+				A6F42BF71CE4497300F0D2C2 /* IAFavoriteCollectoinVC.swift in Sources */,
 				A61CE2A21CE2F6F800E89D3C /* IAGenericItemCollectionVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
