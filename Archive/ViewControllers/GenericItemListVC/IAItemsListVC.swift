@@ -20,24 +20,23 @@ enum IABookListType {
 }
 
 class IAItemsListVC: UICollectionViewController,IASortListDelegate {
-   
+    
     //***** Properties ************
     
     let itemsPerPage = 36
     var currentPage = 0
-    var isFavouriteList = false
     var searchManager = IAItemsManager()
     var items = [ArchiveItem]()
     var searchText : String?
     var collectionTitle: String?
     var type: IABookListType?
-
+    
     var isLoading = false
-
+    
     lazy var activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
-
+    
     var sortPresentationDelegate =  IASortPresentationDelgate()
-   
+    
     //sort option in which we base our request
     var sortOption: IASearchSortOption! {
         didSet {
@@ -74,7 +73,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     }
     
     var descendantSort: Bool = true
-
+    
     //**********************************
     
     //MARK: - Initializer
@@ -85,7 +84,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
         sortOption = .DownloadsDescendant
         selectedSortDescriptor = .Downloads
     }
-
+    
     //MARK: - Search
     
     func loadList(searchText: String, type: IABookListType) {
@@ -95,16 +94,11 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
         self.currentPage = 0
         self.collectionView?.reloadData()
         if searchText.stringByReplacingOccurrencesOfString(" ", withString: "") != "" {
-            if !isFavouriteList {
-                loadMore()
-            }else {
-                loadBookmarks()
-            }
+            loadMore()
         }
     }
-
+    
     func loadMore() {
-        guard !isFavouriteList else {return}
         if !isLoading {
             self.addLoadingView()
             switch type {
@@ -153,13 +147,13 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     
     func loadBookmarks() {
         self.addLoadingView()
-//        IABookmarkManager.sharedInstance.getBookmarks(NSUserDefaults.standardUserDefaults().stringForKey("userid")!, completion: {[weak self] items in
-//            if let mySelf = self {
-//                mySelf.items.appendContentsOf(items)
-//                mySelf.collectionView?.reloadData()
-//                mySelf.removeLoadingView()
-//            }
-//            })
+        //        IABookmarkManager.sharedInstance.getBookmarks(NSUserDefaults.standardUserDefaults().stringForKey("userid")!, completion: {[weak self] items in
+        //            if let mySelf = self {
+        //                mySelf.items.appendContentsOf(items)
+        //                mySelf.collectionView?.reloadData()
+        //                mySelf.removeLoadingView()
+        //            }
+        //            })
         
     }
     
@@ -167,18 +161,18 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
         currentPage = 0
         loadList(self.searchText!, type: self.type!)
     }
-
+    
     // MARK: - UICollectionViewDataSource
-
+    
     override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return 1
     }
-
-
+    
+    
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return items.count
     }
-
+    
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let item = items[indexPath.row]
         if item.mediatype == "collection" {
@@ -196,9 +190,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
                     
                 }else {
                     IABookmarkManager.sharedInstance.deleteBookmark(item, completion: { _ in
-                        if !self.isFavouriteList {
-                            self.collectionView?.reloadItemsAtIndexPaths([indexPath])
-                        }
+                        self.collectionView?.reloadItemsAtIndexPaths([indexPath])
                     })
                     
                 }
@@ -206,20 +198,20 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
             return cell
         }
     }
-
+    
     func collectionView(collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-            let item = items[indexPath.row]
-            if item.mediatype == "collection" {
-                return Utils.isiPad() ? CGSizeMake(235, 394) : CGSizeMake(min(self.view.frame.size.width/2-10,self.view.frame.size.height/2-10), 300)
-            }else {
-                return Utils.isiPad() ? CGSizeMake(235, 394) : CGSizeMake(min(self.view.frame.size.width/2-10,self.view.frame.size.height/2-10), 300)
-            }
+                        layout collectionViewLayout: UICollectionViewLayout,
+                               sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        let item = items[indexPath.row]
+        if item.mediatype == "collection" {
+            return Utils.isiPad() ? CGSizeMake(235, 394) : CGSizeMake(min(self.view.frame.size.width/2-10,self.view.frame.size.height/2-10), 300)
+        }else {
+            return Utils.isiPad() ? CGSizeMake(235, 394) : CGSizeMake(min(self.view.frame.size.width/2-10,self.view.frame.size.height/2-10), 300)
+        }
     }
-
+    
     // MARK: - UIScrollViewDelegate
-
+    
     override func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         let bottomEdge = scrollView.contentOffset.y + scrollView.frame.size.height
         if (bottomEdge >= scrollView.contentSize.height) {
@@ -245,7 +237,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
             bookReader.item = item
         }
     }
-
+    
     //MARK: - Helpers
     
     func addLoadingView() {
@@ -291,7 +283,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
             button.image = UIImage(named: "up_sort")
         }
     }
-  
+    
     //MARK: IASortListDelegate
     
     func sortListDidSelectSortOption(option: IASortOption) {

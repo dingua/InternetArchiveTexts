@@ -49,8 +49,6 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
         if segue.identifier == "favoritesList" {
             itemsListVC = segue.destinationViewController as? IAFavouriteListVC
             if let _ = NSUserDefaults.standardUserDefaults().stringForKey("userid") {
-//                itemsListVC!.isFavouriteList = true
-//                itemsListVC!.loadList("fav-\(username)", type: .Collection)
                 itemsListVC!.title = "My Favorites"
                 favouriteLoginContainerView.hidden = true
                 favouriteListContainerView.hidden = false

@@ -166,7 +166,7 @@ class IABookImagesManager: NSObject {
     func getPages(completion : ([Page])->()) {
         if self.chapter.isDownloaded?.boolValue == true && self.chapter.pages != nil {
             self.pages = self.chapter.pages?.allObjects as? [Page]
-            self.pages = self.pages!.sort({$0.number! < $1.number!})
+            self.pages = self.pages!.sort({Int($0.number!) < Int($1.number!)})
             return completion(self.pages!)
         }
         let scandataURL = "https://\(file.server!)\(file.directory!)/\(chapter.scandata!)"
@@ -190,7 +190,7 @@ class IABookImagesManager: NSObject {
                         pageElement = TBXML.nextSiblingNamed("page", searchFromElement: pageElement)
                     }
                 }
-                self.pages = self.pages?.sort({$0.number! < $1.number!})
+                self.pages = self.pages?.sort({Int($0.number!) < Int($1.number!)})
                 completion(self.pages!)
             } catch let error as NSError {
                 print("Parse scandata xml failed: \(error.localizedDescription)")
