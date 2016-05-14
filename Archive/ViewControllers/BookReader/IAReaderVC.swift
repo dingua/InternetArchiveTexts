@@ -74,16 +74,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         self.addLoadingView()
         archiveItemsManager.getFileDetails(item!) { (file) -> () in
             self.removeLoadingView()
-//            if file.identifier == "" {
-//                let alert = UIAlertController(title: "Error", message: "Can not preview this file!", preferredStyle: .Alert)
-//                let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
-//                    self.dismissViewControllerAnimated(false, completion: nil)
-//                }
-//                alert.addAction(cancelAction)
-//                self.presentViewController(alert, animated: true, completion:nil)
-//                
-//                return
-//            }
             self.item!.file = file
             self.addDownloadButton()
             if (file.chapters?.count)! > 0 {
@@ -127,7 +117,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                 }
                 
                 self.pageNumber = 0
-                self.imagesDownloader!.getPages(){pages in
+                self.imagesDownloader!.getPages(){_ in
                     dispatch_async(dispatch_get_main_queue(), {
                         self.addPageController()
                         self.updatePages()
@@ -240,7 +230,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     }
     
     @IBAction func chaptersButtonPressed(sender: AnyObject) {
-        let chaptersListVC = self.storyboard?.instantiateViewControllerWithIdentifier("chaptersListVC") as! IAReaderChaptersListVC
+        let chaptersListVC =  UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("chaptersListVC") as! IAReaderChaptersListVC
         chaptersListVC.transitioningDelegate = presentationDelegate
         chaptersListVC.chapters = (item!.file?.chapters!.allObjects as! [Chapter]?)?.sort({$0.name < $1.name})
         chaptersListVC.chapterSelectionHandler = { chapterIndex in
@@ -264,7 +254,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     //MARK: - Show Chapters
     
     func showChaptersList() {
-        let chaptersListVC = self.storyboard?.instantiateViewControllerWithIdentifier("IADownloadedChaptersListVC") as! IADownloadedChaptersListVC
+        let chaptersListVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("IADownloadedChaptersListVC") as! IADownloadedChaptersListVC
         chaptersListVC.transitioningDelegate = presentationDelegate;
         chaptersListVC.chapters = item?.file?.chapters?.sort({ $0.name < $1.name})
         chaptersListVC.modalPresentationStyle = .Custom

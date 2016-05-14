@@ -63,8 +63,13 @@ class Chapter: NSManagedObject {
                 let managedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
                 managedObjectContext.insertObject(self.file!)
                 managedObjectContext.insertObject(self.file!.archiveItem!)
-                for chapter in (self.file!.chapters?.allObjects)! {
-                    managedObjectContext.insertObject(chapter as! Chapter)
+                for chapter in (self.file!.chapters?.allObjects)! as! [Chapter] {
+                    managedObjectContext.insertObject(chapter)
+                    if let pages = chapter.pages?.allObjects as? [Page] {
+                        for page in pages {
+                            managedObjectContext.insertObject(page)
+                        }
+                    }
                 }
                 self.isDownloaded = NSNumber(bool: true)
                 self.isDownloading = NSNumber(bool: false)
@@ -86,8 +91,13 @@ class Chapter: NSManagedObject {
                 let managedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
                 managedObjectContext.insertObject(self.file!)
                 managedObjectContext.insertObject(self.file!.archiveItem!)
-                for chapter in (self.file!.chapters?.allObjects)! {
-                    managedObjectContext.insertObject(chapter as! Chapter)
+                for chapter in (self.file!.chapters?.allObjects)! as! [Chapter] {
+                    managedObjectContext.insertObject(chapter)
+                    if let pages = chapter.pages?.allObjects as? [Page] {
+                        for page in pages {
+                            managedObjectContext.insertObject(page)
+                        }
+                    }
                 }
                 self.isDownloaded = NSNumber(bool: false)
                 self.isDownloading = NSNumber(bool: true)

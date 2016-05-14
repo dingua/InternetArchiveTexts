@@ -94,4 +94,13 @@ class ArchiveItem: NSManagedObject {
             print("Fetch failed: \(error.localizedDescription)")
         }
     }
+    
+    func hasDownloadedChapter()->Bool {
+        for chapter in (self.file?.chapters?.allObjects as? [Chapter])!{
+                if chapter.isDownloaded!.boolValue == true {
+                    return true
+            }
+        }
+        return false
+    }
 }

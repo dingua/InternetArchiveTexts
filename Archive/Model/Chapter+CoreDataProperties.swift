@@ -29,7 +29,8 @@ extension Chapter {
     @NSManaged var isDownloaded: NSNumber?
     @NSManaged var isDownloading: NSNumber?
     @NSManaged var scandata: String?
-    
+    @NSManaged var pages: NSSet?
+
     var type: Type? {
         get {
             return Type(rawValue: typeValue!)
@@ -38,4 +39,8 @@ extension Chapter {
             typeValue = newValue!.rawValue
         }
     }
+    
+    @NSManaged func addPagesObject(page: Page)
+    @NSManaged func removePagessObject(page: Page)
+
 }

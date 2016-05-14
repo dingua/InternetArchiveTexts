@@ -11,6 +11,7 @@ import AlamofireImage
 import Alamofire
 import TBXML
 import SSZipArchive
+import CoreData
 
 extension Array where Element: Equatable {
     mutating func removeObject(object: Element) {
@@ -45,7 +46,7 @@ class IABookImagesManager: NSObject {
     )
     
     var requests : Array<Alamofire.Request>?
-    var pages : [String]?
+    var pages : [Page]?
     private var _numberOfPages : Int?
     var numberOfPages : Int? {
         get {
@@ -77,7 +78,7 @@ class IABookImagesManager: NSObject {
     //MARK: - Download Pages
     
     func urlOfPage(number: Int) -> String{
-        return urlOfPage(Int(pages![number])!,scale: 2)
+        return urlOfPage(Int(pages![number].number!)!,scale: 2)
     }
     
     func urlOfPage(number: Int, scale: Int) -> String{
@@ -162,19 +163,34 @@ class IABookImagesManager: NSObject {
     
     //MARK: - Get Pages
     
-    func getPages(completion : ([String])->()) {
+    func getPages(completion : ([Page])->()) {
+        if self.chapter.isDownloaded?.boolValue == true && self.chapter.pages != nil {
+            self.pages = self.chapter.pages?.allObjects as? [Page]
+            self.pages = self.pages!.sort({$0.number! < $1.number!})
+            return completion(self.pages!)
+        }
         let scandataURL = "https://\(file.server!)\(file.directory!)/\(chapter.scandata!)"
         Alamofire.request(Utils.requestWithURL(scandataURL)).response { (request, response, data, error) in
             do{
                 let tbxml =  try TBXML(XMLData: data, error: ())
                 let rootEl = tbxml.rootXMLElement
                 let pageData = TBXML.childElementNamed("pageData", parentElement: rootEl)
-                var  page = TBXML.childElementNamed("page", parentElement: pageData)
+                var  pageElement = TBXML.childElementNamed("page", parentElement: pageData)
                 self.pages = []
-                while page != nil{
-                    self.pages!.append(TBXML.valueOfAttributeNamed("leafNum", forElement: page))
-                    page = TBXML.nextSiblingNamed("page", searchFromElement: page)
+                var managedObjectContext: NSManagedObjectContext?
+                let temporary = !(self.file.archiveItem!.isFavorite || self.file.archiveItem!.hasDownloadedChapter())
+                if !temporary {
+                    managedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
+                }else {
+                    managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
                 }
+                while pageElement != nil{
+                    if let page = Page.createPage(TBXML.valueOfAttributeNamed("leafNum", forElement: pageElement), chapter: self.chapter, isBookmarked: false, managedObjectContext: managedObjectContext!, temporary: temporary) {
+                        self.pages!.append(page)
+                        pageElement = TBXML.nextSiblingNamed("page", searchFromElement: pageElement)
+                    }
+                }
+                self.pages = self.pages?.sort({$0.number! < $1.number!})
                 completion(self.pages!)
             } catch let error as NSError {
                 print("Parse scandata xml failed: \(error.localizedDescription)")
@@ -214,6 +230,6 @@ class IABookImagesManager: NSObject {
     }
     
     func isChapterStored()->Bool {
-        return (chapter.isDownloaded?.boolValue)!
+        return chapter.isDownloaded?.boolValue == true
     }
 }

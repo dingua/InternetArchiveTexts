@@ -39,6 +39,8 @@
 		3473ACBD1CDA7FD2008FE4C9 /* File+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3473ACB91CDA7FD2008FE4C9 /* File+CoreDataProperties.swift */; };
 		3473ACBE1CDA7FD2008FE4C9 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3473ACBA1CDA7FD2008FE4C9 /* File.swift */; };
 		3473ACC01CDA8A3F008FE4C9 /* IAFavouriteListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3473ACBF1CDA8A3F008FE4C9 /* IAFavouriteListVC.swift */; };
+		347C49521CE44A2700145288 /* Page+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347C49501CE44A2700145288 /* Page+CoreDataProperties.swift */; };
+		347C49531CE44A2700145288 /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347C49511CE44A2700145288 /* Page.swift */; };
 		34832A5F1CE1A98100B02158 /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34832A5E1CE1A98100B02158 /* CoreDataStackManager.swift */; };
 		3490935C1CDCB0B100FC49A7 /* IADownloadsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3490935B1CDCB0B100FC49A7 /* IADownloadsListVC.swift */; };
 		3490935E1CDCB22700FC49A7 /* IAGenericListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3490935D1CDCB22700FC49A7 /* IAGenericListVC.swift */; };
@@ -113,6 +115,8 @@
 		3473ACB91CDA7FD2008FE4C9 /* File+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "File+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3473ACBA1CDA7FD2008FE4C9 /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		3473ACBF1CDA8A3F008FE4C9 /* IAFavouriteListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAFavouriteListVC.swift; sourceTree = "<group>"; };
+		347C49501CE44A2700145288 /* Page+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Page+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		347C49511CE44A2700145288 /* Page.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Page.swift; sourceTree = "<group>"; };
 		34832A5E1CE1A98100B02158 /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStackManager.swift; sourceTree = "<group>"; };
 		3490935B1CDCB0B100FC49A7 /* IADownloadsListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IADownloadsListVC.swift; sourceTree = "<group>"; };
 		3490935D1CDCB22700FC49A7 /* IAGenericListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAGenericListVC.swift; sourceTree = "<group>"; };
@@ -302,6 +306,8 @@
 				3473ACB91CDA7FD2008FE4C9 /* File+CoreDataProperties.swift */,
 				3473ACBA1CDA7FD2008FE4C9 /* File.swift */,
 				34832A5E1CE1A98100B02158 /* CoreDataStackManager.swift */,
+				347C49501CE44A2700145288 /* Page+CoreDataProperties.swift */,
+				347C49511CE44A2700145288 /* Page.swift */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -630,6 +636,7 @@
 				34B9A2A01CD8AEAC00C7D9CD /* IADownloadsManager.swift in Sources */,
 				3490935C1CDCB0B100FC49A7 /* IADownloadsListVC.swift in Sources */,
 				3490935E1CDCB22700FC49A7 /* IAGenericListVC.swift in Sources */,
+				347C49521CE44A2700145288 /* Page+CoreDataProperties.swift in Sources */,
 				3473ACBE1CDA7FD2008FE4C9 /* File.swift in Sources */,
 				3473ACB51CDA7EBC008FE4C9 /* ArchiveItem+CoreDataProperties.swift in Sources */,
 				34832A5F1CE1A98100B02158 /* CoreDataStackManager.swift in Sources */,
@@ -645,6 +652,7 @@
 				349452F31CD23072007080E7 /* IABookmarkManager.swift in Sources */,
 				A612090F1C3D2EA30017A928 /* AppDelegate.swift in Sources */,
 				34EB38701C402D830034F3E4 /* IABookImagesManager.swift in Sources */,
+				347C49531CE44A2700145288 /* Page.swift in Sources */,
 				34147CAE1CDFA14800230C20 /* IADownloadStatusTableViewCell.swift in Sources */,
 				3445519A1CD5E0F500FE7C47 /* IASortListVC.swift in Sources */,
 				344551991CD5E0F500FE7C47 /* IAItemsListVC.swift in Sources */,

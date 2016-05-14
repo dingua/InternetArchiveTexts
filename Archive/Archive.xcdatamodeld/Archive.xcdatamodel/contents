@@ -20,6 +20,7 @@
         <attribute name="typeValue" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="zipFile" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="file" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="File" inverseName="chapters" inverseEntity="File" syncable="YES"/>
+        <relationship name="pages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Page" inverseName="chapter" inverseEntity="Page" syncable="YES"/>
     </entity>
     <entity name="File" representedClassName=".File" syncable="YES">
         <attribute name="directory" optional="YES" attributeType="String" syncable="YES"/>
@@ -27,9 +28,15 @@
         <relationship name="archiveItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ArchiveItem" inverseName="file" inverseEntity="ArchiveItem" syncable="YES"/>
         <relationship name="chapters" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Chapter" inverseName="file" inverseEntity="Chapter" syncable="YES"/>
     </entity>
+    <entity name="Page" representedClassName=".Page" syncable="YES">
+        <attribute name="isBookmarked" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="number" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="chapter" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Chapter" inverseName="pages" inverseEntity="Chapter" syncable="YES"/>
+    </entity>
     <elements>
-        <element name="ArchiveItem" positionX="-63" positionY="-18" width="128" height="165"/>
-        <element name="Chapter" positionX="-45" positionY="54" width="128" height="180"/>
-        <element name="File" positionX="-54" positionY="45" width="128" height="105"/>
+        <element name="ArchiveItem" positionX="439" positionY="-18" width="128" height="163"/>
+        <element name="Chapter" positionX="90" positionY="-18" width="128" height="193"/>
+        <element name="File" positionX="268" positionY="-18" width="128" height="105"/>
+        <element name="Page" positionX="-173" positionY="117" width="128" height="28"/>
     </elements>
 </model>

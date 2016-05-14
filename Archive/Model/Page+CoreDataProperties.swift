@@ -18,4 +18,12 @@ extension Page {
     @NSManaged var isBookmarked: NSNumber?
     @NSManaged var chapter: Chapter?
 
+    var bookmarked: Bool {
+        get{
+            return (isBookmarked?.boolValue == true)
+        }
+        set {
+            isBookmarked = NSNumber(bool: newValue)
+        }
+    }
 }
