@@ -164,7 +164,7 @@ class IABookImagesManager: NSObject {
     //MARK: - Get Pages
     
     func getPages(completion : ([Page])->()) {
-        if self.chapter.isDownloaded?.boolValue == true && self.chapter.pages != nil {
+        if  self.chapter.pages?.count == self.chapter.numberOfPages?.integerValue {
             self.pages = self.chapter.pages?.allObjects as? [Page]
             self.pages = self.pages!.sort({Int($0.number!) < Int($1.number!)})
             return completion(self.pages!)
@@ -178,7 +178,7 @@ class IABookImagesManager: NSObject {
                 var  pageElement = TBXML.childElementNamed("page", parentElement: pageData)
                 self.pages = []
                 var managedObjectContext: NSManagedObjectContext?
-                let temporary = !(self.file.archiveItem!.isFavorite || self.file.archiveItem!.hasDownloadedChapter())
+                let temporary = self.chapter.managedObjectContext == nil
                 if !temporary {
                     managedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
                 }else {
@@ -196,6 +196,13 @@ class IABookImagesManager: NSObject {
                 print("Parse scandata xml failed: \(error.localizedDescription)")
             }
         }
+    }
+    
+    func pageAtIndex(index: Int) -> Page? {
+        if let pages = self.pages {
+            return pages[index]
+        }
+        return nil
     }
     
     //MARK: - Cancel Requests

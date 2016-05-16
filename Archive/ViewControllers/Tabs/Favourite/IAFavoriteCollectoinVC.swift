@@ -30,7 +30,7 @@ class IAFavoriteCollectoinVC: IAGenericItemCollectionVC {
         let item = fetchedResultController!.objectAtIndexPath(indexPath) as! ArchiveItem
         
         cell.configure(item, type: .Favorite) {
-            IABookmarkManager.sharedInstance.deleteBookmark(item) { _ in }
+            IAFavouriteManager.sharedInstance.deleteBookmark(item) { _ in }
         }
         
         return cell
@@ -50,7 +50,7 @@ class IAFavoriteCollectoinVC: IAGenericItemCollectionVC {
         let userID = NSUserDefaults.standardUserDefaults().stringForKey("userid")!
         
         addLoadingView()
-        IABookmarkManager.sharedInstance.getBookmarks(userID) {
+        IAFavouriteManager.sharedInstance.getBookmarks(userID) {
             self.removeLoadingView()
         }
     }

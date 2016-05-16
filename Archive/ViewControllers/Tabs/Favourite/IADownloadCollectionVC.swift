@@ -35,13 +35,17 @@ class IADownloadCollectionVC: IAGenericItemCollectionVC {
     //MARK: - Show Chapters
     
     func showChaptersList(item: ArchiveItem) {
-        let chaptersListVC = self.storyboard?.instantiateViewControllerWithIdentifier("IADownloadedChaptersListVC") as! IADownloadedChaptersListVC
-        
-        chaptersListVC.chapters = (item.file?.chapters?.allObjects as! [Chapter]).sort({ $0.name < $1.name})
-        chaptersListVC.transitioningDelegate = presentationDelegate;
-        chaptersListVC.modalPresentationStyle = .Custom
-        
-        self.presentViewController(chaptersListVC, animated: true) {}
+            let chaptersBookmarksVC =  UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("IAChapterBookmarkExploreVC") as! IAChapterBookmarkExploreVC
+            chaptersBookmarksVC.transitioningDelegate = presentationDelegate
+            chaptersBookmarksVC.item = item
+            chaptersBookmarksVC.chapterSelectionHandler = { chapterIndex in
+                self.showReader(item, atChapterIndex: chapterIndex)
+            }
+            chaptersBookmarksVC.bookmarkSelectionHandler = { page in
+                self.showReader(item, atPage: page)
+            }
+            chaptersBookmarksVC.modalPresentationStyle = .Custom
+            self.presentViewController(chaptersBookmarksVC, animated: true, completion: nil)
     }
     
     // MARK: - Helpers
@@ -52,6 +56,35 @@ class IADownloadCollectionVC: IAGenericItemCollectionVC {
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "identifier", ascending: true)]
         
         setFetchRequest(fetchRequest)
+    }
+    
+    func showReader(item: ArchiveItem, atChapterIndex chapterIndex :Int = -1) {
+        
+        let navController = UIStoryboard(name: "Reader",bundle: nil).instantiateInitialViewController() as! UINavigationController
+        let bookReader = navController.topViewController as! IAReaderVC
+        bookReader.bookIdentifier = item.identifier!
+        bookReader.bookTitle = item.title
+        bookReader.item = item
+
+        self.presentViewController(navController, animated: true, completion: {
+            bookReader.setupReaderToChapter(chapterIndex)
+        })
+    }
+    
+    func showReader(item: ArchiveItem, atPage page :Page) {
+        
+        let navController = UIStoryboard(name: "Reader",bundle: nil).instantiateInitialViewController() as! UINavigationController
+        let bookReader = navController.topViewController as! IAReaderVC
+        bookReader.bookIdentifier = item.identifier!
+        bookReader.bookTitle = item.title
+        bookReader.item = item
+        
+        self.presentViewController(navController, animated: true, completion: {
+            bookReader.setupReaderToChapter((item.file?.chapters?.allObjects as! [Chapter]).sort({ $0.name < $1.name}).indexOf(page.chapter!)!){
+                bookReader.pageNumber = Int(page.number!)!
+                bookReader.updateUIAfterPageSeek(true)
+            }
+        })
     }
 
 }

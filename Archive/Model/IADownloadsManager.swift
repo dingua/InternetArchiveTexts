@@ -34,8 +34,17 @@ class IADownloadsManager {
         }
     }
     
+    func downloadTrigger(chapter: Chapter) {
+        if chapter.isDownloaded?.boolValue == true {
+        
+        }else {
+            if let file = chapter.file {
+                download(chapter, file: file)
+            }
+       }
+    }
     
-    func download(chapter: Chapter, file: File) {
+    private func download(chapter: Chapter, file: File) {
         let fileStatus = FileDownloadStatus(file: file, chapter: chapter, totalBytesRead: 0, totalBytesExpectedToRead: 0)
         filesQueue?.append(fileStatus)
         let destination = Alamofire.Request.suggestedDownloadDestination(

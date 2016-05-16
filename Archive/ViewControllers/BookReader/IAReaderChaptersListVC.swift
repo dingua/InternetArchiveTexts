@@ -7,7 +7,10 @@
 //
 
 import UIKit
+
 let cellIdentfier = "chapterListCell"
+typealias ChapterSelectionHandler = ((chapterIndex: Int)->())
+
 class IAReaderChaptersListVC: UITableViewController {
     var chapters: NSArray? {
         didSet{
@@ -15,7 +18,7 @@ class IAReaderChaptersListVC: UITableViewController {
         }
     }
     
-    var chapterSelectionHandler : ((chapterIndex: Int)->())?
+    var chapterSelectionHandler : ChapterSelectionHandler?
     var selectedChapterIndex = -1
     
     override func viewDidLoad() {

@@ -23,7 +23,9 @@ class IAItemListCellView : UICollectionViewCell {
     
     func configureWithItem(book: ArchiveItem) {
         self.bookTitleLabel.text = book.title
-        
+        if !Utils.isiPad() {
+            self.bookTitleLabel.font = UIFont(name: self.bookTitleLabel.font!.fontName, size: 12)
+        }
         self.bookImageView.af_setImageWithURL(Constants.ImageURL(book.identifier!))
         
         if Utils.isLoggedIn() {
@@ -33,8 +35,8 @@ class IAItemListCellView : UICollectionViewCell {
             favouriteBtn.hidden = true
         }
         
-        contentView.layer.borderWidth = 1.0
-        contentView.layer.borderColor = UIColor.blackColor().CGColor
+//        contentView.layer.borderWidth = 1.0
+//        contentView.layer.borderColor = UIColor.blackColor().CGColor
     }
     
     @IBAction func favouriteBtnPressed(sender: AnyObject) {

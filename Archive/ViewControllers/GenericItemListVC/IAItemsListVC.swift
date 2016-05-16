@@ -147,7 +147,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     
     func loadBookmarks() {
         self.addLoadingView()
-        //        IABookmarkManager.sharedInstance.getBookmarks(NSUserDefaults.standardUserDefaults().stringForKey("userid")!, completion: {[weak self] items in
+        //        IAFavouriteManager.sharedInstance.getBookmarks(NSUserDefaults.standardUserDefaults().stringForKey("userid")!, completion: {[weak self] items in
         //            if let mySelf = self {
         //                mySelf.items.appendContentsOf(items)
         //                mySelf.collectionView?.reloadData()
@@ -184,12 +184,12 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
             cell.configureWithItem(item)
             cell.favoriteClosure = {
                 if !((item.isFavourite?.boolValue)!) {
-                    IABookmarkManager.sharedInstance.addBookmark(item, completion: { message in
+                    IAFavouriteManager.sharedInstance.addBookmark(item, completion: { message in
                         self.collectionView?.reloadItemsAtIndexPaths([indexPath])
                     })
                     
                 }else {
-                    IABookmarkManager.sharedInstance.deleteBookmark(item, completion: { _ in
+                    IAFavouriteManager.sharedInstance.deleteBookmark(item, completion: { _ in
                         self.collectionView?.reloadItemsAtIndexPaths([indexPath])
                     })
                     
@@ -204,9 +204,9 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
                                sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         let item = items[indexPath.row]
         if item.mediatype == "collection" {
-            return Utils.isiPad() ? CGSizeMake(235, 394) : CGSizeMake(min(self.view.frame.size.width/2-10,self.view.frame.size.height/2-10), 300)
+            return Utils.isiPad() ? CGSizeMake(150, 250) : CGSizeMake(100, 135)
         }else {
-            return Utils.isiPad() ? CGSizeMake(235, 394) : CGSizeMake(min(self.view.frame.size.width/2-10,self.view.frame.size.height/2-10), 300)
+            return Utils.isiPad() ? CGSizeMake(150, 250) : CGSizeMake(100, 135)
         }
     }
     

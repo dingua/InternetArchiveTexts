@@ -8,14 +8,16 @@
 
 import UIKit
 
-class IADownloadedChaptersListVC: UITableViewController {
+class IAChaptersListVC: UITableViewController {
+    var selectedChapterIndex = -1
+    var chapterSelectionHandler : ChapterSelectionHandler?
     var chapters: NSArray? {
         didSet {
             self.tableView.reloadData()
             for chapter  in (chapters as? [Chapter])! {
                 if !((chapter.isDownloaded?.boolValue)!) {
-                    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IADownloadedChaptersListVC.updateDownloadProgress), name: "\(chapter.name!)_progress", object: nil)
-                    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IADownloadedChaptersListVC.downloadFinished), name: "\(chapter.name!)_finished", object: nil)
+                    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAChaptersListVC.updateDownloadProgress), name: "\(chapter.name!)_progress", object: nil)
+                    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAChaptersListVC.downloadFinished), name: "\(chapter.name!)_finished", object: nil)
                 }
             }
         }
@@ -25,7 +27,6 @@ class IADownloadedChaptersListVC: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.layer.cornerRadius = 20
     }
 
     override func didReceiveMemoryWarning() {
@@ -64,27 +65,33 @@ class IADownloadedChaptersListVC: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return chapters!.count
+
+        if let chapters = chapters {
+            return chapters.count
+        }else {
+            return 0
+        }
     }
 
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("downloadStatusCell", forIndexPath: indexPath) as! IADownloadStatusTableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("downloadStatusCell", forIndexPath: indexPath) as! IAChapterTableViewCell
         let chapter = (chapters![indexPath.row] as! Chapter)
         if let progress = downloadProgress[chapter.name!] {
-            cell.configure(chapter, progress: progress)
+            cell.configure(chapter, withProgress : progress, isSelected: indexPath.row == selectedChapterIndex) {chapter in
+                IADownloadsManager.sharedInstance.downloadTrigger(chapter)
+            }
         }else {
-            cell.configure(chapter)
+            cell.configure(chapter, isSelected: indexPath.row == selectedChapterIndex) {chapter in
+                IADownloadsManager.sharedInstance.downloadTrigger(chapter)
+            }
         }
         return cell
     }
  
 
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let chapter = chapters![indexPath.row] as! Chapter
-        if !((chapter.isDownloaded?.boolValue)!) {
-            IADownloadsManager.sharedInstance.download(chapter, file: chapter.file!)
-        }
+        chapterSelectionHandler!(chapterIndex: indexPath.row)
     }
 
 

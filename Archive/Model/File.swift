@@ -53,4 +53,8 @@ class File: NSManagedObject {
         }
         return nil
     }
+    
+    func sortedChapters() -> [Chapter]? {
+        return (self.chapters?.allObjects as! [Chapter]).sort({ $0.name < $1.name})
+    }
 }

@@ -36,7 +36,7 @@ class IAFavouriteListVC: IAGenericListVC {
  
     func loadBookmarks() {
         self.addLoadingView()
-        IABookmarkManager.sharedInstance.getBookmarks(NSUserDefaults.standardUserDefaults().stringForKey("userid")!, completion: {_ in
+        IAFavouriteManager.sharedInstance.getBookmarks(NSUserDefaults.standardUserDefaults().stringForKey("userid")!, completion: {_ in
             self.removeLoadingView()
         })
         
@@ -76,7 +76,7 @@ class IAFavouriteListVC: IAGenericListVC {
         let item = fetchedResultController.objectAtIndexPath(indexPath) as? ArchiveItem
         cell.configureWithItem(item!)
         cell.favoriteClosure = {
-            IABookmarkManager.sharedInstance.deleteBookmark(item!, completion: {_ in} )
+            IAFavouriteManager.sharedInstance.deleteBookmark(item!, completion: {_ in} )
         }
     
         return cell

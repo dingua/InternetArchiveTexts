@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		34147CAC1CDF84E800230C20 /* IADownloadedChaptersListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34147CAB1CDF84E800230C20 /* IADownloadedChaptersListVC.swift */; };
+		34147CAC1CDF84E800230C20 /* IAChaptersListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34147CAB1CDF84E800230C20 /* IAChaptersListVC.swift */; };
 		34147CAE1CDFA14800230C20 /* IADownloadStatusTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34147CAD1CDFA14800230C20 /* IADownloadStatusTableViewCell.swift */; };
 		344551921CD5E0F500FE7C47 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344551731CD5E0F500FE7C47 /* Constants.swift */; };
 		344551931CD5E0F500FE7C47 /* IARootVCProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344551741CD5E0F500FE7C47 /* IARootVCProtocol.swift */; };
@@ -44,8 +44,12 @@
 		34832A5F1CE1A98100B02158 /* CoreDataStackManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34832A5E1CE1A98100B02158 /* CoreDataStackManager.swift */; };
 		3490935E1CDCB22700FC49A7 /* IAGenericListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3490935D1CDCB22700FC49A7 /* IAGenericListVC.swift */; };
 		349093601CDCB89100FC49A7 /* IADownloadListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3490935F1CDCB89100FC49A7 /* IADownloadListCollectionViewCell.swift */; };
-		349452F31CD23072007080E7 /* IABookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349452F21CD23072007080E7 /* IABookmarkManager.swift */; };
+		349452F31CD23072007080E7 /* IAFavouriteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 349452F21CD23072007080E7 /* IAFavouriteManager.swift */; };
 		34B9A2A01CD8AEAC00C7D9CD /* IADownloadsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34B9A29F1CD8AEAC00C7D9CD /* IADownloadsManager.swift */; };
+		34DCE8AA1CE853F3002F3119 /* IAChapterBookmarkExploreVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34DCE8A91CE853F3002F3119 /* IAChapterBookmarkExploreVC.swift */; };
+		34DCE8AC1CE8841F002F3119 /* IABookmarksListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34DCE8AB1CE8841F002F3119 /* IABookmarksListVC.swift */; };
+		34DCE8AE1CE88A61002F3119 /* IABookmarkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34DCE8AD1CE88A61002F3119 /* IABookmarkManager.swift */; };
+		34DCE8B01CE98AB2002F3119 /* IABookmarkCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34DCE8AF1CE98AB2002F3119 /* IABookmarkCollectionVC.swift */; };
 		34E78DDB1CDBCF7A00A25D86 /* IAMainFavouriteListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34E78DDA1CDBCF7A00A25D86 /* IAMainFavouriteListVC.swift */; };
 		34EB38641C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */; };
 		34EB38701C402D830034F3E4 /* IABookImagesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34EB386F1C402D830034F3E4 /* IABookImagesManager.swift */; };
@@ -85,7 +89,7 @@
 /* Begin PBXFileReference section */
 		1D84436CD2668816F6B8EA43 /* Pods-Archive.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Archive.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Archive/Pods-Archive.debug.xcconfig"; sourceTree = "<group>"; };
 		3410EC661C520D3A0093E7C0 /* ArchiveBridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ArchiveBridgingHeader.h; sourceTree = "<group>"; };
-		34147CAB1CDF84E800230C20 /* IADownloadedChaptersListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IADownloadedChaptersListVC.swift; sourceTree = "<group>"; };
+		34147CAB1CDF84E800230C20 /* IAChaptersListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAChaptersListVC.swift; sourceTree = "<group>"; };
 		34147CAD1CDFA14800230C20 /* IADownloadStatusTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IADownloadStatusTableViewCell.swift; sourceTree = "<group>"; };
 		344551731CD5E0F500FE7C47 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		344551741CD5E0F500FE7C47 /* IARootVCProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IARootVCProtocol.swift; sourceTree = "<group>"; };
@@ -122,8 +126,12 @@
 		34832A5E1CE1A98100B02158 /* CoreDataStackManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStackManager.swift; sourceTree = "<group>"; };
 		3490935D1CDCB22700FC49A7 /* IAGenericListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAGenericListVC.swift; sourceTree = "<group>"; };
 		3490935F1CDCB89100FC49A7 /* IADownloadListCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IADownloadListCollectionViewCell.swift; sourceTree = "<group>"; };
-		349452F21CD23072007080E7 /* IABookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IABookmarkManager.swift; sourceTree = "<group>"; };
+		349452F21CD23072007080E7 /* IAFavouriteManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAFavouriteManager.swift; sourceTree = "<group>"; };
 		34B9A29F1CD8AEAC00C7D9CD /* IADownloadsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IADownloadsManager.swift; sourceTree = "<group>"; };
+		34DCE8A91CE853F3002F3119 /* IAChapterBookmarkExploreVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAChapterBookmarkExploreVC.swift; sourceTree = "<group>"; };
+		34DCE8AB1CE8841F002F3119 /* IABookmarksListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IABookmarksListVC.swift; sourceTree = "<group>"; };
+		34DCE8AD1CE88A61002F3119 /* IABookmarkManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IABookmarkManager.swift; sourceTree = "<group>"; };
+		34DCE8AF1CE98AB2002F3119 /* IABookmarkCollectionVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IABookmarkCollectionVC.swift; sourceTree = "<group>"; };
 		34E78DDA1CDBCF7A00A25D86 /* IAMainFavouriteListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAMainFavouriteListVC.swift; sourceTree = "<group>"; };
 		34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAItemsManager.swift; sourceTree = "<group>"; };
 		34EB386F1C402D830034F3E4 /* IABookImagesManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IABookImagesManager.swift; sourceTree = "<group>"; };
@@ -194,6 +202,7 @@
 				3445517C1CD5E0F500FE7C47 /* GenericItemListVC */,
 				3445517E1CD5E0F500FE7C47 /* GenericSortOptionsListVC */,
 				344551841CD5E0F500FE7C47 /* Login */,
+				34DCE8A81CE8531B002F3119 /* ChapterBookmarkExplore */,
 				344551861CD5E0F500FE7C47 /* Tabs */,
 			);
 			path = ViewControllers;
@@ -276,7 +285,8 @@
 				A6F42BF61CE4497300F0D2C2 /* IAFavoriteCollectoinVC.swift */,
 				A6D598751CE48C8B0027174E /* IADownloadCollectionVC.swift */,
 				3490935D1CDCB22700FC49A7 /* IAGenericListVC.swift */,
-				34147CAB1CDF84E800230C20 /* IADownloadedChaptersListVC.swift */,
+				34147CAB1CDF84E800230C20 /* IAChaptersListVC.swift */,
+				34DCE8AF1CE98AB2002F3119 /* IABookmarkCollectionVC.swift */,
 			);
 			path = Favourite;
 			sourceTree = "<group>";
@@ -318,6 +328,15 @@
 			name = CoreData;
 			sourceTree = "<group>";
 		};
+		34DCE8A81CE8531B002F3119 /* ChapterBookmarkExplore */ = {
+			isa = PBXGroup;
+			children = (
+				34DCE8A91CE853F3002F3119 /* IAChapterBookmarkExploreVC.swift */,
+				34DCE8AB1CE8841F002F3119 /* IABookmarksListVC.swift */,
+			);
+			path = ChapterBookmarkExplore;
+			sourceTree = "<group>";
+		};
 		34EB38521C3E64DF0034F3E4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -340,8 +359,9 @@
 				34EB38631C3FC0A70034F3E4 /* IAItemsManager.swift */,
 				34EB386F1C402D830034F3E4 /* IABookImagesManager.swift */,
 				3448CFF21CC3901A001CBB31 /* IALoginManager.swift */,
-				349452F21CD23072007080E7 /* IABookmarkManager.swift */,
+				349452F21CD23072007080E7 /* IAFavouriteManager.swift */,
 				34B9A29F1CD8AEAC00C7D9CD /* IADownloadsManager.swift */,
+				34DCE8AD1CE88A61002F3119 /* IABookmarkManager.swift */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -645,19 +665,22 @@
 				3473ACBE1CDA7FD2008FE4C9 /* File.swift in Sources */,
 				A6F42BF91CE451A000F0D2C2 /* CoreDataCollectionViewController.swift in Sources */,
 				3473ACB51CDA7EBC008FE4C9 /* ArchiveItem+CoreDataProperties.swift in Sources */,
+				34DCE8B01CE98AB2002F3119 /* IABookmarkCollectionVC.swift in Sources */,
 				34832A5F1CE1A98100B02158 /* CoreDataStackManager.swift in Sources */,
 				349093601CDCB89100FC49A7 /* IADownloadListCollectionViewCell.swift in Sources */,
-				34147CAC1CDF84E800230C20 /* IADownloadedChaptersListVC.swift in Sources */,
+				34147CAC1CDF84E800230C20 /* IAChaptersListVC.swift in Sources */,
 				3445519D1CD5E0F500FE7C47 /* IASortPresentationDelgate.swift in Sources */,
 				344551961CD5E0F500FE7C47 /* IAReaderCollectionViewController.swift in Sources */,
 				3448CFF31CC3901A001CBB31 /* IALoginManager.swift in Sources */,
 				344551A41CD5E0F500FE7C47 /* IAItemListCellView.swift in Sources */,
 				3445519E1CD5E0F500FE7C47 /* IALoginVC.swift in Sources */,
+				34DCE8AE1CE88A61002F3119 /* IABookmarkManager.swift in Sources */,
 				3445519B1CD5E0F500FE7C47 /* IASortPresentationAnimatedTransitioning.swift in Sources */,
 				A6D598761CE48C8B0027174E /* IADownloadCollectionVC.swift in Sources */,
 				3473ACBB1CDA7FD2008FE4C9 /* Chapter+CoreDataProperties.swift in Sources */,
-				349452F31CD23072007080E7 /* IABookmarkManager.swift in Sources */,
+				349452F31CD23072007080E7 /* IAFavouriteManager.swift in Sources */,
 				A612090F1C3D2EA30017A928 /* AppDelegate.swift in Sources */,
+				34DCE8AA1CE853F3002F3119 /* IAChapterBookmarkExploreVC.swift in Sources */,
 				34EB38701C402D830034F3E4 /* IABookImagesManager.swift in Sources */,
 				347C49531CE44A2700145288 /* Page.swift in Sources */,
 				34147CAE1CDFA14800230C20 /* IADownloadStatusTableViewCell.swift in Sources */,
@@ -672,6 +695,7 @@
 				3445519C1CD5E0F500FE7C47 /* IASortPresentationController.swift in Sources */,
 				34E78DDB1CDBCF7A00A25D86 /* IAMainFavouriteListVC.swift in Sources */,
 				A6F42BF71CE4497300F0D2C2 /* IAFavoriteCollectoinVC.swift in Sources */,
+				34DCE8AC1CE8841F002F3119 /* IABookmarksListVC.swift in Sources */,
 				A61CE2A21CE2F6F800E89D3C /* IAGenericItemCollectionVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

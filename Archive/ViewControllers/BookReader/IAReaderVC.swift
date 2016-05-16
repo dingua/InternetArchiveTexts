@@ -11,8 +11,16 @@ import DGActivityIndicatorView
 import MBProgressHUD
 
 class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewControllerDataSource {
+    
     //MARK: Variables Declaration
     var item: ArchiveItem?
+    
+    var chapters : [Chapter]? {
+        get{
+        return (self.item?.file?.chapters?.allObjects as! [Chapter]).sort({ $0.name < $1.name})
+        }
+    }
+    
     let bottomMarginReaderPage = 50.0
     var pageController = UIPageViewController(transitionStyle: .PageCurl, navigationOrientation: .Horizontal, options: nil)
     var bookIdentifier : String!
@@ -28,6 +36,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         didSet {
             //As soon as page number is set we update page number label
             updateProgressUI()
+            updateBookmarkButton()
         }
     }
     var selectedChapterIndex = 0
@@ -75,24 +84,28 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         archiveItemsManager.getFileDetails(item!) { (file) -> () in
             self.removeLoadingView()
             self.item!.file = file
-            self.addDownloadButton()
+            self.addBookmarkButton()
             if (file.chapters?.count)! > 0 {
                 self.setupReaderToChapter(0)
             }
-            if (file.chapters?.count)! > 1 {
-                self.addChaptersButton()
-            }
+            self.addChaptersButton()
             self.progressSlider.userInteractionEnabled = true
         }
     }
     
-    func addDownloadButton() {
-        let button = UIBarButtonItem(image: UIImage(named: "download_button"), style: .Plain, target: self, action: #selector(IAReaderVC.downloadChapterFiles))
+    func addBookmarkButton() {
+        let button = UIBarButtonItem(image: UIImage(named: "bookmark_empty"), style: .Plain, target: self, action: #selector(IAReaderVC.triggerBookmark))
         self.navigationItem.rightBarButtonItem = button
     }
- 
+    
+    func updateBookmarkButton() {
+        if let page = self.imagesDownloader?.pageAtIndex(self.pageNumber), let rightBarButtonItem = self.navigationItem.rightBarButtonItem {
+            rightBarButtonItem.image = page.bookmarked ? UIImage(named: "bookmark_filled") : UIImage(named: "bookmark_empty")
+        }
+    }
+    
     func addChaptersButton() {
-        let button = UIBarButtonItem(image: UIImage(named: "sort"), style: .Plain, target: self, action: #selector(IAReaderVC.chaptersButtonPressed(_:)))
+        let button = UIBarButtonItem(image: UIImage(named: "3dots"), style: .Plain, target: self, action: #selector(IAReaderVC.chaptersButtonPressed(_:)))
         if let _ = self.navigationItem.rightBarButtonItems {
             self.navigationItem.rightBarButtonItems?.append(button)
         }else {
@@ -100,15 +113,17 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         }
     }
     
-    func setupReaderToChapter(chapterIndex: Int) {
+    func setupReaderToChapter(chapterIndex: Int, completion: ()->() = {}) {
         if let file = item!.file {
+            removePageController()
+            addLoadingView()
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), {
                 self.selectedChapterIndex = chapterIndex
                 if let oldImagesDownloader = self.imagesDownloader{
                     oldImagesDownloader.cancelAllRequests()
                 }
                 self.imagesDownloader = IABookImagesManager(file: file, chapterIndex: self.selectedChapterIndex)
-              
+                
                 let chapter = file.chapters!.sort({$0.name < $1.name})[chapterIndex] as! Chapter
                 
                 if  let nbrPages = self.imagesDownloader!.numberOfPages {
@@ -119,21 +134,28 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                 self.pageNumber = 0
                 self.imagesDownloader!.getPages(){_ in
                     dispatch_async(dispatch_get_main_queue(), {
-                        self.addPageController()
+                        self.removeLoadingView()
+                        self.addPageController() {completion()}
                         self.updatePages()
+                        self.updateBookmarkButton()
                     })
                 }
-
+                
             })
         }
     }
     
-    func addPageController() {
+    func removePageController() {
         self.pageController.removeFromParentViewController()
         self.pageController.didMoveToParentViewController(nil)
         self.pageController.view.removeFromSuperview()
-
-        self.pageController.setViewControllers(Array(arrayLiteral: self.pageVCWithNumber(self.pageNumber)) , direction: .Forward, animated: true, completion: nil)
+    }
+    
+    func addPageController(completion: ()->() = {}) {
+        self.pageController.removeFromParentViewController()
+        self.pageController.didMoveToParentViewController(nil)
+        self.pageController.view.removeFromSuperview()
+        self.pageController.setViewControllers(Array(arrayLiteral: self.pageVCWithNumber(self.pageNumber)) , direction: .Forward, animated: false, completion: nil)
         self.pageController.view.backgroundColor = UIColor.redColor()
         self.pageController.delegate = self
         self.pageController.dataSource = self
@@ -143,15 +165,16 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         
         self.addChildViewController(self.pageController)
         self.pageController.didMoveToParentViewController(self)
-
+        
         //Apply constraints
         self.pageController.view.translatesAutoresizingMaskIntoConstraints = false
         self.view.addConstraint(NSLayoutConstraint(item: self.topLayoutGuide   , attribute: .Bottom, relatedBy: .Equal, toItem: self.pageController.view, attribute: .Top, multiplier: 1.0, constant: 0))
         self.view.addConstraint(NSLayoutConstraint(item: self.pageController.view  , attribute: .Leading, relatedBy: .Equal, toItem: self.view, attribute: .Leading, multiplier: 1.0, constant: 0))
         self.view.addConstraint(NSLayoutConstraint(item: self.pageController.view  , attribute: .Trailing, relatedBy: .Equal, toItem: self.view, attribute: .Trailing, multiplier: 1.0, constant: 0))
         self.view.addConstraint(NSLayoutConstraint(item: self.bottomLayoutGuide  , attribute: .Top, relatedBy: .Equal, toItem:self.pageController.view, attribute: .Bottom, multiplier: 1.0, constant: CGFloat(bottomMarginReaderPage)))
-
+        
         self.view.bringSubviewToFront(self.downloadProgressView)
+        dispatch_async(dispatch_get_main_queue(), {completion()})
     }
     
     func pageVCWithNumber(number: Int)->IAReaderPageVC {
@@ -169,7 +192,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     vc.updateImage(image,hidden: true)
                 })
-
+                
             }
         }
     }
@@ -230,24 +253,37 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     }
     
     @IBAction func chaptersButtonPressed(sender: AnyObject) {
-        let chaptersListVC =  UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("chaptersListVC") as! IAReaderChaptersListVC
+        let chaptersListVC =  UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("IAChapterBookmarkExploreVC") as! IAChapterBookmarkExploreVC
         chaptersListVC.transitioningDelegate = presentationDelegate
-        chaptersListVC.chapters = (item!.file?.chapters!.allObjects as! [Chapter]?)?.sort({$0.name < $1.name})
+        chaptersListVC.item = item!
         chaptersListVC.chapterSelectionHandler = { chapterIndex in
-            self.setupReaderToChapter(chapterIndex)
+            if self.selectedChapterIndex != chapterIndex {
+                self.setupReaderToChapter(chapterIndex)
+            }
+        }
+        chaptersListVC.bookmarkSelectionHandler = { page in
+            if let chapters = self.chapters {
+                self.setupReaderToChapter(chapters.indexOf(page.chapter!)!) {
+                    self.pageNumber = Int(page.number!)!
+                    self.updateUIAfterPageSeek(true)
+                }
+            }
         }
         chaptersListVC.selectedChapterIndex = self.selectedChapterIndex
         chaptersListVC.modalPresentationStyle = .Custom
         self.presentViewController(chaptersListVC, animated: true, completion: nil)
     }
     
-    func downloadChapterFiles() {
-        showChaptersList()
+    func triggerBookmark() {
+        if let page = self.imagesDownloader?.pageAtIndex(self.pageNumber) {
+            IABookmarkManager.sharedInstance.triggerBookmark(page)
+            self.updateBookmarkButton()
+        }
     }
     
     func startDownloading() {
-        if let chapter = self.imagesDownloader?.chapter , file = item!.file {
-            IADownloadsManager.sharedInstance.download(chapter, file: file)
+        if let chapter = self.imagesDownloader?.chapter {
+            IADownloadsManager.sharedInstance.downloadTrigger(chapter)
         }
     }
     
@@ -255,13 +291,13 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     func showChaptersList() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let chaptersListVC = storyboard.instantiateViewControllerWithIdentifier("IADownloadedChaptersListVC") as! IADownloadedChaptersListVC
+        let chaptersListVC = storyboard.instantiateViewControllerWithIdentifier("IADownloadedChaptersListVC") as! IAChaptersListVC
         chaptersListVC.transitioningDelegate = presentationDelegate;
         chaptersListVC.chapters = item?.file?.chapters?.sort({ $0.name < $1.name})
         chaptersListVC.modalPresentationStyle = .Custom
         self.presentViewController(chaptersListVC, animated: true, completion: nil)
     }
-
+    
     
     func updateUIAfterPageSeek(toNextPage: Bool) {
         let pageVC = self.pageVCWithNumber(self.pageNumber)
@@ -303,7 +339,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         self.imagesDownloader!.imageOfPage(self.pageNumber){(page: Int, image: UIImage)->() in
             completion()
             if page == self.pageNumber {
-                    self.updatePageVCWithNumber(page,image: image)
+                self.updatePageVCWithNumber(page,image: image)
             }
         }
     }
@@ -316,11 +352,11 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     func downloadMore () {
         self.imagesDownloader!.getImages(pageNumber-2, count: 5,
-            updateImage:{ (page: Int, image: UIImage)->() in
-                if self.pageNumber == page {
-                    self.updatePageVCWithNumber(page,image: image)
-                }
-            }){ ()->() in
+                                         updateImage:{ (page: Int, image: UIImage)->() in
+                                            if self.pageNumber == page {
+                                                self.updatePageVCWithNumber(page,image: image)
+                                            }
+        }){ ()->() in
         }
     }
     
@@ -376,4 +412,5 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     func isFavourite()->Bool {
         return (item?.isFavourite?.boolValue)!
     }
+    
 }
