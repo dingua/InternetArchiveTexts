@@ -8,16 +8,38 @@
 
 import UIKit
 
-class IAMainFavouriteListVC: UIViewController {
+private extension Selector {
+    static let userDidLogin     = #selector(IAMainFavouriteListVC.userDidLogin)
+    static let userDidLogout    = #selector(IAMainFavouriteListVC.userDidLogout)
+}
 
-    @IBOutlet weak var segmentControl: UISegmentedControl!
+class IAMainFavouriteListVC: UIViewController,IARootVCProtocol {
+
+    lazy var segmentControl: UISegmentedControl = {
+            let segmentControl = UISegmentedControl(items: ["Favourites","Downloads","Bookmarks"])
+            segmentControl.selectedSegmentIndex = 0
+            segmentControl.tintColor = UIColor.blackColor()
+            segmentControl.addTarget(self, action: #selector(IAMainFavouriteListVC.segmentControlValueChanged(_:)), forControlEvents: .ValueChanged)
+            return segmentControl
+    }()
+    
     @IBOutlet weak var favouriteListContainerView: UIView!
     @IBOutlet weak var bookmarkListContainerView: UIView!
     @IBOutlet weak var downloadListContainerView: UIView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        registerForNotification(notificationUserDidLogin,   action: .userDidLogin)
+        registerForNotification(notificationUserDidLogout,  action: .userDidLogout)
         // Do any additional setup after loading the view.
+    }
+    
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        updateNavigationItem()
+        self.navigationItem.titleView = segmentControl
     }
     
     override func didReceiveMemoryWarning() {
@@ -26,7 +48,6 @@ class IAMainFavouriteListVC: UIViewController {
     }
     
     func setupUI() {
-        segmentControl.selectedSegmentIndex = 0
         favouriteListContainerView.hidden = false
         downloadListContainerView.hidden = true
         bookmarkListContainerView.hidden = true
@@ -69,4 +90,20 @@ class IAMainFavouriteListVC: UIViewController {
         // Pass the selected object to the new view controller.
     }
     
+    //MARK: - Notification
+    
+    func userDidLogin() {
+        updateNavigationItem()
+    }
+    
+    func userDidLogout() {
+        updateNavigationItem()
+    }
+    
+    //MARK: - IARootVCProtocol
+    
+    func logoutAction() {
+        logout()
+    }
+
 }

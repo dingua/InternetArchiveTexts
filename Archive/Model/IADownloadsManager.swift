@@ -36,7 +36,7 @@ class IADownloadsManager {
     
     func downloadTrigger(chapter: Chapter) {
         if chapter.isDownloaded?.boolValue == true {
-        
+            deleteChapter(chapter)
         }else {
             if let file = chapter.file {
                 download(chapter, file: file)
@@ -53,20 +53,33 @@ class IADownloadsManager {
         )
         let type = chapter.type?.rawValue.lowercaseString
         chapter.markInDownloadingState()
-        Alamofire.download(.GET, "https://\(file.server!)\(file.directory!)/\(chapter.subdirectory!)_\(type!).zip", destination: destination)
+        Alamofire.download(.GET, "https://\(file.server!)\(file.directory!)/\(chapter.subdirectory!)_\(type!).zip".allowdStringForURL(), destination: destination)
             .response { request, response, _, error in
-                let unzipSucceed = (SSZipArchive.unzipFileAtPath((destination(NSURL(string: "")!, response!).absoluteString as NSString).substringFromIndex(7), toDestination: "\(self.docuementsDirectory())"))
+                let paths =  NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)
+                let cacheDir =  paths[0]
+                let zipFilePath =  "\(cacheDir)/\(chapter.name!)jp2.zip"
+                let unzipSucceed = (SSZipArchive.unzipFileAtPath(zipFilePath, toDestination: "\(self.docuementsDirectory())"))
                 if unzipSucceed {
+                    self.deleteFile(zipFilePath)
                     self.filesQueue?.indexOf({$0.file?.archiveItem?.identifier == file.archiveItem!.identifier && $0.chapter?.name == chapter.name}).map({
                         if let chapter = self.filesQueue![$0].chapter {
-                            chapter.markDownloaded()
+                            chapter.markDownloaded(true)
                         }
                         self.filesQueue!.removeAtIndex($0)
                         if self.filesQueue?.count == 0 {self.appDelegate.downloadProgress = 0}
                         self.appDelegate.downloadDone()
                         NSNotificationCenter.defaultCenter().postNotificationName("\(chapter.name!)_finished", object:  nil)
-//                        NSNotificationCenter.defaultCenter().postNotificationName(notificationDownloadedAdded, object: nil)
-                        
+                    })
+                }else {
+                    self.deleteFile(zipFilePath)
+                    self.filesQueue?.indexOf({$0.file?.archiveItem?.identifier == file.archiveItem!.identifier && $0.chapter?.name == chapter.name}).map({
+                        if let chapter = self.filesQueue![$0].chapter {
+                            chapter.markDownloaded(false)
+                        }
+                        self.filesQueue!.removeAtIndex($0)
+                        if self.filesQueue?.count == 0 {self.appDelegate.downloadProgress = 0}
+                        self.appDelegate.downloadFailed()
+                        NSNotificationCenter.defaultCenter().postNotificationName("\(chapter.name!)_finished", object:  nil)
                     })
                 }
             }
@@ -80,6 +93,18 @@ class IADownloadsManager {
                 )
         }
         
+    }
+    
+    private func deleteChapter(chapter: Chapter) {
+        let type = chapter.type!.rawValue.lowercaseString
+        if deleteFile("\(self.docuementsDirectory())/\(chapter.name!)\(type)") {
+            chapter.markDownloaded(false)
+            NSNotificationCenter.defaultCenter().postNotificationName("\(chapter.name!)_deleted", object:  nil)
+        }else {
+        
+        }
+
+
     }
     
     func getDownloadedChapters()->NSArray? {
@@ -112,5 +137,16 @@ class IADownloadsManager {
     func pathInDownloadChapter(chapter: Chapter) -> String?{
         let cacheDirectoryPath = NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)[0]
         return "\(cacheDirectoryPath)/\(chapter.name!)"
+    }
+    
+    func deleteFile(filePath: String) -> Bool {
+        do{
+            let fileManager = NSFileManager.defaultManager()
+            try fileManager.removeItemAtPath(filePath)
+        } catch let error as NSError {
+            print("delete file failed \(error.localizedDescription)")
+            return false
+        }
+        return true
     }
 }

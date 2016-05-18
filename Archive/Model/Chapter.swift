@@ -14,48 +14,34 @@ import UIKit
 class Chapter: NSManagedObject {
     
     static let managedContext :NSManagedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
-        
+    
     static func createChapter(zipFile: String, type: String, file: File, managedObjectContext: NSManagedObjectContext, temporary: Bool)->Chapter? {
-        let predicate = NSPredicate(format: "zipFile like %@", "\(zipFile.allowdStringForURL())");
+        let entity = NSEntityDescription.entityForName("Chapter", inManagedObjectContext: managedObjectContext)!
+        let chapter = NSManagedObject(entity: entity, insertIntoManagedObjectContext: temporary ? nil : managedObjectContext) as! Chapter
         
-        let fetchItemWithSameId = NSFetchRequest(entityName: "Chapter")
-        
-        fetchItemWithSameId.predicate = predicate
-        let fetchedItems : NSArray?
-        do {
-            fetchedItems = try self.managedContext.executeFetchRequest(fetchItemWithSameId)
-            if (fetchedItems!.count == 0) {
-                let entity = NSEntityDescription.entityForName("Chapter", inManagedObjectContext: managedObjectContext)!
-                let chapter = NSManagedObject(entity: entity, insertIntoManagedObjectContext: temporary ? nil : managedObjectContext) as! Chapter
-                
-                chapter.zipFile = zipFile.allowdStringForURL()
-                if type == "JP2" || type == "JPEG" {
-                    chapter.type = .JP2
-                }else if type == "TIFF" {
-                    chapter.type = .TIF
-                }else if type == "PDF" {
-                    chapter.type = .PDF
-                }
-                chapter.scandata = (zipFile.substringToIndex((zipFile.rangeOfString("_\((chapter.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)+"_scandata.xml").allowdStringForURL()
-                chapter.name = zipFile.substringToIndex((zipFile.rangeOfString("\((chapter.type?.rawValue.lowercaseString)!).zip")?.startIndex)!).allowdStringForURL()
-                chapter.subdirectory = zipFile.substringToIndex((zipFile.rangeOfString("_\((chapter.type?.rawValue.lowercaseString)!).zip")?.startIndex)!).allowdStringForURL()
-                chapter.isDownloaded = NSNumber(bool: false)
-                chapter.isDownloading = NSNumber(bool: false)
-                chapter.file = file
-                return chapter
-            }else {
-                return fetchedItems?.firstObject as? Chapter
-            }
-        }catch {}
-        return nil
+        chapter.zipFile = zipFile
+        if type == "JP2" || type == "JPEG" {
+            chapter.type = .JP2
+        }else if type == "TIFF" {
+            chapter.type = .TIF
+        }else if type == "PDF" {
+            chapter.type = .PDF
+        }
+        chapter.scandata = (zipFile.substringToIndex((zipFile.rangeOfString("_\((chapter.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)+"_scandata.xml")
+        chapter.name = zipFile.substringToIndex((zipFile.rangeOfString("\((chapter.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)
+        chapter.subdirectory = zipFile.substringToIndex((zipFile.rangeOfString("_\((chapter.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)
+        chapter.isDownloaded = NSNumber(bool: false)
+        chapter.isDownloading = NSNumber(bool: false)
+        chapter.file = file
+        return chapter
     }
     
     // Insert code here to add functionality to your managed object subclass
     
-    func markDownloaded() {
+    func markDownloaded(downloaded: Bool) {
         do{
             if let managedObjectContext = self.managedObjectContext {
-                self.isDownloaded = NSNumber(bool: true)
+                self.isDownloaded = NSNumber(bool: downloaded)
                 self.isDownloading = NSNumber(bool: false)
                 try managedObjectContext.save()
                 
@@ -71,7 +57,7 @@ class Chapter: NSManagedObject {
                         }
                     }
                 }
-                self.isDownloaded = NSNumber(bool: true)
+                self.isDownloaded = NSNumber(bool: downloaded)
                 self.isDownloading = NSNumber(bool: false)
                 try CoreDataStackManager.sharedManager.managedObjectContext.save()
             }
@@ -79,7 +65,7 @@ class Chapter: NSManagedObject {
             print("Error \(error.localizedDescription) can not save")
         }
     }
-    
+
     func markInDownloadingState() {
         do{
             if let managedObjectContext = self.managedObjectContext {

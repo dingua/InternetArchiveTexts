@@ -79,8 +79,10 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         getFileDetails()
     }
     
+    var startDate: NSDate?
     func getFileDetails() {
         self.addLoadingView()
+        startDate = NSDate()
         archiveItemsManager.getFileDetails(item!) { (file) -> () in
             self.removeLoadingView()
             self.item!.file = file
@@ -134,6 +136,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                 self.pageNumber = 0
                 self.imagesDownloader!.getPages(){_ in
                     dispatch_async(dispatch_get_main_queue(), {
+                        print("totoal time \(NSDate().timeIntervalSinceDate(self.startDate!))")
                         self.removeLoadingView()
                         self.addPageController() {completion()}
                         self.updatePages()

@@ -15,25 +15,24 @@ class IAChaptersListVC: UITableViewController {
         didSet {
             self.tableView.reloadData()
             for chapter  in (chapters as? [Chapter])! {
-                if !((chapter.isDownloaded?.boolValue)!) {
-                    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAChaptersListVC.updateDownloadProgress), name: "\(chapter.name!)_progress", object: nil)
-                    NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAChaptersListVC.downloadFinished), name: "\(chapter.name!)_finished", object: nil)
-                }
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAChaptersListVC.updateDownloadProgress), name: "\(chapter.name!)_progress", object: nil)
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAChaptersListVC.downloadFinished), name: "\(chapter.name!)_finished", object: nil)
+                NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAChaptersListVC.chapterDeleted), name: "\(chapter.name!)_deleted", object: nil)
             }
         }
     }
     
     var downloadProgress = [String:Double]()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
     
     func updateDownloadProgress(notification: NSNotification) {
         let filteredChapters = chapters?.filteredArrayUsingPredicate(NSPredicate(format: "name like %@", notification.name.substringToIndex((notification.name.rangeOfString("_progress")?.startIndex)!)))
@@ -53,26 +52,34 @@ class IAChaptersListVC: UITableViewController {
         })
     }
     
+    func chapterDeleted(notification: NSNotification) {
+        let filteredChapters = chapters?.filteredArrayUsingPredicate(NSPredicate(format: "name like %@", notification.name.substringToIndex((notification.name.rangeOfString("_deleted")?.startIndex)!)))
+        let chapter = (filteredChapters?.first)!
+        dispatch_async(dispatch_get_main_queue(), {
+            self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: (self.chapters?.indexOfObject(chapter))!, inSection: 0)], withRowAnimation: .None)
+        })
+    }
+    
+    
     override func viewDidDisappear(animated: Bool) {
         super.viewDidAppear(animated)
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     // MARK: - Table view data source
-
+    
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
-
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-
+        
         if let chapters = chapters {
             return chapters.count
         }else {
             return 0
         }
     }
-
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("downloadStatusCell", forIndexPath: indexPath) as! IAChapterTableViewCell
@@ -88,11 +95,8 @@ class IAChaptersListVC: UITableViewController {
         }
         return cell
     }
- 
-
+    
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         chapterSelectionHandler!(chapterIndex: indexPath.row)
     }
-
-
 }

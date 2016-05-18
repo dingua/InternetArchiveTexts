@@ -77,6 +77,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let window = UIApplication.sharedApplication().keyWindow!
         progressView = UIProgressView(progressViewStyle: .Default)
         progressView?.hidden = true
+        progressView?.tintColor = UIColor.blackColor()
         window.addSubview(progressView!)
         progressView!.translatesAutoresizingMaskIntoConstraints = false
         
@@ -98,6 +99,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
     }
     
+    func downloadFailed() {
+        let window = UIApplication.sharedApplication().keyWindow!
+        let doneView = MBProgressHUD.showHUDAddedTo(window, animated: true)
+        doneView.mode = .CustomView
+        doneView.labelText = "Failed"
+        doneView.customView = UIImageView(image: UIImage(named: "done_btn")?.imageWithTintColor(UIColor.whiteColor()))
+        let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(2 * Double(NSEC_PER_SEC)))
+        dispatch_after(popTime, dispatch_get_main_queue(),{
+            MBProgressHUD.hideHUDForView(window ,animated:true)
+        })
+    }
+
     
 }
 

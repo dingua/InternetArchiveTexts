@@ -25,9 +25,5 @@ class IACollectionsExploreViewCell: UICollectionViewCell {
         self.imageView.clipsToBounds = true
         self.imageView.layer.borderWidth = 1.0
         self.imageView.layer.borderColor = UIColor.blackColor().CGColor
-        
-        self.contentView.layer.borderWidth = 1.0
-        self.contentView.layer.borderColor = UIColor.blackColor().CGColor
-
     }
 }

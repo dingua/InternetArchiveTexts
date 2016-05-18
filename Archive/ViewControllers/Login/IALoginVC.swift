@@ -64,7 +64,9 @@ class IALoginVC: UIViewController, UIWebViewDelegate, IALoadingViewProtocol {
             }
             if loggedIn{
                 self.dismissViewControllerAnimated(true, completion: {
-                    self.dismissCompletion!()
+                    if let dismissCompletion = self.dismissCompletion {
+                        dismissCompletion()
+                    }
                 })
                 IALoginManager.login(username!)
             }else if webView.scrollView.contentOffset.y == 0 {

@@ -32,11 +32,8 @@ class IAItemListCellView : UICollectionViewCell {
             let imageName = book.isFavorite ? "favourite_filled" : "favourite_empty"
             favouriteBtn.setImage(UIImage(named:imageName), forState: .Normal)
         } else {
-            favouriteBtn.hidden = true
+            favouriteBtn.setImage(UIImage(named:"favourite_empty"), forState: .Normal)
         }
-        
-//        contentView.layer.borderWidth = 1.0
-//        contentView.layer.borderColor = UIColor.blackColor().CGColor
     }
     
     @IBAction func favouriteBtnPressed(sender: AnyObject) {

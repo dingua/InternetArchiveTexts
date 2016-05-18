@@ -53,13 +53,25 @@ class IABookImagesManager: NSObject {
             if let numberOfPages = self._numberOfPages {
                 return numberOfPages
             }
-            if (self.chapter.isDownloaded?.boolValue)! {
+            if (self.chapter.isDownloaded?.boolValue)! && chapter.numberOfPages?.integerValue != 0 {
                     return chapter.numberOfPages?.integerValue
                 }else {
                     return getNumberPages()
                 }
         }
         set {
+            if self.chapter.numberOfPages?.integerValue != newValue {
+                if let newValue = newValue {
+                    self.chapter.numberOfPages = NSNumber(integer: newValue)
+                    if self.chapter.managedObjectContext != nil {
+                        do{
+                            try self.chapter.managedObjectContext?.save()
+                        }catch let error as NSError {
+                            print("couldn't save \(error.localizedDescription)")
+                        }
+                    }
+                }
+            }
             self._numberOfPages = newValue
         }
     }
@@ -82,7 +94,7 @@ class IABookImagesManager: NSObject {
     }
     
     func urlOfPage(number: Int, scale: Int) -> String{
-        return "https://\(file.server!)\(readerMethod)zip=\(file.directory!)/\(chapter.subdirectory!)_\(type!).zip&file=\(chapter.subdirectory!)_\(type!)/\(chapter.subdirectory!)_\(String(format: "%04d", number)).\(type!)&scale=\(scale)"
+        return "https://\(file.server!)\(readerMethod)zip=\(file.directory!)/\(chapter.subdirectory!)_\(type!).zip&file=\(chapter.subdirectory!)_\(type!)/\(chapter.subdirectory!)_\(String(format: "%04d", number)).\(type!)&scale=\(scale)".allowdStringForURL()
     }
     
     func getImages(offset: Int, count:Int,updateImage:(index: Int, image: UIImage)->() , completion:()->()) {
@@ -146,7 +158,7 @@ class IABookImagesManager: NSObject {
     
     func getNumberPages() -> Int? {
         var text : String?
-        if let url = NSURL(string: "https://\(file.server!)\(file.directory!)/\(chapter.scandata!)") {
+        if let url = NSURL(string: "https://\(file.server!)\(file.directory!)/\(chapter.scandata!)".allowdStringForURL()) {
             do{
                 text = try String(contentsOfURL: url)
                 text = text!.substringFromIndex((text!.rangeOfString("<leafCount>")?.endIndex)!)
@@ -164,12 +176,12 @@ class IABookImagesManager: NSObject {
     //MARK: - Get Pages
     
     func getPages(completion : ([Page])->()) {
-        if  self.chapter.pages?.count == self.chapter.numberOfPages?.integerValue {
+        if  (self.chapter.pages?.count == self.chapter.numberOfPages?.integerValue) {
             self.pages = self.chapter.pages?.allObjects as? [Page]
             self.pages = self.pages!.sort({Int($0.number!) < Int($1.number!)})
             return completion(self.pages!)
         }
-        let scandataURL = "https://\(file.server!)\(file.directory!)/\(chapter.scandata!)"
+        let scandataURL = "https://\(file.server!)\(file.directory!)/\(chapter.scandata!)".allowdStringForURL()
         Alamofire.request(Utils.requestWithURL(scandataURL)).response { (request, response, data, error) in
             do{
                 let tbxml =  try TBXML(XMLData: data, error: ())
@@ -222,7 +234,7 @@ class IABookImagesManager: NSObject {
             domain: .UserDomainMask
         )
         
-        return Alamofire.download(.GET, "https://\(file.server!)\(file.directory!)/\(chapter.subdirectory!)_\(type!).zip", destination: destination)
+        return Alamofire.download(.GET, "https://\(file.server!)\(file.directory!)/\(chapter.subdirectory!)_\(type!).zip".allowdStringForURL(), destination: destination)
             .response { request, response, _, error in
                 SSZipArchive.unzipFileAtPath((destination(NSURL(string: "")!, response!).absoluteString as NSString).substringFromIndex(7), toDestination: "\(self.docuementsDirectory())")
                 NSUserDefaults.standardUserDefaults().setBool(true, forKey: "\(self.chapter.subdirectory!)_\(self.type!)")

@@ -8,20 +8,15 @@
 
 import UIKit
 
-class IAFavoritesVC: UIViewController, IARootVCProtocol {
+class IAFavoritesVC: UIViewController {
 
     @IBOutlet weak var favouriteListContainerView: UIView!
     @IBOutlet weak var favouriteLoginContainerView: UIView!
-    var itemsListVC : IAFavouriteListVC?
-    var loginVC: IAFavouriteLoginVC?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         registerForNotification(notificationUserDidLogin,   action: .userDidLogin)
         registerForNotification(notificationUserDidLogout,  action: .userDidLogout)
-        registerForNotification(notificationBookmarkAdded,  action: .bookmarkChanged)
-        registerForNotification(notificationBookmarkRemoved,action: .bookmarkChanged)
     }
     
     deinit {
@@ -30,7 +25,6 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        updateNavigationItem()
         if Utils.isLoggedIn() {
             favouriteLoginContainerView.hidden = true
             favouriteListContainerView.hidden = false
@@ -47,14 +41,11 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "favoritesList" {
-            itemsListVC = segue.destinationViewController as? IAFavouriteListVC
             if let _ = NSUserDefaults.standardUserDefaults().stringForKey("userid") {
-                itemsListVC!.title = "My Favorites"
                 favouriteLoginContainerView.hidden = true
                 favouriteListContainerView.hidden = false
             }
         }else if segue.identifier == "favoritesLogin" {
-            loginVC = segue.destinationViewController as? IAFavouriteLoginVC
             favouriteLoginContainerView.hidden = false
             favouriteListContainerView.hidden = true
         }
@@ -63,35 +54,17 @@ class IAFavoritesVC: UIViewController, IARootVCProtocol {
     // MARK: Helper
     
     func userDidLogin() {
-        updateNavigationItem()
         favouriteLoginContainerView.hidden = true
         favouriteListContainerView.hidden = false
     }
 
     func userDidLogout() {
-        updateNavigationItem()
-        if loginVC != nil{
             favouriteLoginContainerView.hidden = false
             favouriteListContainerView.hidden = true
-        }else {
-            self.performSegueWithIdentifier("favoritesLogin", sender: nil)
-        }
-    }
-    
-    
-    func bookmarkChanged() {
-//        itemsListVC!.reloadList()
-    }
-    
-    //MARK: - IARootVCProtocol
-    
-    func logoutAction() {
-        logout()
     }
 }
 
 private extension Selector {
     static let userDidLogin     = #selector(IAFavoritesVC.userDidLogin)
     static let userDidLogout    = #selector(IAFavoritesVC.userDidLogout)
-    static let bookmarkChanged  = #selector(IAFavoritesVC.bookmarkChanged)
 }

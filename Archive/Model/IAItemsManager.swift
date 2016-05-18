@@ -36,12 +36,13 @@
         if let file = archiveItem.file {
             return completion(file)
         }else {
+            let startDate = NSDate()
             let url = "\(baseURL)/metadata/\(archiveItem.identifier!)"
             Alamofire.request(Utils.requestWithURL(url))
                 .responseJSON { response in
                     if let value = response.result.value {
                         if let managedObjectContext = archiveItem.managedObjectContext {
-                            if let file = File.createFile(value as! [String : AnyObject], archiveItem: archiveItem, managedObjectContext: managedObjectContext, temporary: !(archiveItem.isFavourite!.boolValue)) {
+                            if let file = File.createFile(value as! [String : AnyObject], archiveItem: archiveItem, managedObjectContext: managedObjectContext, temporary: false) {
                                 completion(file)
                             }
                         }else {
@@ -55,7 +56,7 @@
                                 print("could not create managed object context \(error.localizedDescription)")
                             }
                         }
-                        
+                        print("get file details finished in \(NSDate().timeIntervalSinceDate(startDate))")
                     }
             }
         }

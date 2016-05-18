@@ -86,7 +86,7 @@ class ArchiveItem: NSManagedObject {
         do {
             if let fetchedItems = try self.managedContext.executeFetchRequest(fetchItemWithSameId) as? [ArchiveItem] {
                 for item in fetchedItems {
-                    self.managedContext.deleteObject(item)
+                    item.isFavorite = false
                 }
                 try self.managedContext.save()
             }

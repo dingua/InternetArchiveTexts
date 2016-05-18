@@ -34,7 +34,7 @@ class IAGenericItemCollectionVC: CoreDataCollectionViewController, IALoadingView
     func collectionView(collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                                sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return Utils.isiPad() ? CGSizeMake(235, 394) : CGSizeMake(min(self.view.frame.size.width/2-10,self.view.frame.size.height/2-10), 300)
+        return Utils.isiPad() ? CGSizeMake(150, 250) : CGSizeMake(100, 135)
     }
     
     // MARK: - Navigation

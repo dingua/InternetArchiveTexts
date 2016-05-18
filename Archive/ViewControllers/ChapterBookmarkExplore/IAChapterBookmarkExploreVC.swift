@@ -21,7 +21,8 @@ class IAChapterBookmarkExploreVC: UIViewController {
     var selectedChapterIndex = -1
     var chapterSelectionHandler : ChapterSelectionHandler?
     var bookmarkSelectionHandler: BookmarkSelectionHandler?
-    
+    var sortPresentationDelegate =  IASortPresentationDelgate()
+
     //MARK: - Initializer
     func update(item: ArchiveItem, selectedIndex: Int) {
         self.item = item
@@ -69,11 +70,11 @@ class IAChapterBookmarkExploreVC: UIViewController {
     
     
     @IBAction func favoButtonPressed(sender: AnyObject) {
-        if let item = item {
-            IAFavouriteManager.sharedInstance.triggerBookmark(item) {_ in
-                self.favoButton.imageView?.image = (item.isFavorite) ? UIImage(named: "favourite_filled") : UIImage(named: "favourite_empty")
-            }
+        if !Utils.isLoggedIn() {
+            presentLoginscreen()
+            return
         }
+        triggerFavorite(item)
     }
     
     @IBAction func segmentControlDidChangeValue(sender: AnyObject) {
@@ -89,6 +90,26 @@ class IAChapterBookmarkExploreVC: UIViewController {
             break
         default:
             break
+        }
+    }
+    
+    //MARK: Helpers
+    
+    func presentLoginscreen() {
+        let loginVC = self.storyboard?.instantiateViewControllerWithIdentifier("loginVC") as! IALoginVC
+        loginVC.transitioningDelegate = sortPresentationDelegate
+        loginVC.modalPresentationStyle = .Custom
+        loginVC.dismissCompletion = {
+            self.triggerFavorite(self.item)
+        }
+        self.presentViewController(loginVC, animated: true, completion: nil)
+    }
+    
+    func triggerFavorite(item: ArchiveItem?) {
+        if let item = item {
+            IAFavouriteManager.sharedInstance.triggerBookmark(item) {_ in
+                self.favoButton.imageView?.image = (item.isFavorite) ? UIImage(named: "favourite_filled") : UIImage(named: "favourite_empty")
+            }
         }
     }
     

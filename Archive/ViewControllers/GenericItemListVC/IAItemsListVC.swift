@@ -183,17 +183,13 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
             let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! IAItemListCellView
             cell.configureWithItem(item)
             cell.favoriteClosure = {
-                if !((item.isFavourite?.boolValue)!) {
-                    IAFavouriteManager.sharedInstance.addBookmark(item, completion: { message in
-                        self.collectionView?.reloadItemsAtIndexPaths([indexPath])
-                    })
-                    
-                }else {
-                    IAFavouriteManager.sharedInstance.deleteBookmark(item, completion: { _ in
-                        self.collectionView?.reloadItemsAtIndexPaths([indexPath])
-                    })
-                    
+                if !Utils.isLoggedIn() {
+                    self.presentLoginscreen().dismissCompletion = {
+                        self.triggerFavorite(item, atIndexPath: indexPath)
+                    }
+                    return
                 }
+                self.triggerFavorite(item, atIndexPath: indexPath)
             }
             return cell
         }
@@ -258,6 +254,14 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
         self.activityIndicatorView.removeFromSuperview()
     }
     
+    func presentLoginscreen()->IALoginVC {
+        let loginVC = self.storyboard?.instantiateViewControllerWithIdentifier("loginVC") as! IALoginVC
+        loginVC.transitioningDelegate = sortPresentationDelegate
+        loginVC.modalPresentationStyle = .Custom
+        self.presentViewController(loginVC, animated: true, completion: nil)
+        return loginVC
+    }
+
     //MARK: IBAction
     
     @IBAction func showSortList(sender: AnyObject) {
@@ -281,6 +285,20 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
             button.image = UIImage(named: "down_sort")
         }else {
             button.image = UIImage(named: "up_sort")
+        }
+    }
+    
+    func triggerFavorite(item: ArchiveItem, atIndexPath indexPath: NSIndexPath) {
+        if !((item.isFavourite?.boolValue)!) {
+            IAFavouriteManager.sharedInstance.addBookmark(item, completion: { message in
+                self.collectionView?.reloadItemsAtIndexPaths([indexPath])
+            })
+            
+        }else {
+            IAFavouriteManager.sharedInstance.deleteBookmark(item, completion: { _ in
+                self.collectionView?.reloadItemsAtIndexPaths([indexPath])
+            })
+            
         }
     }
     
