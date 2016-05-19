@@ -164,11 +164,6 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     
     // MARK: - UICollectionViewDataSource
     
-    override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return items.count
     }
@@ -195,15 +190,12 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
         }
     }
     
+    
     func collectionView(collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
-                               sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        let item = items[indexPath.row]
-        if item.mediatype == "collection" {
-            return Utils.isiPad() ? CGSizeMake(150, 250) : CGSizeMake(100, 135)
-        }else {
-            return Utils.isiPad() ? CGSizeMake(150, 250) : CGSizeMake(100, 135)
-        }
+                               sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize
+    {
+        return Utils.isiPad() ? CGSizeMake(150, 250) : CGSizeMake(100, 135)
     }
     
     // MARK: - UIScrollViewDelegate
