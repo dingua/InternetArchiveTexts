@@ -18,11 +18,14 @@ class IAFavouriteManager: NSObject {
     
     override init() {
         super.init()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAFavouriteManager.deleteAllBookmarks), name: notificationUserDidLogout, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self,
+                                                         selector: #selector(IAFavouriteManager.deleteAllBookmarks),
+                                                         name: Constants.Notification.UserDidLogout.name,
+                                                         object: nil)
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self, forKeyPath: notificationUserDidLogout)
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     func triggerBookmark(item: ArchiveItem, completion: ArchiveItem -> ()) {

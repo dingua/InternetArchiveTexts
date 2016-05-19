@@ -14,7 +14,7 @@ class IAFavoriteCollectoinVC: IAGenericItemCollectionVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        registerForNotification(notificationUserDidLogin, action: .userDidLogin)
+        registerForNotification(Constants.Notification.UserDidLogin.name, action: .userDidLogin)
         setFetchRequest()
         
         if Utils.isLoggedIn() {

@@ -14,30 +14,27 @@ class IAFavouriteLoginVC: UIViewController,  IALoadingViewProtocol{
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAFavouriteLoginVC.userDidLogin), name: notificationUserDidLogin, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self,
+                                                         selector: #selector(IAFavouriteLoginVC.userDidLogin),
+                                                         name: Constants.Notification.UserDidLogin.name,
+                                                         object: nil)
 
         activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
         // Do any additional setup after loading the view.
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-
     @IBAction func presentLoginscreen(sender: AnyObject) {
-        let loginVC = self.storyboard?.instantiateViewControllerWithIdentifier("loginVC") as! IALoginVC
+        let loginVC = storyboard?.instantiateViewControllerWithIdentifier("loginVC") as! IALoginVC
         loginVC.transitioningDelegate = sortPresentationDelegate
         loginVC.modalPresentationStyle = .Custom
         loginVC.dismissCompletion = {
             self.addLoadingView()
         }
-        self.presentViewController(loginVC, animated: true, completion: nil)
+        presentViewController(loginVC, animated: true, completion: nil)
     }
     
     
@@ -52,14 +49,28 @@ class IAFavouriteLoginVC: UIViewController,  IALoadingViewProtocol{
     
     func addLoadingView() {
         if let activityIndicatorView = activityIndicatorView {
-            self.view.addSubview(activityIndicatorView)
-            activityIndicatorView.startAnimating()
+            view.addSubview(activityIndicatorView)
             
+            activityIndicatorView.startAnimating()
             activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
             
-            self.view.addConstraint(NSLayoutConstraint(item: activityIndicatorView  , attribute: .CenterX, relatedBy: .Equal, toItem: self.view, attribute: .CenterX, multiplier: 1.0, constant: 0))
+            let constraintOne = NSLayoutConstraint(item: activityIndicatorView,
+                                                   attribute: .CenterX,
+                                                   relatedBy: .Equal,
+                                                   toItem:view,
+                                                   attribute: .CenterX,
+                                                   multiplier: 1.0,
+                                                   constant: 0)
             
-            self.view.addConstraint(NSLayoutConstraint(item:  activityIndicatorView, attribute: .CenterY, relatedBy: .Equal, toItem:self.view , attribute: .CenterY, multiplier: 1.0, constant: 50))
+            let constraintTwo = NSLayoutConstraint(item: activityIndicatorView,
+                                                   attribute: .CenterY,
+                                                   relatedBy: .Equal,
+                                                   toItem:view,
+                                                   attribute: .CenterY,
+                                                   multiplier: 1.0,
+                                                   constant: 50)
+            
+            view.addConstraints([constraintOne, constraintTwo])
         }
     }
 }

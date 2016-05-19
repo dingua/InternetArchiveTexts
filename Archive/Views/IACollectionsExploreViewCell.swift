@@ -20,7 +20,8 @@ class IACollectionsExploreViewCell: UICollectionViewCell {
     
     func configureWithItem(collection: ArchiveItem) {
         titleLabel.text = collection.title
-        imageView.af_setImageWithURL(NSURL(string: "\(imageBaseURL)\(collection.identifier!)")!)
+        
+        imageView.af_setImageWithURL(Constants.URL.ImageURL(collection.identifier!).url)
         
         imageView.layer.cornerRadius = Utils.isiPad() ? imageView.frame.size.width/2 :  50
         imageView.clipsToBounds = true

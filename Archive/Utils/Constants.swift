@@ -7,29 +7,47 @@
 //
 
 import Foundation
-let imageBaseURL = "https://archive.org/services/img/"
-let notificationUserDidLogout = "userDidlogout"
-let notificationUserDidLogin = "userLoggedIn"
-let favouriteListIds = "favouriteIds"
-let notificationBookmarkAdded = "bookMarkAdded"
-let notificationBookmarkRemoved = "bookMarkRemoved"
-let notificationDownloadedAdded = "donloadAdded"
 
 struct Constants {
     
-    struct URL {
+    enum Keys: String {
+        case UserID = "userid"
+        case FavoriteListIDs = "favouriteIds"
+        case Secret = "secretkey"
+        case Access = "accesskey"
+    }
+    
+    enum URL {
         static let BaseURL = "https://archive.org"
-        static let ImageURL = BaseURL + "/services/img/"
+        
+        case ImageURL(String)
+        case ImageURLForPage(Page,withScale: Int)
+        
+        var url: NSURL {
+            var path = ""
+            
+            switch self {
+            case .ImageURL(let identifier):
+                path = URL.BaseURL + "/services/img/" + identifier
+                
+            case .ImageURLForPage(let page, let scale):
+                path = page.urlOfPage(scale)
+            }
+            
+            return NSURL(string: path)!
+        }
     }
     
-    static func ImageURL(identifier: String) -> NSURL {
-        let urlString = URL.ImageURL + identifier
-        return NSURL(string: urlString)!
-    }
-    
-    struct Notification {
-        static let UserDidLogIn  = "UserDidLogInNotification"
-        static let UserDidLogOut = "UserDidLogOutNotification"
+    enum Notification: String {
+        case UserDidLogin
+        case UserDidLogout
+        case BookmarkDidAdd
+        case BookmarkDidRemove
+        case DownloadDidAdd
+        
+        var name: String {
+            return self.rawValue + "Notification"
+        }
     }
     
 }

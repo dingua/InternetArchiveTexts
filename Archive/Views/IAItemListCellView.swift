@@ -26,7 +26,7 @@ class IAItemListCellView : UICollectionViewCell {
         if !Utils.isiPad() {
             self.bookTitleLabel.font = UIFont(name: self.bookTitleLabel.font!.fontName, size: 12)
         }
-        self.bookImageView.af_setImageWithURL(Constants.ImageURL(book.identifier!))
+        self.bookImageView.af_setImageWithURL(Constants.URL.ImageURL(book.identifier!).url)
         
         if Utils.isLoggedIn() {
             let imageName = book.isFavorite ? "favourite_filled" : "favourite_empty"

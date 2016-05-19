@@ -51,7 +51,7 @@ class IAGenericItemCollectionCell: UICollectionViewCell {
         titleLabel.text = item.title
         
         if let bookID = item.identifier {
-            mainImageView.af_setImageWithURL(Constants.ImageURL(bookID))
+            mainImageView.af_setImageWithURL(Constants.URL.ImageURL(bookID).url)
         }
         
         if buttonType == .Favorite && item.isFavorite {

@@ -15,8 +15,8 @@ class IAFavoritesVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        registerForNotification(notificationUserDidLogin,   action: .userDidLogin)
-        registerForNotification(notificationUserDidLogout,  action: .userDidLogout)
+        registerForNotification(Constants.Notification.UserDidLogin.name,   action: .userDidLogin)
+        registerForNotification(Constants.Notification.UserDidLogout.name,  action: .userDidLogout)
     }
     
     deinit {

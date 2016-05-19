@@ -13,50 +13,58 @@ import SwiftyJSON
 class IALoginManager: NSObject {
     static let accountLoginURL = "https://archive.org/account/login.php"
     static let accountS3URL = "https://archive.org/account/s3.php?output_json=1"
-
+    
+    static let defs = NSUserDefaults.standardUserDefaults()
+    static let notes = NSNotificationCenter.defaultCenter()
+    static let cookies = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+    
     class func login(username: String/*, password: String*/) {
         Alamofire.request(.GET, accountS3URL).responseJSON(completionHandler: { response in
             if let JSON = response.result.value {
-                let key = JSON.valueForKey("key")
-                if let key = key {
-                    NSUserDefaults.standardUserDefaults().setObject(key.valueForKey("s3accesskey"), forKey: "accesskey")
-                    NSUserDefaults.standardUserDefaults().setObject(key.valueForKey("s3secretkey"), forKey: "secretkey")
+                if let key = JSON.valueForKey("key") {
+                    defs.setObject(key.valueForKey("s3accesskey"), forKey: Constants.Keys.Access.rawValue)
+                    defs.setObject(key.valueForKey("s3secretkey"), forKey: Constants.Keys.Secret.rawValue)
                 }
                 getUserId(username) { userid in
-                    NSUserDefaults.standardUserDefaults().setObject(userid , forKey: "userid")
-                    NSNotificationCenter.defaultCenter().postNotificationName("userLoggedIn", object: nil)
+                    if userid?.characters.count > 0 {
+                        defs.setObject(userid, forKey: Constants.Keys.UserID.rawValue)
+                        notes.postNotificationName(Constants.Notification.UserDidLogin.name, object: nil)
+                    }
+                    // WARNING: Not handling failed login
                 }
             }
         })
     }
     
-    class func getUserId(username: String, completion: String -> ()) {
+    class func getUserId(username: String, completion: String? -> ()) {
         let uploader = username.allowdStringForURL()
         let searchURL = "https://archive.org/search.php?query=uploader:\(uploader)"
+        
         Alamofire.request(.GET, searchURL).response { (_, response, data, _) in
             var datastring = NSString(data: data!, encoding: NSUTF8StringEncoding)
-            let range = datastring?.rangeOfString("details/fav-")
-            if let range = range {
+            
+            if let range = datastring?.rangeOfString("details/fav-") {
                 datastring = datastring?.substringFromIndex(range.location+range.length)
-                let endRange = datastring?.rangeOfString("\">")
-                if let endRange = endRange {
-                    datastring = datastring?.substringToIndex(endRange.location)
-                    completion("\(datastring!)")
+                
+                if let endRange = datastring?.rangeOfString("\">") {
+                    completion(datastring?.substringToIndex(endRange.location))
                 }
             }
+            
+            completion(nil)
         }
     }
     
     class func logout() {
-        NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "accesskey")
-        NSUserDefaults.standardUserDefaults().setObject(nil, forKey: "secretkey")
-        NSUserDefaults.standardUserDefaults().setObject(nil , forKey: "userid")
-        NSUserDefaults.standardUserDefaults().setObject(nil, forKey: favouriteListIds)
-        if  let loginCookies = NSHTTPCookieStorage.sharedHTTPCookieStorage().cookiesForURL(NSURL(string: "https://archive.org/account/login.php")!) {
-            for cookie in loginCookies {
-                NSHTTPCookieStorage.sharedHTTPCookieStorage().deleteCookie(cookie)
-            }
+        defs.setObject(nil, forKey: Constants.Keys.Access.rawValue)
+        defs.setObject(nil, forKey: Constants.Keys.Secret.rawValue)
+        defs.setObject(nil, forKey: Constants.Keys.UserID.rawValue)
+        defs.setObject(nil, forKey: Constants.Keys.FavoriteListIDs.rawValue)
+        
+        if  let loginCookies = cookies.cookiesForURL(NSURL(string: accountLoginURL)!) {
+            loginCookies.forEach { cookies.deleteCookie($0) }
         }
-        NSNotificationCenter.defaultCenter().postNotificationName(notificationUserDidLogout, object: nil)
+        
+        notes.postNotificationName(Constants.Notification.UserDidLogout.name, object: nil)
     }
 }

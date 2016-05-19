@@ -17,9 +17,11 @@ class IADownloadListCollectionViewCell: UICollectionViewCell {
     func configureCell(book: ArchiveItem, downloadCompletion: (()->())? ) {
         downloadSelectionCompletion = downloadCompletion
         downloadLabel.text = book.identifier
-        if let url = NSURL(string: "\(imageBaseURL)\(book.identifier!)") {
-            self.imageView.af_setImageWithURL(url)
+        
+        if let bookID = book.identifier {
+            self.imageView.af_setImageWithURL(Constants.URL.ImageURL(bookID).url)
         }
+        
         self.contentView.layer.borderWidth = 1.0
         self.contentView.layer.borderColor = UIColor.blackColor().CGColor
     }

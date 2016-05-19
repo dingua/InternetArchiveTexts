@@ -40,7 +40,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     //sort option in which we base our request
     var sortOption: IASearchSortOption! {
         didSet {
-            if let searchText = self.searchText, type = self.type{
+            if let searchText = self.searchText, type = self.type {
                 self.loadList(searchText, type: type)
             }
         }
@@ -101,60 +101,47 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     func loadMore() {
         if !isLoading || currentPage == 0 {//if is not already loading next page  or it is loading the first page then load
             self.addLoadingView()
-            switch type {
-            case IABookListType.Text?:
-                searchManager.searchBooksWithText(searchText!,count: itemsPerPage, page: currentPage+1,sortOption:self.sortOption) { [weak self]books in
-                    if let mySelf = self {
-                        if books.count>0 {
-                            mySelf.currentPage+=1
-                        }
-                        mySelf.items.appendContentsOf(books)
-                        mySelf.collectionView?.reloadData()
-                        mySelf.removeLoadingView()
-                        
-                    }
+            
+            switch type! {
+            case .Text:
+                searchManager.searchBooksWithText(searchText!,
+                                                  count: itemsPerPage,
+                                                  page: currentPage + 1,
+                                                  sortOption: sortOption)
+                { [weak self] books in
+                    self?.addItems(books)
                 }
                 break
-            case IABookListType.Creator?:
-                searchManager.searchBookOfCreator(searchText!,count: itemsPerPage, page: currentPage+1,sortOption:self.sortOption) { [weak self]books in
-                    if let mySelf = self {
-                        if books.count>0 {
-                            mySelf.currentPage+=1
-                        }
-                        mySelf.items.appendContentsOf(books)
-                        mySelf.collectionView?.reloadData()
-                        mySelf.removeLoadingView()
-                    }
+            case .Creator:
+                searchManager.searchBookOfCreator(searchText!,
+                                                  count: itemsPerPage,
+                                                  page: currentPage + 1,
+                                                  sortOption: sortOption)
+                { [weak self] books in
+                    self?.addItems(books)
                 }
                 break
-            case IABookListType.Collection?:
-                searchManager.searchCollectionsAndTexts(searchText!, hidden: false, count: itemsPerPage, page: currentPage+1,sortOption:self.sortOption) { [weak self] items in
-                    if let mySelf = self {
-                        if items.count>0 {
-                            mySelf.currentPage+=1
-                        }
-                        mySelf.items.appendContentsOf(items)
-                        mySelf.collectionView?.reloadData()
-                        mySelf.removeLoadingView()
-                    }
+            case .Collection:
+                searchManager.searchCollectionsAndTexts(searchText!,
+                                                        hidden: false,
+                                                        count: itemsPerPage,
+                                                        page: currentPage+1,
+                                                        sortOption: sortOption)
+                { [weak self] items in
+                    self?.addItems(items)
                 }
-                break
-            default:
                 break
             }
         }
     }
     
-    func loadBookmarks() {
-        self.addLoadingView()
-        //        IAFavouriteManager.sharedInstance.getBookmarks(NSUserDefaults.standardUserDefaults().stringForKey("userid")!, completion: {[weak self] items in
-        //            if let mySelf = self {
-        //                mySelf.items.appendContentsOf(items)
-        //                mySelf.collectionView?.reloadData()
-        //                mySelf.removeLoadingView()
-        //            }
-        //            })
-        
+    func addItems(items: [ArchiveItem]) {
+        if !items.isEmpty {
+            currentPage+=1
+        }
+        self.items.appendContentsOf(items)
+        collectionView?.reloadData()
+        removeLoadingView()
     }
     
     func reloadList() {

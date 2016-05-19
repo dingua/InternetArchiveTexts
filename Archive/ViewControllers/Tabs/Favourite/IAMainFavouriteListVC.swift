@@ -30,9 +30,8 @@ class IAMainFavouriteListVC: UIViewController,IARootVCProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        registerForNotification(notificationUserDidLogin,   action: .userDidLogin)
-        registerForNotification(notificationUserDidLogout,  action: .userDidLogout)
-        // Do any additional setup after loading the view.
+        registerForNotification(Constants.Notification.UserDidLogin.name,   action: .userDidLogin)
+        registerForNotification(Constants.Notification.UserDidLogout.name,  action: .userDidLogout)
     }
     
     
@@ -82,12 +81,7 @@ class IAMainFavouriteListVC: UIViewController,IARootVCProtocol {
     // MARK: - Navigation
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
-        if segue.identifier == "favoritesList" {
-        
-        }
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        if segue.identifier == "favoritesList" {}
     }
     
     //MARK: - Notification

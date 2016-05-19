@@ -47,13 +47,10 @@ class IAGenericListVC: UICollectionViewController, NSFetchedResultsControllerDel
             loadData()
         }
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Register cell classes
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAGenericListVC.userDidLogin), name: notificationUserDidLogin, object: nil)
-
-        // Do any additional setup after loading the view.
+        NSNotificationCenter.defaultCenter().addObserver(self,
+                                                         selector: #selector(IAGenericListVC.userDidLogin),
+                                                         name: Constants.Notification.UserDidLogin.name,
+                                                         object: nil)
     }
 
     override func didReceiveMemoryWarning() {
