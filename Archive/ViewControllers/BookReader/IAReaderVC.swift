@@ -55,6 +55,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     var updatePageAfterSeekTimer :NSTimer?
     let secondsToLoadMore = 1.0
     
+    var  didGetFileDetailsCompletion: (()->())?
     //MARK: -INIT
     
     init(identifier: String, title: String){
@@ -88,7 +89,11 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
             self.item!.file = file
             self.addBookmarkButton()
             if (file.chapters?.count)! > 0 {
-                self.setupReaderToChapter(0)
+                if let completion = self.didGetFileDetailsCompletion {
+                    completion()
+                }else {
+                    self.setupReaderToChapter(0)
+                }
             }
             self.addChaptersButton()
             self.progressSlider.userInteractionEnabled = true

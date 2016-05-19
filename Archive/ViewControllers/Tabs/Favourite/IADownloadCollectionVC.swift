@@ -65,10 +65,10 @@ class IADownloadCollectionVC: IAGenericItemCollectionVC {
         bookReader.bookIdentifier = item.identifier!
         bookReader.bookTitle = item.title
         bookReader.item = item
-
-        self.presentViewController(navController, animated: true, completion: {
+        bookReader.didGetFileDetailsCompletion = {
             bookReader.setupReaderToChapter(chapterIndex)
-        })
+        }
+        self.presentViewController(navController, animated: true, completion: nil)
     }
     
     func showReader(item: ArchiveItem, atPage page :Page) {
@@ -78,13 +78,13 @@ class IADownloadCollectionVC: IAGenericItemCollectionVC {
         bookReader.bookIdentifier = item.identifier!
         bookReader.bookTitle = item.title
         bookReader.item = item
-        
-        self.presentViewController(navController, animated: true, completion: {
+        bookReader.didGetFileDetailsCompletion = {
             bookReader.setupReaderToChapter((item.file?.chapters?.allObjects as! [Chapter]).sort({ $0.name < $1.name}).indexOf(page.chapter!)!){
                 bookReader.pageNumber = Int(page.number!)!
                 bookReader.updateUIAfterPageSeek(true)
             }
-        })
+        }
+        self.presentViewController(navController, animated: true, completion: nil)
     }
 
 }
