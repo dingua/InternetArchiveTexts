@@ -28,7 +28,7 @@
  class IAItemsManager: NSObject {
     let baseURL = "https://archive.org"
     let searchURL = "advancedsearch.php?"
-    
+    var currentSearchRequest :Request?
     //MARK: - File Details
     
     func getFileDetails(archiveItem: ArchiveItem, completion:(File)->()){
@@ -65,10 +65,13 @@
     //MARK: - Generic Search
     
     func searchItems(query: String, count: Int ,page: Int ,sort: String,completion: ([ArchiveItem])->()) {
+        if let currentSearchRequest = currentSearchRequest {
+            currentSearchRequest.cancel()
+        }
         let searchParameters = "q=(\(query))&sort%5B%5D=\(sort)&rows=\(count)&start=0&page=\(page)&output=json"
         
         let params = "\(baseURL)/\(searchURL)\(searchParameters)"
-        Alamofire.request(Utils.requestWithURL(params))
+        currentSearchRequest = Alamofire.request(Utils.requestWithURL(params))
             .responseJSON { response in
                 do{
                     let managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()

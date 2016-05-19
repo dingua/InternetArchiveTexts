@@ -99,7 +99,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     }
     
     func loadMore() {
-        if !isLoading {
+        if !isLoading || currentPage == 0 {//if is not already loading next page  or it is loading the first page then load
             self.addLoadingView()
             switch type {
             case IABookListType.Text?:
