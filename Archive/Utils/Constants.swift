@@ -22,7 +22,9 @@ struct Constants {
         
         case ImageURL(String)
         case ImageURLForPage(Page,withScale: Int)
-        
+        case ScandataURL(Chapter)
+        case ScandataURLZipPreview(Chapter)
+        case ZipFileURL(Chapter)
         var url: NSURL {
             var path = ""
             
@@ -32,9 +34,21 @@ struct Constants {
                 
             case .ImageURLForPage(let page, let scale):
                 path = page.urlOfPage(scale)
+            case .ScandataURL(let chapter):
+                path = "https://\(chapter.file!.server!)\(chapter.file!.directory!)/\(chapter.scandata!)".allowdStringForURL()
+            case .ScandataURLZipPreview(let chapter):
+                path = "https://\(chapter.file!.server!)/zipview.php?zip=\(chapter.file!.directory!)/scandata.zip&file=scandata.xml".allowdStringForURL()
+            case .ZipFileURL(let chapter):
+                let type = chapter.type?.rawValue.lowercaseString
+                path = "https://\(chapter.file!.server!)\(chapter.file!.directory!)/\(chapter.subdirectory!)_\(type!).zip".allowdStringForURL()
+            
             }
             
             return NSURL(string: path)!
+        }
+
+        var urlString: String {
+            return url.absoluteString
         }
     }
     

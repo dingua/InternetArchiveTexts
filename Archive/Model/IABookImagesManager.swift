@@ -50,14 +50,7 @@ class IABookImagesManager: NSObject {
     private var _numberOfPages : Int?
     var numberOfPages : Int? {
         get {
-            if let numberOfPages = self._numberOfPages {
-                return numberOfPages
-            }
-            if (self.chapter.isDownloaded?.boolValue)! && chapter.numberOfPages?.integerValue != 0 {
-                    return chapter.numberOfPages?.integerValue
-                }else {
-                    return getNumberPages()
-                }
+            return self._numberOfPages
         }
         set {
             if self.chapter.numberOfPages?.integerValue != newValue {
@@ -94,7 +87,7 @@ class IABookImagesManager: NSObject {
     }
     
     func urlOfPage(number: Int, scale: Int) -> String{
-        return "https://\(file.server!)\(readerMethod)zip=\(file.directory!)/\(chapter.subdirectory!)_\(type!).zip&file=\(chapter.subdirectory!)_\(type!)/\(chapter.subdirectory!)_\(String(format: "%04d", number)).\(type!)&scale=\(scale)".allowdStringForURL()
+        return Constants.URL.ImageURLForPage(pages![number], withScale: scale).urlString
     }
     
     func getImages(offset: Int, count:Int,updateImage:(index: Int, image: UIImage)->() , completion:()->()) {
@@ -154,39 +147,33 @@ class IABookImagesManager: NSObject {
         
     }
     
-    //MARK: - Get Number Of Pages
-    
-    func getNumberPages() -> Int? {
-        var text : String?
-        if let url = NSURL(string: "https://\(file.server!)\(file.directory!)/\(chapter.scandata!)".allowdStringForURL()) {
-            do{
-                text = try String(contentsOfURL: url)
-                text = text!.substringFromIndex((text!.rangeOfString("<leafCount>")?.endIndex)!)
-                text = text!.substringToIndex((text!.rangeOfString("</leafCount>")?.startIndex)!)
-            }catch let error as NSError {
-                print("Get content url failed: \(error.localizedDescription)")
-            }
-        }
-        if let text = text {
-            self._numberOfPages = Int(text)
-        }
-        return self._numberOfPages
-    }
-    
     //MARK: - Get Pages
     
     func getPages(completion : ([Page])->()) {
-        if  (self.chapter.pages?.count == self.chapter.numberOfPages?.integerValue) {
+        if  (self.chapter.pages?.count == self.chapter.numberOfPages?.integerValue) && self.chapter.pages?.count != 0 {
             self.pages = self.chapter.pages?.allObjects as? [Page]
             self.pages = self.pages!.sort({Int($0.number!) < Int($1.number!)})
+            self.numberOfPages = self.pages?.count
             return completion(self.pages!)
         }
-        let scandataURL = "https://\(file.server!)\(file.directory!)/\(chapter.scandata!)".allowdStringForURL()
-        Alamofire.request(Utils.requestWithURL(scandataURL)).response { (request, response, data, error) in
+        let scandataURL = Constants.URL.ScandataURL(self.chapter).urlString
+        return getPages(scandataURL, completion: completion)
+    }
+    
+    func getPages(url: String, completion : ([Page])->()) {
+        Alamofire.request(Utils.requestWithURL(url)).response { (request, response, data, error) in
             do{
                 let tbxml =  try TBXML(XMLData: data, error: ())
                 let rootEl = tbxml.rootXMLElement
                 let pageData = TBXML.childElementNamed("pageData", parentElement: rootEl)
+                if pageData == nil {
+                    if url != Constants.URL.ScandataURLZipPreview(self.chapter).urlString {
+                        let url = Constants.URL.ScandataURLZipPreview(self.chapter).urlString
+                        return self.getPages(url, completion: completion)
+                    }else {
+                        return completion([])
+                    }
+                }
                 var  pageElement = TBXML.childElementNamed("page", parentElement: pageData)
                 self.pages = []
                 var managedObjectContext: NSManagedObjectContext?
@@ -203,6 +190,7 @@ class IABookImagesManager: NSObject {
                     }
                 }
                 self.pages = self.pages?.sort({Int($0.number!) < Int($1.number!)})
+                self.numberOfPages = self.pages?.count
                 completion(self.pages!)
             } catch let error as NSError {
                 print("Parse scandata xml failed: \(error.localizedDescription)")
@@ -234,7 +222,7 @@ class IABookImagesManager: NSObject {
             domain: .UserDomainMask
         )
         
-        return Alamofire.download(.GET, "https://\(file.server!)\(file.directory!)/\(chapter.subdirectory!)_\(type!).zip".allowdStringForURL(), destination: destination)
+        return Alamofire.download(.GET, Constants.URL.ZipFileURL(chapter).urlString, destination: destination)
             .response { request, response, _, error in
                 SSZipArchive.unzipFileAtPath((destination(NSURL(string: "")!, response!).absoluteString as NSString).substringFromIndex(7), toDestination: "\(self.docuementsDirectory())")
                 NSUserDefaults.standardUserDefaults().setBool(true, forKey: "\(self.chapter.subdirectory!)_\(self.type!)")

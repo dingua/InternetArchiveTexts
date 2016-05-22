@@ -14,6 +14,7 @@ import CoreData
 
 enum Type: String {
     case JP2
+    case JPG
     case TIF
     case PDF
 }

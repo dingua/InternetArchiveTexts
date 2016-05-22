@@ -133,15 +133,21 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                 
                 let chapter = file.chapters!.sort({$0.name < $1.name})[chapterIndex] as! Chapter
                 
-                if  let nbrPages = self.imagesDownloader!.numberOfPages {
-                    self.numberOfPages = Int(nbrPages)
-                    chapter.numberOfPages = NSNumber(integer: self.numberOfPages)
-                }
-                
                 self.pageNumber = 0
-                self.imagesDownloader!.getPages(){_ in
+                self.imagesDownloader!.getPages{pages in
+                    if pages.count == 0 {
+                        let alert = UIAlertController(title: "Error", message: "Can not preview this file!", preferredStyle: .Alert)
+                        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
+                            self.dismissViewControllerAnimated(false, completion: nil)
+                        }
+                        alert.addAction(cancelAction)
+                        self.presentViewController(alert, animated: true, completion:nil)
+                        return
+                    }
                     dispatch_async(dispatch_get_main_queue(), {
                         print("totoal time \(NSDate().timeIntervalSinceDate(self.startDate!))")
+                        self.numberOfPages = Int(pages.count)
+                        chapter.numberOfPages = NSNumber(integer: self.numberOfPages)
                         self.removeLoadingView()
                         self.addPageController() {completion()}
                         self.updatePages()

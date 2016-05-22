@@ -80,6 +80,7 @@ class IAGenericItemCollectionCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         actionButton.removeTarget(nil, action: nil, forControlEvents: .AllEvents)
+        mainImageView.image = nil
     }
     
     // MARK: - Helpers
