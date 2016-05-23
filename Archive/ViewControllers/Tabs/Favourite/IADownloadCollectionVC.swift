@@ -80,7 +80,7 @@ class IADownloadCollectionVC: IAGenericItemCollectionVC {
         bookReader.item = item
         bookReader.didGetFileDetailsCompletion = {
             bookReader.setupReaderToChapter((item.file?.chapters?.allObjects as! [Chapter]).sort({ $0.name < $1.name}).indexOf(page.chapter!)!){
-                bookReader.pageNumber = Int(page.number!)!
+                bookReader.pageNumber = Int((page.number?.intValue)!)
                 bookReader.updateUIAfterPageSeek(true)
             }
         }

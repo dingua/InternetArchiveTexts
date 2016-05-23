@@ -30,13 +30,13 @@
     </entity>
     <entity name="Page" representedClassName=".Page" syncable="YES">
         <attribute name="isBookmarked" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="number" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="number" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="chapter" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Chapter" inverseName="pages" inverseEntity="Chapter" syncable="YES"/>
     </entity>
     <elements>
         <element name="ArchiveItem" positionX="439" positionY="-18" width="128" height="163"/>
         <element name="Chapter" positionX="90" positionY="-18" width="128" height="193"/>
         <element name="File" positionX="268" positionY="-18" width="128" height="105"/>
-        <element name="Page" positionX="-173" positionY="117" width="128" height="28"/>
+        <element name="Page" positionX="-173" positionY="323" width="218" height="88"/>
     </elements>
 </model>

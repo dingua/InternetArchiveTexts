@@ -278,7 +278,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         chaptersListVC.bookmarkSelectionHandler = { page in
             if let chapters = self.chapters {
                 self.setupReaderToChapter(chapters.indexOf(page.chapter!)!) {
-                    self.pageNumber = Int(page.number!)!
+                    self.pageNumber = Int((page.number?.intValue)!)
                     self.updateUIAfterPageSeek(true)
                 }
             }

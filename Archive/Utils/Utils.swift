@@ -22,12 +22,12 @@ class Utils {
     static func suitableCacheConfiguration()->NSURLRequestCachePolicy {
         do {
             if try Reachability.reachabilityForInternetConnection().isReachable() {
-                return .ReloadIgnoringLocalCacheData
+                return .ReturnCacheDataElseLoad
             }else {
                 return .ReturnCacheDataElseLoad
             }
         } catch {
-            return .ReloadIgnoringLocalCacheData
+            return .ReturnCacheDataElseLoad
         }
      }
     

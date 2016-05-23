@@ -65,7 +65,7 @@ class IAGenericItemCollectionCell: UICollectionViewCell {
         if completion != nil { actionClosure = completion }
         
         if let sortedChapters = page.chapter?.file?.sortedChapters() {
-            titleLabel.text = "\(page.chapter!.file!.archiveItem!.title!) \n Page \(Int(page.number!)!+1) of chapter number \(sortedChapters.indexOf(page.chapter!)!+1) "
+            titleLabel.text = "\(page.chapter!.file!.archiveItem!.title!) \n Page \(Int((page.number?.intValue)!)+1) of chapter number \(sortedChapters.indexOf(page.chapter!)!+1) "
         }
         let url = page.urlOfPage(10)
         mainImageView.af_setImageWithURL(NSURL(string: url)!)

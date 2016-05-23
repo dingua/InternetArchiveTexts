@@ -29,6 +29,7 @@
     let baseURL = "https://archive.org"
     let searchURL = "advancedsearch.php?"
     var currentSearchRequest :Request?
+    
     //MARK: - File Details
     
     func getFileDetails(archiveItem: ArchiveItem, completion:(File)->()){
@@ -157,59 +158,4 @@
         
         searchItems(query, count: count, page: page, sort: sortOption.rawValue, completion: completion)
     }
-    
-    //MARK: - Gather Subjects
-    
-    func getSubjectsOfCollection(collection: String,count: Int,page: Int,completion:(NSArray)->()){
-        let searchMethod = searchURL
-        let text = collection.stringByReplacingOccurrencesOfString(" ", withString: "+")
-        let searchText = text.allowdStringForURL()
-        let searchParameters = "q=(collection:\(searchText)%20AND%20(mediatype:collection%20OR%20mediatype:texts))&fl%5B%5D=subject&sort%5B%5D=downloads+desc&rows=\(count)&output=json&start=0&page=\(page)"
-        
-        let params = "\(baseURL)/\(searchMethod)\(searchParameters)"
-        
-        Alamofire.request(Utils.requestWithURL(params))
-            .responseJSON{ response in
-                do{
-                    let managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
-                    if let result = response.result.value {
-                        let json = JSON(result)
-                        let docs = json["response"]["docs"].array
-                        if let docs = docs {
-                            var collections = [ArchiveItem]()
-                            for doc in docs {
-                                collections.append(ArchiveItem.createArchiveItem(doc.dictionaryObject!, managedObjectContext: managedObjectContext, temporary: true)!)
-                            }
-                            completion(collections)
-                            managedObjectContext.reset()
-                        }
-                    }
-                }catch{
-                    print("Error: \(error)\nCould not get managed Object Context.")
-                    return
-                    
-                }
-        }
-    }
-    
-    //MARK: - Get number of books
-    
-    func getNumberBookOfCollection(collection: String,completion:(Int)->()){
-        let searchMethod = searchURL
-        let text = collection.stringByReplacingOccurrencesOfString(" ", withString: "+")
-        let searchParameters = "q=(collection:\(text)%20AND%20(mediatype:collection%20OR%20mediatype:texts))&sort%5B%5D=downloads+desc&rows=0&output=json&start=0"
-        
-        let params = "\(baseURL)/\(searchMethod)\(searchParameters)"
-        
-        Alamofire.request(Utils.requestWithURL(params))
-            .responseJSON { response in
-                if let JSON = response.result.value {
-                    if let response = JSON.valueForKey("response")  {
-                        if let numberFound = response.valueForKey("numFound") {
-                            completion(numberFound as! Int)
-                        }
-                    }
-                }
-        }
-    }
- }
+}

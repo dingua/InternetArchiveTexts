@@ -64,10 +64,9 @@ class IABookmarksListVC: UITableViewController, NSFetchedResultsControllerDelega
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("bookmarkCell", forIndexPath: indexPath)
         let bookmark = fetchedResultController.objectAtIndexPath(indexPath) as! Page
-        cell.textLabel!.text = "Page \(Int(bookmark.number!)!+1), chapter \(bookmark.chapter!.name!)"
+        cell.textLabel!.text = "Page \(Int((bookmark.number?.intValue)!)+1), chapter \(bookmark.chapter!.name!)"
             return cell
     }
-    
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let bookmark = fetchedResultController.objectAtIndexPath(indexPath) as! Page

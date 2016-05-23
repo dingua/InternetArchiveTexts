@@ -14,7 +14,7 @@ import CoreData
 
 extension Page {
 
-    @NSManaged var number: String?
+    @NSManaged var number: NSNumber?
     @NSManaged var isBookmarked: NSNumber?
     @NSManaged var chapter: Chapter?
 

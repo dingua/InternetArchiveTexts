@@ -83,7 +83,7 @@ class IABookImagesManager: NSObject {
     //MARK: - Download Pages
     
     func urlOfPage(number: Int) -> String{
-        return urlOfPage(Int(pages![number].number!)!,scale: 2)
+        return urlOfPage(Int((pages![number].number?.intValue)!),scale: 2)
     }
     
     func urlOfPage(number: Int, scale: Int) -> String{
@@ -212,21 +212,6 @@ class IABookImagesManager: NSObject {
             request.cancel()
         }
         self.requests?.removeAll()
-    }
-    
-    //MARK: - Download zip
-    
-    func downloadZip()->Request {
-        let destination = Alamofire.Request.suggestedDownloadDestination(
-            directory: .CachesDirectory,
-            domain: .UserDomainMask
-        )
-        
-        return Alamofire.download(.GET, Constants.URL.ZipFileURL(chapter).urlString, destination: destination)
-            .response { request, response, _, error in
-                SSZipArchive.unzipFileAtPath((destination(NSURL(string: "")!, response!).absoluteString as NSString).substringFromIndex(7), toDestination: "\(self.docuementsDirectory())")
-                NSUserDefaults.standardUserDefaults().setBool(true, forKey: "\(self.chapter.subdirectory!)_\(self.type!)")
-        }
     }
     
     

@@ -14,29 +14,42 @@ class Page: NSManagedObject {
     
     // Insert code here to add functionality to your managed object subclass
     static func createPage(number: String, chapter: Chapter, isBookmarked: Bool, managedObjectContext: NSManagedObjectContext, temporary: Bool)->Page? {
-        let entity = NSEntityDescription.entityForName("Page", inManagedObjectContext: managedObjectContext)!
-        let page = NSManagedObject(entity: entity, insertIntoManagedObjectContext: temporary ? nil : managedObjectContext) as! Page
-        page.number = number
-        page.chapter = chapter
-        chapter.addPagesObject(page)
-        page.bookmarked = isBookmarked
-        do{
-            try managedObjectContext.save()
-        }catch let error as NSError {
-            print("Save managedObjectContext failed: \(error.localizedDescription)")
-        }
-        return page
-    }
+        let predicate = NSPredicate(format: "number == %d  And chapter.name like %@", Int(number)!, "\(chapter.name!)")
+        
+        let fetchItemWithSameId = NSFetchRequest(entityName: "Page")
+        fetchItemWithSameId.resultType = .DictionaryResultType
+        fetchItemWithSameId.predicate = predicate
+        
+        let objIdExpression = NSExpressionDescription()
+        objIdExpression.name = "pageId"
+        objIdExpression.expression = NSExpression.expressionForEvaluatedObject()
+        objIdExpression.expressionResultType = .ObjectIDAttributeType
+        
+        fetchItemWithSameId.propertiesToFetch = [objIdExpression,"number"]
+        
+        let fetchedItems : NSArray?
+        do {
+            fetchedItems = try managedObjectContext.executeFetchRequest(fetchItemWithSameId)
+            if fetchedItems?.count == 0 {
+                let entity = NSEntityDescription.entityForName("Page", inManagedObjectContext: managedObjectContext)!
+                let page = NSManagedObject(entity: entity, insertIntoManagedObjectContext: temporary ? nil : managedObjectContext) as! Page
+                page.number = NSNumber(int: Int32(number)!)
+                page.chapter = chapter
+                chapter.addPagesObject(page)
+                page.bookmarked = isBookmarked
+                do{
+                    try managedObjectContext.save()
+                }catch let error as NSError {
+                    print("Save managedObjectContext failed: \(error.localizedDescription)")
+                }
+                return page
+            }else {
+                return managedObjectContext.objectWithID(fetchedItems?.firstObject!["pageId"] as! NSManagedObjectID) as? Page
+            }
+        }catch{}
+        return nil
+     }
     
-    private static func createTemporaryPage(number: String, chapter: Chapter, isBookmarked: Bool, managedObjectContext: NSManagedObjectContext) -> Page? {
-        let entity = NSEntityDescription.entityForName("Page", inManagedObjectContext: managedObjectContext)!
-        let page = NSManagedObject(entity: entity, insertIntoManagedObjectContext:nil) as! Page
-        page.number = number
-        page.chapter = chapter
-        chapter.addPagesObject(page)
-        page.bookmarked = isBookmarked
-        return page
-    }
     
     func markBookmarked(bookmarked: Bool) {
         do{
@@ -67,6 +80,6 @@ class Page: NSManagedObject {
     
     func urlOfPage(scale: Int) -> String{
         let type = self.chapter!.type!.rawValue.lowercaseString
-        return "https://\(self.chapter!.file!.server!)\(readerMethod)zip=\(self.chapter!.file!.directory!)/\(self.chapter!.subdirectory!)_\(type).zip&file=\(self.chapter!.subdirectory!)_\(type)/\(self.chapter!.subdirectory!)_\(String(format: "%04d", Int(self.number!)!)).\(type)&scale=\(scale)".allowdStringForURL()
+        return "https://\(self.chapter!.file!.server!)\(readerMethod)zip=\(self.chapter!.file!.directory!)/\(self.chapter!.subdirectory!)_\(type).zip&file=\(self.chapter!.subdirectory!)_\(type)/\(self.chapter!.subdirectory!)_\(String(format: "%04d", self.number!.intValue)).\(type)&scale=\(scale)".allowdStringForURL()
     }
 }
