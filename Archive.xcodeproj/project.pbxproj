@@ -7,8 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		340790DE1CF2DD4D00D4596E /* BookDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 340790DD1CF2DD4D00D4596E /* BookDetails.storyboard */; };
+		340790E11CF3134700D4596E /* IABookDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340790E01CF3134700D4596E /* IABookDetailsVC.swift */; };
 		34147CAC1CDF84E800230C20 /* IAChaptersListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34147CAB1CDF84E800230C20 /* IAChaptersListVC.swift */; };
 		34147CAE1CDFA14800230C20 /* IADownloadStatusTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34147CAD1CDFA14800230C20 /* IADownloadStatusTableViewCell.swift */; };
+		3434D5ED1CF607C400167C3E /* IABookDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3434D5EC1CF607C400167C3E /* IABookDetailsTableViewCell.swift */; };
+		3434D5F01CF767F200167C3E /* Subject+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3434D5EE1CF767F200167C3E /* Subject+CoreDataProperties.swift */; };
+		3434D5F11CF767F200167C3E /* Subject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3434D5EF1CF767F200167C3E /* Subject.swift */; };
+		3434D5F41CF80AD500167C3E /* Author+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3434D5F21CF80AD500167C3E /* Author+CoreDataProperties.swift */; };
+		3434D5F51CF80AD500167C3E /* Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3434D5F31CF80AD500167C3E /* Author.swift */; };
+		3434D5F71CF8950D00167C3E /* IABookDetailsPresentationDelgate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3434D5F61CF8950D00167C3E /* IABookDetailsPresentationDelgate.swift */; };
+		3434D5F91CF8952D00167C3E /* IABookDetailsPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3434D5F81CF8952D00167C3E /* IABookDetailsPresentationController.swift */; };
 		344551921CD5E0F500FE7C47 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344551731CD5E0F500FE7C47 /* Constants.swift */; };
 		344551931CD5E0F500FE7C47 /* IARootVCProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344551741CD5E0F500FE7C47 /* IARootVCProtocol.swift */; };
 		344551941CD5E0F500FE7C47 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344551751CD5E0F500FE7C47 /* Utils.swift */; };
@@ -88,9 +97,18 @@
 
 /* Begin PBXFileReference section */
 		1D84436CD2668816F6B8EA43 /* Pods-Archive.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Archive.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Archive/Pods-Archive.debug.xcconfig"; sourceTree = "<group>"; };
+		340790DD1CF2DD4D00D4596E /* BookDetails.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = BookDetails.storyboard; sourceTree = "<group>"; };
+		340790E01CF3134700D4596E /* IABookDetailsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IABookDetailsVC.swift; sourceTree = "<group>"; };
 		3410EC661C520D3A0093E7C0 /* ArchiveBridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ArchiveBridgingHeader.h; sourceTree = "<group>"; };
 		34147CAB1CDF84E800230C20 /* IAChaptersListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IAChaptersListVC.swift; sourceTree = "<group>"; };
 		34147CAD1CDFA14800230C20 /* IADownloadStatusTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IADownloadStatusTableViewCell.swift; sourceTree = "<group>"; };
+		3434D5EC1CF607C400167C3E /* IABookDetailsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IABookDetailsTableViewCell.swift; sourceTree = "<group>"; };
+		3434D5EE1CF767F200167C3E /* Subject+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Subject+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		3434D5EF1CF767F200167C3E /* Subject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subject.swift; sourceTree = "<group>"; };
+		3434D5F21CF80AD500167C3E /* Author+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Author+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		3434D5F31CF80AD500167C3E /* Author.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Author.swift; sourceTree = "<group>"; };
+		3434D5F61CF8950D00167C3E /* IABookDetailsPresentationDelgate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IABookDetailsPresentationDelgate.swift; sourceTree = "<group>"; };
+		3434D5F81CF8952D00167C3E /* IABookDetailsPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IABookDetailsPresentationController.swift; sourceTree = "<group>"; };
 		344551731CD5E0F500FE7C47 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		344551741CD5E0F500FE7C47 /* IARootVCProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IARootVCProtocol.swift; sourceTree = "<group>"; };
 		344551751CD5E0F500FE7C47 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
@@ -184,6 +202,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		340790DF1CF3133000D4596E /* Book Details */ = {
+			isa = PBXGroup;
+			children = (
+				340790E01CF3134700D4596E /* IABookDetailsVC.swift */,
+				3434D5F61CF8950D00167C3E /* IABookDetailsPresentationDelgate.swift */,
+				3434D5F81CF8952D00167C3E /* IABookDetailsPresentationController.swift */,
+			);
+			path = "Book Details";
+			sourceTree = "<group>";
+		};
 		344551721CD5E0F500FE7C47 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -204,6 +232,7 @@
 				344551841CD5E0F500FE7C47 /* Login */,
 				34DCE8A81CE8531B002F3119 /* ChapterBookmarkExplore */,
 				344551861CD5E0F500FE7C47 /* Tabs */,
+				340790DF1CF3133000D4596E /* Book Details */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -308,6 +337,7 @@
 				344551911CD5E0F500FE7C47 /* IASortListTableViewCell.swift */,
 				3490935F1CDCB89100FC49A7 /* IADownloadListCollectionViewCell.swift */,
 				34147CAD1CDFA14800230C20 /* IADownloadStatusTableViewCell.swift */,
+				3434D5EC1CF607C400167C3E /* IABookDetailsTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -324,6 +354,10 @@
 				34832A5E1CE1A98100B02158 /* CoreDataStackManager.swift */,
 				347C49501CE44A2700145288 /* Page+CoreDataProperties.swift */,
 				347C49511CE44A2700145288 /* Page.swift */,
+				3434D5EE1CF767F200167C3E /* Subject+CoreDataProperties.swift */,
+				3434D5EF1CF767F200167C3E /* Subject.swift */,
+				3434D5F21CF80AD500167C3E /* Author+CoreDataProperties.swift */,
+				3434D5F31CF80AD500167C3E /* Author.swift */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -426,6 +460,7 @@
 				A61CE29B1CE20CE400E89D3C /* Reader.storyboard */,
 				A61209151C3D2EA40017A928 /* Archive.xcdatamodeld */,
 				A612093F1C3D2EAD0017A928 /* Supporting Files */,
+				340790DD1CF2DD4D00D4596E /* BookDetails.storyboard */,
 			);
 			path = Archive;
 			sourceTree = "<group>";
@@ -572,6 +607,7 @@
 				A61209191C3D2EA40017A928 /* Assets.xcassets in Resources */,
 				A61209141C3D2EA30017A928 /* Main.storyboard in Resources */,
 				A61CE29D1CE20CE400E89D3C /* Reader.storyboard in Resources */,
+				340790DE1CF2DD4D00D4596E /* BookDetails.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -650,14 +686,19 @@
 				3473ACBC1CDA7FD2008FE4C9 /* Chapter.swift in Sources */,
 				344551931CD5E0F500FE7C47 /* IARootVCProtocol.swift in Sources */,
 				3445519F1CD5E0F500FE7C47 /* IACollectionsExploreVC.swift in Sources */,
+				3434D5F91CF8952D00167C3E /* IABookDetailsPresentationController.swift in Sources */,
 				A61209171C3D2EA40017A928 /* Archive.xcdatamodeld in Sources */,
 				344551971CD5E0F500FE7C47 /* IAReaderPageVC.swift in Sources */,
+				3434D5F41CF80AD500167C3E /* Author+CoreDataProperties.swift in Sources */,
 				344551981CD5E0F500FE7C47 /* IAReaderVC.swift in Sources */,
 				344551941CD5E0F500FE7C47 /* Utils.swift in Sources */,
+				340790E11CF3134700D4596E /* IABookDetailsVC.swift in Sources */,
 				344551A71CD5E13800FE7C47 /* IALoadingViewProtocol.swift in Sources */,
+				3434D5F51CF80AD500167C3E /* Author.swift in Sources */,
 				344551951CD5E0F500FE7C47 /* IAReaderChaptersListVC.swift in Sources */,
 				A61CE2A41CE2F71600E89D3C /* IAGenericItemCollectionCell.swift in Sources */,
 				3473ACAE1CD8C436008FE4C9 /* IATabBarController.swift in Sources */,
+				3434D5ED1CF607C400167C3E /* IABookDetailsTableViewCell.swift in Sources */,
 				34EB38641C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */,
 				34B9A2A01CD8AEAC00C7D9CD /* IADownloadsManager.swift in Sources */,
 				3490935E1CDCB22700FC49A7 /* IAGenericListVC.swift in Sources */,
@@ -670,6 +711,7 @@
 				349093601CDCB89100FC49A7 /* IADownloadListCollectionViewCell.swift in Sources */,
 				34147CAC1CDF84E800230C20 /* IAChaptersListVC.swift in Sources */,
 				3445519D1CD5E0F500FE7C47 /* IASortPresentationDelgate.swift in Sources */,
+				3434D5F71CF8950D00167C3E /* IABookDetailsPresentationDelgate.swift in Sources */,
 				344551961CD5E0F500FE7C47 /* IAReaderCollectionViewController.swift in Sources */,
 				3448CFF31CC3901A001CBB31 /* IALoginManager.swift in Sources */,
 				344551A41CD5E0F500FE7C47 /* IAItemListCellView.swift in Sources */,
@@ -678,6 +720,7 @@
 				3445519B1CD5E0F500FE7C47 /* IASortPresentationAnimatedTransitioning.swift in Sources */,
 				A6D598761CE48C8B0027174E /* IADownloadCollectionVC.swift in Sources */,
 				3473ACBB1CDA7FD2008FE4C9 /* Chapter+CoreDataProperties.swift in Sources */,
+				3434D5F01CF767F200167C3E /* Subject+CoreDataProperties.swift in Sources */,
 				349452F31CD23072007080E7 /* IAFavouriteManager.swift in Sources */,
 				A612090F1C3D2EA30017A928 /* AppDelegate.swift in Sources */,
 				34DCE8AA1CE853F3002F3119 /* IAChapterBookmarkExploreVC.swift in Sources */,
@@ -687,6 +730,7 @@
 				3445519A1CD5E0F500FE7C47 /* IASortListVC.swift in Sources */,
 				344551991CD5E0F500FE7C47 /* IAItemsListVC.swift in Sources */,
 				3473ACB61CDA7EBC008FE4C9 /* ArchiveItem.swift in Sources */,
+				3434D5F11CF767F200167C3E /* Subject.swift in Sources */,
 				3473ACC01CDA8A3F008FE4C9 /* IAFavouriteListVC.swift in Sources */,
 				344551A11CD5E0F500FE7C47 /* IAFavouriteLoginVC.swift in Sources */,
 				3473ACBD1CDA7FD2008FE4C9 /* File+CoreDataProperties.swift in Sources */,

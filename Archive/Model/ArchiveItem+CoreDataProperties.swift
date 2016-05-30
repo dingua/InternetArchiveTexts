@@ -22,6 +22,10 @@ extension ArchiveItem {
     @NSManaged var title: String?
     @NSManaged var isFavourite: NSNumber?
     @NSManaged var file: File?
+    @NSManaged var collections: NSSet?
+    @NSManaged var uploader: String?
+    @NSManaged var subjects: NSSet?
+    @NSManaged var authors: NSSet?
     
     var isFavorite: Bool {
         get {
@@ -31,5 +35,14 @@ extension ArchiveItem {
             isFavourite = NSNumber(bool: newValue)
         }
     }
+    
+    @NSManaged func addCollectionsObject(collection: ArchiveItem)
+    @NSManaged func removeCollectionssObject(collection: ArchiveItem)
 
+    @NSManaged func addSubjectsObject(subject: Subject)
+    @NSManaged func removeSubjectsObject(subject: Subject)
+
+    @NSManaged func addAuthorsObject(author: Author)
+    @NSManaged func removeAuthorsObject(author: Author)
+    @NSManaged func removeAllAuthors()
 }

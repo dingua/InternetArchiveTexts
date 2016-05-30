@@ -3,6 +3,7 @@ PODS:
   - AlamofireImage (2.3.0):
     - Alamofire (~> 3.1)
   - DGActivityIndicatorView (2.0)
+  - FRHyperLabel (1.0.2)
   - MBProgressHUD (0.9.2)
   - ReachabilitySwift (2.3.3)
   - SSZipArchive (1.1)
@@ -13,6 +14,7 @@ DEPENDENCIES:
   - Alamofire (~> 3.1)
   - AlamofireImage (~> 2.0)
   - DGActivityIndicatorView
+  - FRHyperLabel
   - MBProgressHUD (~> 0.9.2)
   - ReachabilitySwift (from `https://github.com/ashleymills/Reachability.swift`)
   - SSZipArchive
@@ -37,6 +39,7 @@ SPEC CHECKSUMS:
   Alamofire: 5f730ba29fd113b7ddd71c1e65d0c630acf5d7b0
   AlamofireImage: 4013fb5b99b10117bf2554a67b9bd2231d476b45
   DGActivityIndicatorView: 52875b025a6ccf6a431a905285c12e2bb95eb559
+  FRHyperLabel: 967b8b7ffdd86b9f2d44f2981a5688c4d3faa9ac
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
   ReachabilitySwift: e0f6b6f280effb47731acfaaa2d5ffe223703793
   SSZipArchive: de3d215ab73f87db627f81f2ce24f1731e3886c3

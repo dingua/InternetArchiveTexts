@@ -14,6 +14,7 @@ class IAItemListCellView : UICollectionViewCell {
     @IBOutlet weak var favouriteBtn: UIButton!
     
     var favoriteClosure: (()->())?
+    var detailsClosure: (()->())?
     
     override func prepareForReuse() {
         bookImageView.image = nil
@@ -37,8 +38,15 @@ class IAItemListCellView : UICollectionViewCell {
     }
     
     @IBAction func favouriteBtnPressed(sender: AnyObject) {
-        if favoriteClosure != nil {
-            favoriteClosure!()
+        if let favoriteClosure = favoriteClosure {
+            favoriteClosure()
         }
     }
+    
+    @IBAction func detailsButtonPressed(sender: AnyObject) {
+        if let detailsClosure = detailsClosure {
+            detailsClosure()
+        }
+    }
+    
 }

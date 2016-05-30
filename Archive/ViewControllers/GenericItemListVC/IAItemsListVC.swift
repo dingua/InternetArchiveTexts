@@ -17,6 +17,8 @@ enum IABookListType {
     case Text
     case Creator
     case Collection
+    case Uploader
+    case Subject
 }
 
 class IAItemsListVC: UICollectionViewController,IASortListDelegate {
@@ -36,7 +38,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     lazy var activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
     
     var sortPresentationDelegate =  IASortPresentationDelgate()
-    
+    var bookDetailsPresentationDelegate = IABookDetailsPresentationDelgate()
     //sort option in which we base our request
     var sortOption: IASearchSortOption! {
         didSet {
@@ -131,6 +133,26 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
                     self?.addItems(items)
                 }
                 break
+            case .Uploader:
+                searchManager.searchCollectionsAndTexts(uploader: searchText!,
+                                                        hidden: false,
+                                                        count: itemsPerPage,
+                                                        page: currentPage+1,
+                                                        sortOption: sortOption)
+                { [weak self] items in
+                    self?.addItems(items)
+                }
+                break
+            case .Subject:
+                searchManager.searchCollectionsAndTexts(subject: searchText!,
+                                                        hidden: false,
+                                                        count: itemsPerPage,
+                                                        page: currentPage+1,
+                                                        sortOption: sortOption)
+                { [weak self] items in
+                    self?.addItems(items)
+                }
+                break
             }
         }
     }
@@ -172,6 +194,28 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
                     return
                 }
                 self.triggerFavorite(item, atIndexPath: indexPath)
+
+            }
+            cell.detailsClosure = {
+                let bookDetails = UIStoryboard(name: "BookDetails", bundle: nil).instantiateInitialViewController() as! IABookDetailsVC
+                bookDetails.book = item
+                if Utils.isiPad() {
+                    bookDetails.transitioningDelegate = self.bookDetailsPresentationDelegate
+                    bookDetails.modalPresentationStyle = .Custom
+                    bookDetails.pushListOnDismiss = {text, type in
+                        guard self.searchText != text || self.type != type else {return}
+                        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                        let itemsListVC = storyboard.instantiateViewControllerWithIdentifier("bookListVC") as! IAItemsListVC
+                        itemsListVC.loadList(text ?? "", type: type)
+                        self.navigationController?.pushViewController(itemsListVC, animated: true)
+                    }
+                    bookDetails.pushReaderOnChapter = {chapterIndex in
+                        self.showReader(item, atChapterIndex: chapterIndex)
+                    }
+                    self.presentViewController(bookDetails, animated: true, completion: nil)
+                }else {
+                    self.navigationController?.pushViewController(bookDetails, animated: true)
+                }
             }
             return cell
         }
@@ -241,6 +285,18 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
         return loginVC
     }
 
+    
+    func showReader(item: ArchiveItem, atChapterIndex chapterIndex :Int = -1) {
+        let navController = UIStoryboard(name: "Reader",bundle: nil).instantiateInitialViewController() as! UINavigationController
+        let bookReader = navController.topViewController as! IAReaderVC
+        bookReader.bookIdentifier = item.identifier!
+        bookReader.bookTitle = item.title
+        bookReader.item = item
+        bookReader.didGetFileDetailsCompletion = {
+            bookReader.setupReaderToChapter(chapterIndex)
+        }
+        self.presentViewController(navController, animated: true, completion: nil)
+    }
     //MARK: IBAction
     
     @IBAction func showSortList(sender: AnyObject) {

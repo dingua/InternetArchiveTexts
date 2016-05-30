@@ -26,29 +26,81 @@ class ArchiveItem: NSManagedObject {
         let fetchedItems : NSArray?
         do {
             fetchedItems = try self.managedContext.executeFetchRequest(fetchItemWithSameId)
+            var item: ArchiveItem?
             if (fetchedItems!.count == 0) {
                 let entity = NSEntityDescription.entityForName("ArchiveItem", inManagedObjectContext: managedObjectContext)!
-                let item = NSManagedObject(entity: entity, insertIntoManagedObjectContext: temporary ? nil : managedObjectContext) as! ArchiveItem
-                item.identifier = dictionary["identifier"] as? String
-                item.desc = dictionary["description"] as? String
-                item.title = dictionary["title"] as? String
-                item.mediatype = dictionary["mediatype"] as? String
-                item.isFavourite = NSNumber(bool: false)
-                do{
-                    if !temporary {
-                        try managedObjectContext.save()
-                    }
-                }catch let error as NSError {
-                    print("Save managedObjectContext failed: \(error.localizedDescription)")
-                }
-                return item
+                item = NSManagedObject(entity: entity, insertIntoManagedObjectContext: temporary ? nil : managedObjectContext) as? ArchiveItem
+                item!.isFavourite = NSNumber(bool: false)
             }else {
-                return fetchedItems?.firstObject as? ArchiveItem
+                item = fetchedItems?.firstObject as? ArchiveItem
             }
+            if let item = item {
+                if let identifier = dictionary["identifier"] as? String {
+                    item.identifier = identifier
+                }
+                if let description = dictionary["description"] as? String {
+                    item.desc = description
+                }
+                if let title = dictionary["title"] as? String {
+                    item.title = title
+                }
+                if let mediatype = dictionary["mediatype"] as? String {
+                    item.mediatype = mediatype
+                }
+                if let uploader = dictionary["uploader"] as? String {
+                    item.uploader = uploader
+                }
+                item.deleteSubjects()
+                if let subjects = dictionary["subject"] as? [String] {
+                    for subject in subjects {
+                        item.addSubjectsObject(Subject.createSubject(subject, managedObjectContext: managedObjectContext, temporary: temporary)!)
+                    }
+                }else if let subject = dictionary["subject"] as? String {
+                    let obj = Subject.createSubject(subject, managedObjectContext: managedObjectContext, temporary: temporary)
+                    item.addSubjectsObject(obj!)
+                }
+                
+                item.deleteAuthors()
+
+                if let authors = dictionary["creator"] as? [String] {
+                    for author in authors {
+                        item.addAuthorsObject(Author.createAuthor(author, managedObjectContext: managedObjectContext, temporary: temporary)!)
+                    }
+                }else if let author = dictionary["creator"] as? String {
+                    let obj = Author.createAuthor(author, managedObjectContext: managedObjectContext, temporary: temporary)
+                    item.addAuthorsObject(obj!)
+                }
+
+            }
+            do{
+                if !temporary {
+                    try managedObjectContext.save()
+                }
+            }catch let error as NSError {
+                print("Save managedObjectContext failed: \(error.localizedDescription)")
+            }
+            return item
         }catch let error as NSError {
             print("Fetch failed: \(error.localizedDescription)")
         }
         return nil
+    }
+
+    
+    func deleteAuthors() {
+        if let authors = self.authors?.allObjects {
+            for author in authors {
+                self.removeAuthorsObject(author as! Author)
+            }
+        }
+    }
+
+    func deleteSubjects() {
+        if let subjects = self.subjects?.allObjects {
+            for subject in subjects {
+                self.removeSubjectsObject(subject as! Subject)
+            }
+        }
     }
 
     func markAsFavourite(favourite: Bool) {
@@ -102,5 +154,58 @@ class ArchiveItem: NSManagedObject {
             }
         }
         return false
+    }
+    
+    func addCollection(collectionDict: [String:AnyObject]) {
+        do {
+            var managedObjectContext: NSManagedObjectContext?
+            var temporary = true
+            if let ctxt = self.managedObjectContext {
+                managedObjectContext = ctxt
+                temporary = false
+            }else {
+                managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
+            }
+            let collection = ArchiveItem.createArchiveItem(collectionDict, managedObjectContext: managedObjectContext!, temporary: temporary)
+            self.addCollectionsObject(collection!)
+            if !temporary {
+                try managedObjectContext!.save()
+            }
+        }catch {
+        }
+    }
+    
+    func setupUploader(uploader: String) {
+        do {
+            var managedObjectContext: NSManagedObjectContext?
+            var temporary = true
+            if let ctxt = self.managedObjectContext {
+                managedObjectContext = ctxt
+                temporary = false
+            }else {
+                managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
+            }
+            self.uploader = uploader
+            if !temporary {
+                try managedObjectContext!.save()
+            }
+        }catch {
+        }
+    }
+    
+    func setupFile(dictionary: [String:AnyObject]) {
+        if let managedObjectContext = self.managedObjectContext {
+            File.createFile(dictionary, archiveItem: self, managedObjectContext: managedObjectContext, temporary: false)
+        }else {
+            do{
+                let managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
+                if let file = File.createFile(dictionary, archiveItem: self, managedObjectContext: managedObjectContext, temporary: !(self.isFavourite!.boolValue)) {
+                    self.file = file
+                    managedObjectContext.reset()
+                }
+            }catch let error as NSError{
+                print("could not create managed object context \(error.localizedDescription)")
+            }
+        }
     }
 }

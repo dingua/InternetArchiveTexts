@@ -14,7 +14,7 @@
     case DownloadsDescendant = "downloads+desc"
     case DownloadsAscendant = "downloads+asc"
     case TitleDescendant = "titleSorter+desc"
-    case TitleAscendant = "titleSorter+asc"
+    case TitleAscendant = "titleSortekder+asc"
     case ArchivedDatedescendant = "addeddate+desc"
     case ArchivedDateAscendant = "addeddate+asc"
     case PublishedDatedescendant = "date+desc"
@@ -63,6 +63,83 @@
         }
     }
     
+    //MARK: - Item Metadata
+    
+    func itemMetadata(identifier: String, item: ArchiveItem? = nil, completion:([String:AnyObject])->()) {
+        let url = "\(baseURL)/metadata/\(identifier)"
+        Alamofire.request(Utils.requestWithURL(url))
+            .responseJSON { response in
+                if let value = response.result.value {
+                    let json = JSON(value)
+                    if let item = item {
+                        if item.file == nil {
+                            item.setupFile(json.dictionaryObject!)
+                        }
+                    }
+                    completion(json["metadata"].dictionaryObject!)
+                }
+        }
+    }
+
+    func itemMetadataDetails(identifier: String, completion:([String:AnyObject])->()) {
+        let url = "\(baseURL)/metadata/\(identifier)/metadata"
+        Alamofire.request(Utils.requestWithURL(url))
+            .responseJSON { response in
+                if let value = response.result.value {
+                    let json = JSON(value)
+                    completion(json["result"].dictionaryObject!)
+                }
+        }
+    }
+
+    
+    func itemChapters(item: ArchiveItem, completion:()->()) {
+        let group = dispatch_group_create()
+        let filesUrl = "\(baseURL)/metadata/\(item.identifier!)/files"
+        
+        dispatch_group_enter(group)
+        var files: [AnyObject]?
+        Alamofire.request(Utils.requestWithURL(filesUrl))
+            .responseJSON { response in
+                if let value = response.result.value {
+                    let json = JSON(value)
+                    files = json["result"].arrayObject!
+                }
+                dispatch_group_leave(group)
+
+        }
+        
+        let serverUrl = "\(baseURL)/metadata/\(item.identifier!)/server"
+        var server: String?
+        dispatch_group_enter(group)
+        Alamofire.request(Utils.requestWithURL(serverUrl))
+            .responseJSON { response in
+                if let value = response.result.value {
+                    let json = JSON(value)
+                    server = json["result"].stringValue
+                }
+                dispatch_group_leave(group)
+                
+        }
+        let dirUrl = "\(baseURL)/metadata/\(item.identifier!)/dir"
+        var dir: String?
+        dispatch_group_enter(group)
+        Alamofire.request(Utils.requestWithURL(dirUrl))
+            .responseJSON { response in
+                if let value = response.result.value {
+                    let json = JSON(value)
+                    dir = json["result"].stringValue
+                }
+                dispatch_group_leave(group)
+                
+        }
+        
+        dispatch_group_notify(group, dispatch_get_main_queue()) {
+            item.setupFile(["server":server!,"dir":dir!,"files":files!])
+            completion()
+        }
+    }
+
     //MARK: - Generic Search
     
     func searchItems(query: String, count: Int ,page: Int ,sort: String,completion: ([ArchiveItem])->()) {
@@ -154,7 +231,24 @@
     
     func searchCollectionsAndTexts(collection: String,hidden: Bool, count: Int, page: Int, sortOption: IASearchSortOption, completion: ([ArchiveItem])->()) {
         let text = collection.stringByReplacingOccurrencesOfString(" ", withString: "+")
-        let query = "collection:\(text)%20AND%20(mediatype:collection%20OR%20mediatype:texts)%20AND%20NOT%20hidden:\(hidden)"
+        let searchText = text.allowdStringForURL()
+        let query = "collection:\(searchText)%20AND%20(mediatype:collection%20OR%20mediatype:texts)%20AND%20NOT%20hidden:\(hidden)"
+        
+        searchItems(query, count: count, page: page, sort: sortOption.rawValue, completion: completion)
+    }
+    
+    func searchCollectionsAndTexts(uploader uploader: String,hidden: Bool, count: Int, page: Int, sortOption: IASearchSortOption, completion: ([ArchiveItem])->()) {
+        let text = uploader.stringByReplacingOccurrencesOfString(" ", withString: "+")
+        let searchText = text.allowdStringForURL()
+        let query = "uploader:\(searchText)%20AND%20(mediatype:collection%20OR%20mediatype:texts)%20AND%20NOT%20hidden:\(hidden)"
+        
+        searchItems(query, count: count, page: page, sort: sortOption.rawValue, completion: completion)
+    }
+    
+    func searchCollectionsAndTexts(subject subject: String,hidden: Bool, count: Int, page: Int, sortOption: IASearchSortOption, completion: ([ArchiveItem])->()) {
+        let text = subject.stringByReplacingOccurrencesOfString(" ", withString: "+")
+        let searchText = text.allowdStringForURL()
+        let query = "subject:\(searchText)%20AND%20(mediatype:collection%20OR%20mediatype:texts)%20AND%20NOT%20hidden:\(hidden)"
         
         searchItems(query, count: count, page: page, sort: sortOption.rawValue, completion: completion)
     }

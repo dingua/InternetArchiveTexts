@@ -933,13 +933,31 @@
                                                         <action selector="favouriteBtnPressed:" destination="YhU-r8-D5Z" eventType="touchUpInside" id="uTU-fX-KPO"/>
                                                     </connections>
                                                 </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f84-1b-EZf" userLabel="detailsButton">
+                                                    <rect key="frame" x="87" y="7" width="20" height="22"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="20" id="TC3-rI-6eq"/>
+                                                    </constraints>
+                                                    <state key="normal" image="3dots"/>
+                                                    <connections>
+                                                        <action selector="detailsButtonPressed:" destination="YhU-r8-D5Z" eventType="touchUpInside" id="mhY-E4-9kx"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <color key="backgroundColor" white="1" alpha="0.64606207770000001" colorSpace="calibratedWhite"/>
                                             <constraints>
+                                                <constraint firstItem="f84-1b-EZf" firstAttribute="centerY" secondItem="R1Z-Zv-dxh" secondAttribute="centerY" id="LUV-C1-JjJ"/>
+                                                <constraint firstItem="f84-1b-EZf" firstAttribute="baseline" secondItem="zLc-1j-bXA" secondAttribute="baseline" id="Q2N-st-KqJ"/>
                                                 <constraint firstItem="zLc-1j-bXA" firstAttribute="top" secondItem="R1Z-Zv-dxh" secondAttribute="top" constant="5" id="UI5-qw-T8v"/>
                                                 <constraint firstAttribute="trailing" secondItem="zLc-1j-bXA" secondAttribute="trailing" constant="5" id="Y4U-AN-2DJ"/>
+                                                <constraint firstItem="zLc-1j-bXA" firstAttribute="leading" secondItem="f84-1b-EZf" secondAttribute="trailing" constant="8" id="ZpY-eV-dB7"/>
                                                 <constraint firstAttribute="height" constant="35" id="yLQ-eI-g0g"/>
                                             </constraints>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="Q2N-st-KqJ"/>
+                                                </mask>
+                                            </variation>
                                         </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v9k-2S-SYq">
                                             <rect key="frame" x="0.0" y="250" width="150" height="50"/>
@@ -1014,7 +1032,7 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xnf-Vc-Yma" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1083" y="2891"/>
+            <point key="canvasLocation" x="1083" y="2890.5"/>
         </scene>
         <!--Sort ListVC-->
         <scene sceneID="RCI-tv-3f2">
@@ -1437,6 +1455,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="tge-dc-5FS"/>
-        <segue reference="g80-tq-n91"/>
+        <segue reference="BNG-AH-2HG"/>
     </inferredMetricsTieBreakers>
 </document>
