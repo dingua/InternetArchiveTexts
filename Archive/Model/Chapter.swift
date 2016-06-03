@@ -28,10 +28,13 @@ class Chapter: NSManagedObject {
             chapter.type = .TIF
         }else if type == "PDF" {
             chapter.type = .PDF
+        }else if type == "JP2 Tar" {
+            chapter.type = .JP2TAR
         }
-        chapter.scandata = (zipFile.substringToIndex((zipFile.rangeOfString("_\((chapter.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)+"_scandata.xml")
-        chapter.name = zipFile.substringToIndex((zipFile.rangeOfString("\((chapter.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)
-        chapter.subdirectory = zipFile.substringToIndex((zipFile.rangeOfString("_\((chapter.type?.rawValue.lowercaseString)!).zip")?.startIndex)!)
+        let fileExtension = (chapter.type == .JP2TAR) ? "tar" : "zip"
+        chapter.scandata = (zipFile.substringToIndex((zipFile.rangeOfString("_\((chapter.type?.rawValue.lowercaseString)!).\(fileExtension)")?.startIndex)!)+"_scandata.xml")
+        chapter.name = zipFile.substringToIndex((zipFile.rangeOfString("\((chapter.type?.rawValue.lowercaseString)!).\(fileExtension)")?.startIndex)!)
+        chapter.subdirectory = zipFile.substringToIndex((zipFile.rangeOfString("_\((chapter.type?.rawValue.lowercaseString)!).\(fileExtension)")?.startIndex)!)
         chapter.isDownloaded = NSNumber(bool: false)
         chapter.isDownloading = NSNumber(bool: false)
         chapter.file = file

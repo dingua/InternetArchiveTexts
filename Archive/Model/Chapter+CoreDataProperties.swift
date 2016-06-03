@@ -17,6 +17,7 @@ enum Type: String {
     case JPG
     case TIF
     case PDF
+    case JP2TAR = "jp2"
 }
 
 extension Chapter {
