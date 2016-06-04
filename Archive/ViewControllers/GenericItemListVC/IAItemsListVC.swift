@@ -13,12 +13,12 @@ import DGActivityIndicatorView
 private let itemCollectionCellIdentifier = "itemCollectionCell"
 private let reuseIdentifier = "BookSearchCell"
 
-enum IABookListType {
-    case Text
-    case Creator
-    case Collection
-    case Uploader
-    case Subject
+enum IABookListType: String {
+    case Text = "Text"
+    case Creator = "Author"
+    case Collection = "Collection"
+    case Uploader = "Uploader"
+    case Subject = "Subject"
 }
 
 class IAItemsListVC: UICollectionViewController,IASortListDelegate {
@@ -95,6 +95,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
         self.items.removeAll()
         self.currentPage = 0
         self.collectionView?.reloadData()
+        self.title = myTitle()
         if searchText.stringByReplacingOccurrencesOfString(" ", withString: "") != "" {
             loadMore()
         }
@@ -251,8 +252,6 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
             let bookReaderNavController = segue.destinationViewController as! UINavigationController
             let bookReader = bookReaderNavController.topViewController as! IAReaderVC
             let item = items[selectedIndex!.row]
-            bookReader.bookIdentifier = item.identifier!
-            bookReader.bookTitle = item.title
             bookReader.item = item
         }
     }
@@ -289,14 +288,21 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     func showReader(item: ArchiveItem, atChapterIndex chapterIndex :Int = -1) {
         let navController = UIStoryboard(name: "Reader",bundle: nil).instantiateInitialViewController() as! UINavigationController
         let bookReader = navController.topViewController as! IAReaderVC
-        bookReader.bookIdentifier = item.identifier!
-        bookReader.bookTitle = item.title
         bookReader.item = item
         bookReader.didGetFileDetailsCompletion = {
             bookReader.setupReaderToChapter(chapterIndex)
         }
         self.presentViewController(navController, animated: true, completion: nil)
     }
+    
+    func myTitle() -> String {
+        if let type = type , searchText = searchText {
+            return "\(type.rawValue):\(searchText)"
+        }else {
+            return ""
+        }
+    }
+    
     //MARK: IBAction
     
     @IBAction func showSortList(sender: AnyObject) {

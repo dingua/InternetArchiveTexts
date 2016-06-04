@@ -23,8 +23,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     let bottomMarginReaderPage = 50.0
     var pageController = UIPageViewController(transitionStyle: .PageCurl, navigationOrientation: .Horizontal, options: nil)
-    var bookIdentifier : String!
-    var bookTitle: String!
     var numberOfPages = 0 {
         didSet {
             //As soon as page number is set we update page number label
@@ -56,19 +54,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     let secondsToLoadMore = 1.0
     
     var  didGetFileDetailsCompletion: (()->())?
-    //MARK: -INIT
-    
-    init(identifier: String, title: String){
-        self.bookIdentifier = identifier
-        self.bookTitle = title
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init(coder aDecoder: NSCoder) {
-        self.bookIdentifier = ""
-        super.init(coder: aDecoder)!
-    }
-    
+   
     //MARK: UI Methods
     
     override func viewDidLoad() {
@@ -78,6 +64,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         progressSlider.userInteractionEnabled = false
         //Get File Details from MetaData WS
         getFileDetails()
+        title = item?.title ?? ""
     }
     
     var startDate: NSDate?

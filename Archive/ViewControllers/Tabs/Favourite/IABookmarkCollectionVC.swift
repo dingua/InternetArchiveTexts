@@ -39,8 +39,6 @@ class IABookmarkVC: IAGenericItemCollectionVC {
         let page = fetchedResultController!.objectAtIndexPath(indexPath) as! Page
         let navController = UIStoryboard(name: "Reader", bundle: nil).instantiateInitialViewController() as! UINavigationController
         let bookReader = navController.topViewController as! IAReaderVC
-        bookReader.bookIdentifier = page.chapter!.file!.archiveItem!.identifier!
-        bookReader.bookTitle = page.chapter!.file!.archiveItem!.title
         bookReader.item = page.chapter!.file!.archiveItem!
         self.presentViewController(navController, animated: true, completion: {
             bookReader.setupReaderToChapter((page.chapter?.file?.chapters?.allObjects as! [Chapter]).sort({ $0.name < $1.name}).indexOf(page.chapter!)!){

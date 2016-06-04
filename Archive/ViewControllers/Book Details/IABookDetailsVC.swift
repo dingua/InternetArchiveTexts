@@ -10,8 +10,9 @@ import UIKit
 import CoreData
 import DGActivityIndicatorView
 
-private let paramaterCellIdentifier = "ParameterCell"
-private let chapterCellIdentifier = "ChapterCell"
+private let SingleParamaterCellIdentifier = "SingleParameterCell"
+private let MultipleParameterCellIdentifier = "MutlpleParameterCell"
+private let ChapterCellIdentifier = "ChapterCell"
 
 enum ParamaterType {
     case Normal
@@ -22,11 +23,12 @@ enum ParamaterType {
 }
 
 struct Parameter {
-    let key: String
-    let value: String
+    let title: String
+    var values: [String]?
     let type: ParamaterType
 }
-class IABookDetailsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, IALoadingViewProtocol {
+
+class IABookDetailsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, IALoadingViewProtocol, UICollectionViewDelegate, UICollectionViewDataSource {
     var activityIndicatorView : DGActivityIndicatorView?
     var parameters = [Parameter]()
     var chapters = [Chapter]()
@@ -43,32 +45,37 @@ class IABookDetailsVC: UIViewController, UITableViewDelegate, UITableViewDataSou
     @IBOutlet weak var parametersTableView: UITableView!
     @IBOutlet weak var segmentControl: UISegmentedControl!
     
-    @IBOutlet weak var chaptersTableView: UITableView!
     
     @IBOutlet weak var bookTitleLabel: UILabel!
+   
+    @IBOutlet weak var parametersTVHeightConstraint: NSLayoutConstraint!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        prepareUI()
+        addLoadingView()
+        loadDetails()
+        loadChapters()
+        parametersTableView.addObserver(self, forKeyPath: "contentSize", options: .New, context: nil)
+    }
+    
+   deinit {
+        parametersTableView.removeObserver(self, forKeyPath: "contentSize")
+    }
+    
+    func prepareUI() {
         activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
         imageView.af_setImageWithURL(Constants.URL.ImageURL(book!.identifier!).url)
         bookTitleLabel.text = book!.title ?? ""
         segmentControl.hidden = true
         parametersTableView.hidden = true
-        chaptersTableView.hidden = true
-        addLoadingView()
-        loadDetails()
-        loadChapters()
-        parametersTableView.estimatedRowHeight = 44
+        parametersTableView.estimatedRowHeight = 20
         parametersTableView.rowHeight = UITableViewAutomaticDimension
         view.layer.cornerRadius = 20
         view.layer.masksToBounds = true
         segmentControl.tintColor = UIColor.blackColor()
-        // Do any additional setup after loading the view.
     }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-    }
-    
+
     func loadDetails() {
         parameters.removeAll()
         let itemManager = IAItemsManager()
@@ -126,49 +133,46 @@ class IABookDetailsVC: UIViewController, UITableViewDelegate, UITableViewDataSou
     }
     
     func showChapters() {
-        print("chapters loaded")
         if let file = self.book!.file {
             self.chapters = (file.chapters?.allObjects as! [Chapter]).sort({$0.name<$1.name})
         }
         self.chaptersLoaded = true
-        self.chaptersTableView.reloadData()
+        self.parametersTableView.reloadData()
         if self.segmentControl.selectedSegmentIndex == 1 {
             self.removeLoadingView()
-            self.chaptersTableView.hidden = false
         }
     }
     
     func populateData() {
         if let book = book {
             if let description = book.desc {
-                self.parameters.append((Parameter(key:"Description",value:description, type: .Normal)))
+                self.parameters.append((Parameter(title:"Description", values:[description], type: .Normal)))
             }
             if let uploader = book.uploader {
-                self.parameters.append(Parameter(key:"Uploader",value:uploader, type: .Uploader))
+                self.parameters.append(Parameter(title:"Uploader", values:[uploader], type: .Uploader))
             }
             if let publisher = book.publisher {
-                self.parameters.append(Parameter(key:"publisher",value:publisher, type: .Normal))
+                self.parameters.append(Parameter(title:"Publisher", values:[publisher], type: .Normal))
             }
             if let authors = authors() {
                 let authorNames = authors.flatMap({$0.name})
                 if authorNames.count != 0 {
-                    self.parameters.append(Parameter(key: "Author", value: authorNames.joinWithSeparator("\n"), type: .Author))
+                    self.parameters.append(Parameter(title: "Author", values: authorNames, type: .Author))
                 }
             }
             if let collections = sortedCollections() {
                 let collectionTitles = collections.flatMap({$0.title})
                 if collectionTitles.count != 0 {
-                    self.parameters.append(Parameter(key:"Collection",value:collectionTitles.joinWithSeparator("\n"), type: .Collection))
+                    self.parameters.append(Parameter(title:"Collection", values: collectionTitles, type: .Collection))
                 }
             }
             if let subjects = subjects() {
                 let subjectNames = subjects.flatMap({$0.name})
                 if subjectNames.count != 0 {
-                    self.parameters.append(Parameter(key: "Subjects", value: subjectNames.joinWithSeparator("\n"), type: .Subject))
+                    self.parameters.append(Parameter(title: "Subjects", values: subjectNames, type: .Subject))
                 }
             }
             self.parametersTableView.reloadData()
-            self.chaptersTableView.reloadData()
             if self.segmentControl.selectedSegmentIndex == 0 {
                 self.removeLoadingView()
                 parametersTableView.hidden = false
@@ -188,69 +192,94 @@ class IABookDetailsVC: UIViewController, UITableViewDelegate, UITableViewDataSou
     //MARK: - TableViewDelegate
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tableView == parametersTableView ? parameters.count ?? 0 : chapters.count
+        return segmentControl.selectedSegmentIndex == 0 ? parameters.count ?? 0 : chapters.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if tableView == parametersTableView {
-            let cell = tableView.dequeueReusableCellWithIdentifier(paramaterCellIdentifier) as! IABookDetailsTableViewCell
-            let item = parameters[indexPath.row]
-            cell.configure(item).collectionItemTapHandler = { (index,title) in
-                switch item.type {
-                case .Collection:
-                    if let collections = self.sortedCollections() {
-                        let collection = collections[index]
-                        if collection.title == title {
-                            self.presentList(collection.identifier!,type:.Collection)
-                        }
-                    }
-                    break
-                case .Uploader:
-                    if let uploaders = self.uploaders() {
-                        let uploader = uploaders[index]
-                        if uploader == title {
-                            self.presentList(uploader,type:.Uploader)
-                        }
-                    }
-                    break
-                case .Subject:
-                    if let subjects = self.subjects() {
-                        let subject = subjects[index]
-                        if subject.name == title {
-                            self.presentList(subject.name,type:.Subject)
-                        }
-                    }
-                    break
-                case .Author:
-                    if let authors = self.authors() {
-                        let author = authors[index]
-                        if author.name == title {
-                            self.presentList(author.name,type:.Creator)
-                        }
-                    }
-                    break
-                    
-                default:
-                    break
-                }
-                
+        if segmentControl.selectedSegmentIndex == 0 {
+            let parameter = parameters[indexPath.row]
+            if parameter.type == .Collection || parameter.type == .Uploader || parameter.type == .Subject || parameter.type == .Author {
+                let cell = tableView.dequeueReusableCellWithIdentifier(MultipleParameterCellIdentifier) as! IABookDetailsMultipleParamCell
+                cell.configure(parameter,index: indexPath.row)
+                return cell
+            }else {
+                let cell = tableView.dequeueReusableCellWithIdentifier(SingleParamaterCellIdentifier) as! IABookDetailsSingleParamCell
+                cell.configure(parameter)
+                return cell
             }
-            return cell
         }else {
-            let cell = tableView.dequeueReusableCellWithIdentifier(chapterCellIdentifier)
+            let cell = tableView.dequeueReusableCellWithIdentifier(ChapterCellIdentifier)
             cell?.textLabel?.text = chapters[indexPath.row].name
             return cell!
         }
     }
 
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if tableView == chaptersTableView {
-            if let pushReaderOnChapter = pushReaderOnChapter {
-                self.dismissViewControllerAnimated(true){
-                    pushReaderOnChapter(chapterIndex: indexPath.row)
-                }
-            }
+        if segmentControl.selectedSegmentIndex == 1{
+            openReader(atChapter: indexPath.row)
+         }
+    }
+   
+    //MARK: - UICollectionViewDelegate (CollectionView included in MultipleParamCell)
+   
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if let index = (collectionView as! IABookDetailsCollectionView).parameterIndex {
+            let parameter = parameters[index]
+            return parameter.values?.count ?? 0
+        }else {
+            return 0
         }
+    }
+    
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("detailsCollectionViewCell", forIndexPath: indexPath) as! IABookDetailsCollectionViewCell
+        let parameter = parameters[(collectionView as! IABookDetailsCollectionView).parameterIndex!]
+        cell.label.text = parameter.values![indexPath.row] ?? ""
+        return cell
+        
+    }
+    
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let parameter = parameters[(collectionView as! IABookDetailsCollectionView).parameterIndex!]
+        switch parameter.type {
+        case .Collection:
+            if let collections = self.sortedCollections() {
+                let collection = collections[indexPath.row]
+                    self.presentList(collection.identifier!,type:.Collection)
+            }
+            break
+        case .Uploader:
+            if let uploaders = parameter.values {
+                let uploader = uploaders[indexPath.row]
+                    self.presentList(uploader,type:.Uploader)
+            }
+            break
+        case .Subject:
+            if let subjects = parameter.values {
+                let subject = subjects[indexPath.row]
+                    self.presentList(subject,type:.Subject)
+            }
+            break
+        case .Author:
+            if let authors = parameter.values {
+                let author = authors[indexPath.row]
+                    self.presentList(author,type:.Creator)
+            }
+            break
+            
+        default:
+            break
+        }
+
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        let parameter = parameters[(collectionView as! IABookDetailsCollectionView).parameterIndex!]
+        let text = parameter.values![indexPath.row] ?? ""
+        let font = UIFont(name: "HelveticaNeue", size: 16)!
+        let rect = text.boundingRectWithSize(CGSizeMake(1000,1000), options: .UsesLineFragmentOrigin, attributes: ([NSFontAttributeName:font]), context: nil)
+        return rect.size
     }
     
     //MARK: - Helper
@@ -279,44 +308,82 @@ class IABookDetailsVC: UIViewController, UITableViewDelegate, UITableViewDataSou
         }
     }
 
-    func uploaders()->[String]? {
-        return book?.uploader?.componentsSeparatedByString("\n")
+    func presentList(text:String?, type: IABookListType) {
+        if Utils.isiPad() {
+            self.dismissViewControllerAnimated(true){
+                self.pushListOnDismiss!(text: text, type: type)
+            }
+        }else {
+            pushList(text, type: type)
+        }
     }
     
-    func presentList(text:String?, type: IABookListType) {
-        self.dismissViewControllerAnimated(true){
-            self.pushListOnDismiss!(text: text, type: type)
+    func pushList(text:String?, type: IABookListType) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let itemsListVC = storyboard.instantiateViewControllerWithIdentifier("bookListVC") as! IAItemsListVC
+        itemsListVC.loadList(text ?? "", type: type)
+        self.navigationController?.pushViewController(itemsListVC, animated: true)
+    }
+    
+    func openReader(atChapter chapterIndex :Int = 0){
+        if Utils.isiPad() {
+            if let pushReaderOnChapter = pushReaderOnChapter {
+                self.dismissViewControllerAnimated(true){
+                    pushReaderOnChapter(chapterIndex: chapterIndex)
+                }
+            }
+        }else {
+            showReader(book!, atChapterIndex: chapterIndex)
         }
+    }
+    
+    func showReader(item: ArchiveItem, atChapterIndex chapterIndex :Int = 0) {
+        let navController = UIStoryboard(name: "Reader",bundle: nil).instantiateInitialViewController() as! UINavigationController
+        let bookReader = navController.topViewController as! IAReaderVC
+        bookReader.item = item
+        bookReader.didGetFileDetailsCompletion = {
+            bookReader.setupReaderToChapter(chapterIndex)
+        }
+        self.presentViewController(navController, animated: true, completion: nil)
     }
     
     func addLoadingView() {
         addLoadingView(yOffset: loadingViewYOffset)
     }
+  
     //MARK: - IBAction
+   
     @IBAction func segmentControlValueChange() {
         switch  segmentControl.selectedSegmentIndex{
         case 0:
-            chaptersTableView.hidden = true
             if detailsLoaded {
                 removeLoadingView()
-                parametersTableView.hidden = false
             }else {
                 addLoadingView()
-                parametersTableView.hidden = true
             }
             break
         case 1:
-            parametersTableView.hidden = true
             if chaptersLoaded {
                 removeLoadingView()
-                chaptersTableView.hidden = false
             }else {
                 addLoadingView()
-                chaptersTableView.hidden = true
             }
             break
         default:
             break
+        }
+        parametersTableView.reloadData()
+    }
+
+    @IBAction func openButtonPressed(sender: AnyObject) {
+        openReader()
+    }
+    
+    //MARK: - KVO
+    
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if keyPath == "contentSize" {
+            self.parametersTVHeightConstraint.constant = self.parametersTableView.contentSize.height
         }
     }
 }

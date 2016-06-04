@@ -47,8 +47,6 @@ class IAGenericItemCollectionVC: CoreDataCollectionViewController, IALoadingView
             
             let navController = segue.destinationViewController as! UINavigationController
             let bookReader = navController.topViewController as! IAReaderVC
-            bookReader.bookIdentifier = item.identifier!
-            bookReader.bookTitle = item.title
             bookReader.item = item
         }
     }

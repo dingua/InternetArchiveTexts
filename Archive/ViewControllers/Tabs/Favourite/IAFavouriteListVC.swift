@@ -52,8 +52,6 @@ class IAFavouriteListVC: IAGenericListVC {
             let bookReaderNavController = segue.destinationViewController as! UINavigationController
             let bookReader = bookReaderNavController.topViewController as! IAReaderVC
             let item = fetchedResultController.objectAtIndexPath(selectedIndex!) as! ArchiveItem
-            bookReader.bookIdentifier = item.identifier!
-            bookReader.bookTitle = item.title
             bookReader.item = item
         }
     }

@@ -62,8 +62,6 @@ class IADownloadCollectionVC: IAGenericItemCollectionVC {
         
         let navController = UIStoryboard(name: "Reader",bundle: nil).instantiateInitialViewController() as! UINavigationController
         let bookReader = navController.topViewController as! IAReaderVC
-        bookReader.bookIdentifier = item.identifier!
-        bookReader.bookTitle = item.title
         bookReader.item = item
         bookReader.didGetFileDetailsCompletion = {
             bookReader.setupReaderToChapter(chapterIndex)
@@ -75,8 +73,6 @@ class IADownloadCollectionVC: IAGenericItemCollectionVC {
         
         let navController = UIStoryboard(name: "Reader",bundle: nil).instantiateInitialViewController() as! UINavigationController
         let bookReader = navController.topViewController as! IAReaderVC
-        bookReader.bookIdentifier = item.identifier!
-        bookReader.bookTitle = item.title
         bookReader.item = item
         bookReader.didGetFileDetailsCompletion = {
             bookReader.setupReaderToChapter((item.file?.chapters?.allObjects as! [Chapter]).sort({ $0.name < $1.name}).indexOf(page.chapter!)!){

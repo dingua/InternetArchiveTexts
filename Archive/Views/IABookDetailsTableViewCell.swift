@@ -7,41 +7,33 @@
 //
 
 import UIKit
-import FRHyperLabel
 
-class IABookDetailsTableViewCell: UITableViewCell {
+class IABookDetailsSingleParamCell: UITableViewCell {
 
     @IBOutlet weak var paramLabel: UILabel!
    
-    @IBOutlet weak var valueLabel: FRHyperLabel!
+    @IBOutlet weak var valueLabel: UILabel!
     
-    var collectionItemTapHandler: ((index: Int, title: String)->())?
+    func configure(parameter: Parameter) {
+        paramLabel.text = parameter.title
+        valueLabel.text = parameter.values?.first ?? ""
+    }
+}
+
+class IABookDetailsMultipleParamCell: UITableViewCell {
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+    @IBOutlet weak var paramLabel: UILabel!
+    @IBOutlet weak var collectionView: IABookDetailsCollectionView!
+    
+    func configure(parameter: Parameter, index: Int) {
+        paramLabel.text = parameter.title
+        collectionView.parameterIndex = index
+        collectionView.reloadData()
     }
-
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-
-    func configure(parameter: Parameter)->IABookDetailsTableViewCell {
-        paramLabel.text = parameter.key
-         let attributes = [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleHeadline)]
-        valueLabel.attributedText = NSAttributedString(string: parameter.value, attributes: attributes)
-        if parameter.type == .Collection || parameter.type == .Uploader || parameter.type == .Subject || parameter.type == .Author {
-            let titles = parameter.value.componentsSeparatedByString("\n")
-            for title in titles {
-                let myText = valueLabel.text! as NSString
-                let range = myText.rangeOfString(title)
-                valueLabel.setLinkForRange(range, withLinkHandler: { (_, range) in
-                    let text = myText.substringWithRange(range)
-                    self.collectionItemTapHandler!(index: titles.indexOf(text)!,title: text)
-                })}
-        }
-        return self
+    
+    override func systemLayoutSizeFittingSize(targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
+        collectionView.layoutIfNeeded()
+        let size = collectionView.collectionViewLayout.collectionViewContentSize()
+        return CGSizeMake(size.width, size.height+20)
     }
 }
