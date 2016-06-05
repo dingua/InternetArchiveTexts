@@ -69,18 +69,30 @@ class IAFavouriteManager: NSObject {
         let url = "\(getBookmarkURL)/\(userId)?output=json"
         
         Alamofire.request(Utils.requestWithURL(url)).responseJSON { response in
-            if let result = response.result.value {
-                let bookmarks = JSON(result).arrayValue
-                for bookmark in bookmarks {
-                    if bookmark["mediatype"].stringValue == "texts" {
-                        if let bookItem = ArchiveItem.createArchiveItem(bookmark.dictionaryObject!, managedObjectContext: CoreDataStackManager.sharedManager.managedObjectContext, temporary: false){
-                            bookItem.markAsFavourite(true)
+            do {
+                let group = dispatch_group_create()
+                let managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
+                if let result = response.result.value {
+                    let bookmarks = JSON(result).arrayValue
+                    for bookmark in bookmarks {
+                        dispatch_group_enter(group)
+                        managedObjectContext.performBlock {
+                        if bookmark["mediatype"].stringValue == "texts" {
+                                if let bookItem = ArchiveItem.createArchiveItem(bookmark.dictionaryObject!, managedObjectContext: managedObjectContext, temporary: false){
+                                    bookItem.markAsFavourite(true)
+                                }
+                            }
+                            dispatch_group_leave(group)
                         }
                     }
                 }
+                dispatch_group_notify(group, dispatch_get_main_queue(), {
+                    completion()
+                })
+
+            }catch {
+                completion()
             }
-            
-            completion()
         }
     }
     

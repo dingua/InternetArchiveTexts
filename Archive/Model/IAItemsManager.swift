@@ -158,11 +158,18 @@
                         let docs = json["response"]["docs"].array
                         if let docs = docs {
                             var collections = [ArchiveItem]()
+                            let group = dispatch_group_create()
                             for doc in docs {
-                                collections.append(ArchiveItem.createArchiveItem(doc.dictionaryObject!, managedObjectContext: managedObjectContext, temporary: true)!)
+                                dispatch_group_enter(group)
+                                managedObjectContext.performBlock {
+                                    collections.append(ArchiveItem.createArchiveItem(doc.dictionaryObject!, managedObjectContext: managedObjectContext, temporary: true)!)
+                                    dispatch_group_leave(group)
+                                }
                             }
-                            completion(collections)
-                            managedObjectContext.reset()
+                            dispatch_group_notify(group, dispatch_get_main_queue(), {
+                                completion(collections)
+                                managedObjectContext.reset()
+                            })
                         }
                     }
                 }catch{

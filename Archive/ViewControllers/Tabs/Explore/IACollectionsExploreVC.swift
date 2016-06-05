@@ -34,14 +34,24 @@ class IACollectionsExploreVC: UICollectionViewController, IARootVCProtocol {
                     "identifier": "texts",
                     "title": "All Texts"
                 ]
+                let group = dispatch_group_create()
                 do {
                     let managedCtx = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
-                    mySelf.collections.append(ArchiveItem.createArchiveItem(allTextsDictionary, managedObjectContext: managedCtx, temporary: true)!)
+                    dispatch_group_enter(group)
+                    managedCtx.performBlock {
+                        mySelf.collections.append(ArchiveItem.createArchiveItem(allTextsDictionary, managedObjectContext: managedCtx, temporary: true)!)
+                        dispatch_group_leave(group)
+                    }
                 
-                }catch{}
-                mySelf.collections.appendContentsOf(collections)
-                mySelf.collectionView!.reloadData()
-            }
+                }catch{
+                    mySelf.collections.appendContentsOf(collections)
+                    mySelf.collectionView!.reloadData()
+                }
+                dispatch_group_notify(group, dispatch_get_main_queue(), {
+                    mySelf.collections.appendContentsOf(collections)
+                    mySelf.collectionView!.reloadData()
+                })
+             }
         }
     }
     
