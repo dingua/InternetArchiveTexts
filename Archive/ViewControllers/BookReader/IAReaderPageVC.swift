@@ -24,6 +24,7 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
     var zoomOffset: CGPoint?
     var zoomed = false
     var appeared = false
+    var scaled = false // variable to check wether we did first scaling of the scrollview, once done we don't do again (except device rotation)
     
     @IBOutlet weak var scrollView: UIScrollView!
 
@@ -35,11 +36,10 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         appeared = true
-        if self.image == nil {
-            self.updatePage()
+        if image == nil {
+            updatePage()
         }else {
-            self.reScaleScrollView(self.image!)
-
+            rescaleScrollView()
         }
     }
 
@@ -48,8 +48,8 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func updatePage() {
-        self.addLoadingView()
-        self.imagesDownloader!.imageOfPage(self.pageNumber!){ [weak self](page: Int, image: UIImage)->() in
+       addLoadingView()
+       imagesDownloader!.imageOfPage(pageNumber!){ [weak self](page: Int, image: UIImage)->() in
             if let mySelf = self {
                 mySelf.removeLoadingView()
                 if page == mySelf.pageNumber {
@@ -62,16 +62,15 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
-    
     func goNextPage() {
-        if let reader = self.parentViewController?.parentViewController where reader.isKindOfClass(IAReaderVC) {
+        if let reader = parentViewController?.parentViewController where reader.isKindOfClass(IAReaderVC) {
                 (reader as! IAReaderVC).goNextPage()
         }
     }
     
     
     func goPreviousPage() {
-        if let reader = self.parentViewController?.parentViewController where reader.isKindOfClass(IAReaderVC) {
+        if let reader = parentViewController?.parentViewController where reader.isKindOfClass(IAReaderVC) {
             (reader as! IAReaderVC).goPreviousPage()
         }
     }
@@ -79,69 +78,75 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
     //MARK: Helpers
     
     func addLoadingView() {
-        self.view.addSubview(activityIndicatorView)
-        self.activityIndicatorView.startAnimating()
+        view.addSubview(activityIndicatorView)
+        activityIndicatorView.startAnimating()
 
         activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
         
-        self.view.addConstraint(NSLayoutConstraint(item: self.activityIndicatorView  , attribute: .CenterX, relatedBy: .Equal, toItem: self.view, attribute: .CenterX, multiplier: 1.0, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: activityIndicatorView  , attribute: .CenterX, relatedBy: .Equal, toItem: view, attribute: .CenterX, multiplier: 1.0, constant: 0))
         
-        self.view.addConstraint(NSLayoutConstraint(item:  self.activityIndicatorView, attribute: .CenterY, relatedBy: .Equal, toItem:self.view , attribute: .CenterY, multiplier: 1.0, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: activityIndicatorView, attribute: .CenterY, relatedBy: .Equal, toItem: view , attribute: .CenterY, multiplier: 1.0, constant: 0))
     }
     
     func removeLoadingView() {
-        self.activityIndicatorView.stopAnimating()
-        self.activityIndicatorView.removeFromSuperview()
+       activityIndicatorView.stopAnimating()
+       activityIndicatorView.removeFromSuperview()
     }
     
-    func reScaleScrollView(image: UIImage) {
+    func rescaleScrollView(image: UIImage) {
         let imageRect = AVMakeRectWithAspectRatioInsideRect(image.size, imageView!.frame)
-        let scale = self.view.frame.size.width/imageRect.width
-        let zoomRect = self.zoomRectForScale(scale, center: self.scrollView.center)
-        self.scrollView?.zoomToRect(zoomRect, animated: false)
-        self.scrollView.scrollRectToVisible(CGRectMake(self.scrollView.contentOffset.x, 0, zoomRect.width, zoomRect.height), animated: false)
-        self.zoomScale = scale
-        self.zoomOffset = self.scrollView.contentOffset
-        self.zoomed = true
-        self.imageView?.hidden = false
+        let scale = view.frame.size.width/imageRect.width
+        let zoomRect = zoomRectForScale(scale, center: scrollView.center)
+       scrollView?.zoomToRect(zoomRect, animated: false)
+       scrollView.scrollRectToVisible(CGRectMake(scrollView.contentOffset.x, 0, zoomRect.width, zoomRect.height), animated: false)
+       zoomScale = scale
+       zoomOffset = scrollView.contentOffset
+       zoomed = true
+       imageView?.hidden = false
     }
     
-    func reScaleScrollView() {
-        if let image = self.image {
-            self.reScaleScrollView(image)
+    func rescaleScrollView() {
+        if let image = image {
+            if !scaled {
+                rescaleScrollView(image)
+                scaled = true
+            }
         }
     }
+    
+    func zoomRectForScale(scale : CGFloat, center : CGPoint) -> CGRect {
+        var zoomRect = CGRectZero
+        if let imageV = imageView {
+            zoomRect.size.height = imageV.frame.size.height / scale;
+            zoomRect.size.width  = imageV.frame.size.width  / scale;
+            let newCenter = imageV.convertPoint(center, fromView: scrollView)
+            zoomRect.origin.x = newCenter.x - ((zoomRect.size.width / 2.0));
+            zoomRect.origin.y = newCenter.y - ((zoomRect.size.height / 2.0));
+        }
+        return zoomRect;
+    }
+
     
     //MARK: UIScrollViewDelegate
     
     func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
-        return self.imageView
+        return imageView
     }
 
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        if let  scale = self.zoomScale , zoomOffset =  self.zoomOffset{
-            if (scrollView.contentOffset.x != 0 && scrollView.zoomScale == scale && self.zoomed) {
+        if let  scale = zoomScale , zoomOffset = zoomOffset{
+            if (scrollView.contentOffset.x != 0 && scrollView.zoomScale == scale && zoomed) {
                 var offset = scrollView.contentOffset
                 offset.x = zoomOffset.x
                 scrollView.contentOffset = offset
             }
-            
         }
-        
     }
     
     
     func scrollViewDidZoom(scrollView: UIScrollView) {
-        self.zoomed = false
+        zoomed = false
     }
-    
-    
-    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
-        if scrollView.contentOffset.x == 0 {
-        
-        }
-    }
-    
     
     //MARK: UIGestureRecognizerDelegate
     
@@ -157,35 +162,19 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
 
     @IBAction func scrollViewDoubleTapped(sender: AnyObject) {
         let recognizer = sender as! UIGestureRecognizer
-
-        if let scrollV = self.scrollView {
-            if (scrollV.zoomScale > scrollV.minimumZoomScale) {
-                scrollV.setZoomScale(scrollV.minimumZoomScale, animated: true)
+        if let scrollView = scrollView {
+            if (scrollView.zoomScale > scrollView.minimumZoomScale) {
+                scrollView.setZoomScale(scrollView.minimumZoomScale, animated: true)
             }
-            else {
-                if let image = self.image, imageView = self.imageView {
-                    let imageRect = AVMakeRectWithAspectRatioInsideRect(image.size, imageView.frame)
-                    let scale = self.view.frame.size.width/imageRect.width
-                    let zoomRect = self.zoomRectForScale(scale, center: CGPointMake(self.view.center.x , recognizer.locationInView(recognizer.view).y) )
-                    self.scrollView?.zoomToRect(zoomRect, animated: true)
-                    self.zoomScale = scale
-                    self.zoomOffset = self.scrollView.contentOffset
-                    self.zoomed = true
-                }
-            }
+        }else if let image = image, imageView = imageView {
+            let imageRect = AVMakeRectWithAspectRatioInsideRect(image.size, imageView.frame)
+            let scale = view.frame.size.width/imageRect.width
+            let zoomRect = zoomRectForScale(scale, center: CGPointMake(view.center.x , recognizer.locationInView(recognizer.view).y) )
+            scrollView?.zoomToRect(zoomRect, animated: true)
+            zoomScale = scale
+            zoomOffset = scrollView.contentOffset
+            zoomed = true
         }
-    }
-    
-    func zoomRectForScale(scale : CGFloat, center : CGPoint) -> CGRect {
-        var zoomRect = CGRectZero
-        if let imageV = self.imageView {
-            zoomRect.size.height = imageV.frame.size.height / scale;
-            zoomRect.size.width  = imageV.frame.size.width  / scale;
-            let newCenter = imageV.convertPoint(center, fromView: self.scrollView)
-            zoomRect.origin.x = newCenter.x - ((zoomRect.size.width / 2.0));
-            zoomRect.origin.y = newCenter.y - ((zoomRect.size.height / 2.0));
-        }
-        return zoomRect;
     }
     
     @IBAction func scrollViewPangestureHandler(sender: AnyObject) {
@@ -193,7 +182,7 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
         
         if pangesture.state == .Changed {
         }else if pangesture.state == .Began {
-            self.panStartPosition = pangesture.locationInView(pangesture.view)
+            panStartPosition = pangesture.locationInView(pangesture.view)
         } else if pangesture.state == .Ended {
             if zoomed && abs(pangesture.velocityInView(pangesture.view).x) > abs(pangesture.velocityInView(pangesture.view).y){
                     if pangesture.velocityInView(pangesture.view).x > 200 {
@@ -202,10 +191,10 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
                         goNextPage()
                     }
             }else {
-                if pangesture.locationInView(pangesture.view).x - self.panStartPosition!.x > 100 && self.scrollView.contentOffset.x < 10 {
-                    self.goPreviousPage()
-                } else if pangesture.locationInView(pangesture.view).x - self.panStartPosition!.x < 100 && self.scrollView.contentOffset.x + self.scrollView.frame.size.width >  self.scrollView.contentSize.width - 10 {
-                    self.goNextPage()
+                if pangesture.locationInView(pangesture.view).x - panStartPosition!.x > 100 && scrollView.contentOffset.x < 10 {
+                    goPreviousPage()
+                } else if pangesture.locationInView(pangesture.view).x - panStartPosition!.x < 100 && scrollView.contentOffset.x + scrollView.frame.size.width >  scrollView.contentSize.width - 10 {
+                    goNextPage()
                 }
            
             }
@@ -220,19 +209,19 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
     }
     
     func updateImage(image: UIImage, hidden: Bool) {
+        guard self.image == nil else {return}
         self.image = image
-        self.imageView?.image = image
-        self.imageView?.hidden = hidden
+        imageView?.image = image
+        imageView?.hidden = hidden
         if appeared {
-            reScaleScrollView()
+            rescaleScrollView()
         }
     }
        
     //MARK: Device orientation
     
     override func didRotateFromInterfaceOrientation(fromInterfaceOrientation: UIInterfaceOrientation) {
-        reScaleScrollView()
-    }
-    
-   
+        scaled = false
+        rescaleScrollView()
+    }   
 }
