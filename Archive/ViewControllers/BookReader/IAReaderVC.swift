@@ -17,10 +17,10 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     var chapters : [Chapter]? {
         get{
-        return (self.item?.file?.chapters?.allObjects as! [Chapter]).sort({ $0.name < $1.name})
+            return (self.item?.file?.chapters?.allObjects as! [Chapter]).sort({ $0.name < $1.name})
         }
     }
-    
+    var pagesViewControllers = [Int:IAReaderPageVC]()
     let bottomMarginReaderPage = 50.0
     var pageController = UIPageViewController(transitionStyle: .PageCurl, navigationOrientation: .Horizontal, options: nil)
     var bookIdentifier : String!
@@ -43,11 +43,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     lazy var activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
     
     var presentationDelegate =  IASortPresentationDelgate()
-    //IBOutlets
-    @IBOutlet weak var bottomMenu: UIView!
-    @IBOutlet weak var pageNumberLabel: UILabel!
-    @IBOutlet weak var progressSlider: UISlider!
-    @IBOutlet weak var downloadProgressView: UIProgressView!
     
     var imagesDownloader: IABookImagesManager?
     let archiveItemsManager = IAItemsManager()
@@ -56,6 +51,14 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     let secondsToLoadMore = 1.0
     
     var  didGetFileDetailsCompletion: (()->())?
+    
+    
+    //IBOutlets
+    @IBOutlet weak var bottomMenu: UIView!
+    @IBOutlet weak var pageNumberLabel: UILabel!
+    @IBOutlet weak var progressSlider: UISlider!
+    @IBOutlet weak var downloadProgressView: UIProgressView!
+    
     //MARK: -INIT
     
     init(identifier: String, title: String){
@@ -76,11 +79,12 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image:UIImage(named: "close_reader"), style: .Plain, target: self, action: #selector(IAReaderVC.dismissViewController))
         progressSlider.setThumbImage(UIImage(named: "roundSliderThumb")  ,forState: .Normal)
         progressSlider.userInteractionEnabled = false
-        //Get File Details from MetaData WS
+        //Get File Details from MetaData Web Service
         getFileDetails()
     }
     
     var startDate: NSDate?
+    
     func getFileDetails() {
         self.addLoadingView()
         startDate = NSDate()
@@ -188,14 +192,18 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         self.view.addConstraint(NSLayoutConstraint(item: self.bottomLayoutGuide  , attribute: .Top, relatedBy: .Equal, toItem:self.pageController.view, attribute: .Bottom, multiplier: 1.0, constant: CGFloat(bottomMarginReaderPage)))
         
         self.view.bringSubviewToFront(self.downloadProgressView)
-        dispatch_async(dispatch_get_main_queue(), {completion()})
     }
     
     func pageVCWithNumber(number: Int)->IAReaderPageVC {
-        let pageVC = self.storyboard?.instantiateViewControllerWithIdentifier("pageVC") as! IAReaderPageVC
-        pageVC.pageNumber = number
-        pageVC.imagesDownloader = self.imagesDownloader
-        return pageVC
+        if let page = pagesViewControllers[number]{
+            return page
+        }else {
+            let page = self.storyboard?.instantiateViewControllerWithIdentifier("pageVC") as! IAReaderPageVC
+            page.pageNumber = number
+            page.imagesDownloader = self.imagesDownloader
+            pagesViewControllers[number] = page
+            return page
+        }
     }
     
     func updatePageVCWithNumber(number: Int, image: UIImage) {
@@ -233,11 +241,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         if pageNumber <= 0 {
             return nil
         }
-        
-        let beforeVC =  self.storyboard?.instantiateViewControllerWithIdentifier("pageVC") as! IAReaderPageVC
-        beforeVC.pageNumber = pageNumber!-1
-        beforeVC.imagesDownloader = self.imagesDownloader
-        return beforeVC
+        return pageVCWithNumber(pageNumber!-1)
     }
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController?{
@@ -246,11 +250,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         if pageNumber >= self.numberOfPages-1 {
             return nil
         }
-        
-        let afterVC = self.storyboard?.instantiateViewControllerWithIdentifier("pageVC") as! IAReaderPageVC
-        afterVC.pageNumber = pageNumber!+1
-        afterVC.imagesDownloader = self.imagesDownloader
-        return afterVC
+        return pageVCWithNumber(pageNumber!+1)
     }
     
     //MARK: IBACTION
@@ -426,5 +426,4 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     func isFavourite()->Bool {
         return (item?.isFavourite?.boolValue)!
     }
-    
 }
