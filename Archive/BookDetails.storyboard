@@ -190,7 +190,7 @@
                                                                         <rect key="frame" x="0.0" y="0.0" width="137" height="51"/>
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                         <subviews>
-                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PWT-ki-I5L">
+                                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="PWT-ki-I5L">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="137" height="51"/>
                                                                                 <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="14"/>
                                                                                 <color key="textColor" red="0.2470588235" green="0.47450980390000003" blue="0.80392156859999997" alpha="1" colorSpace="calibratedRGB"/>

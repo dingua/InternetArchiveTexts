@@ -39,12 +39,13 @@ class IAGenericItemCollectionCell: UICollectionViewCell {
     }
     
     var actionClosure: ItemCellCompletionBlock?
+    var secondActionClosure: ItemCellCompletionBlock?
     
     @IBOutlet weak var mainImageView: UIImageView!
     @IBOutlet weak var actionButton: UIButton!
     @IBOutlet weak var titleLabel: UILabel!
     
-    func configure(item: ArchiveItem, type: ItemCollectionButtonType?, completion: ItemCellCompletionBlock?) {
+    func configure(item: ArchiveItem, type: ItemCollectionButtonType?, completion: ItemCellCompletionBlock?)->IAGenericItemCollectionCell {
         if type       != nil { buttonType    = type }
         if completion != nil { actionClosure = completion }
         
@@ -57,7 +58,7 @@ class IAGenericItemCollectionCell: UICollectionViewCell {
         if buttonType == .Favorite && item.isFavorite {
             actionButton.setImage(UIImage(named: "favourite_filled"), forState: .Normal)
         }
-        
+        return self
     }
     
     func configure(page: Page, type: ItemCollectionButtonType?, completion: ItemCellCompletionBlock?) {
@@ -91,6 +92,11 @@ class IAGenericItemCollectionCell: UICollectionViewCell {
         }
     }
     
+    @IBAction func secondAction() {
+        if secondActionClosure != nil {
+            secondActionClosure!()
+        }
+    }
 }
 
 private extension Selector {

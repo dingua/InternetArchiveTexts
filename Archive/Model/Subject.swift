@@ -36,7 +36,7 @@ class Subject: NSManagedObject {
                     try managedObjectContext.save()
                 }
             }catch let error as NSError {
-                print("Save managedObjectContext failed: \(error.localizedDescription)")
+                print("Save SUBJECT managedObjectContext failed: \(error.localizedDescription)")
             }
             return subject
         }catch let error as NSError{

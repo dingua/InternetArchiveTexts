@@ -36,7 +36,7 @@ class Author: NSManagedObject {
                     try managedObjectContext.save()
                 }
             }catch let error as NSError {
-                print("Save managedObjectContext failed: \(error.localizedDescription)")
+                print("Save AUTHOR managedObjectContext failed: \(error.localizedDescription)")
             }
             return author
         }catch let error as NSError{

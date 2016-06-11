@@ -51,7 +51,6 @@
                                 let managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
                                 if let file = File.createFile(value as! [String : AnyObject], archiveItem: archiveItem, managedObjectContext: managedObjectContext, temporary: !(archiveItem.isFavourite!.boolValue)) {
                                     completion(file)
-                                    managedObjectContext.reset()
                                 }
                             }catch let error as NSError{
                                 print("could not create managed object context \(error.localizedDescription)")
@@ -168,7 +167,6 @@
                             }
                             dispatch_group_notify(group, dispatch_get_main_queue(), {
                                 completion(collections)
-                                managedObjectContext.reset()
                             })
                         }
                     }

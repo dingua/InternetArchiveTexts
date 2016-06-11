@@ -50,34 +50,39 @@ class ArchiveItem: NSManagedObject {
                 if let uploader = dictionary["uploader"] as? String {
                     item.uploader = uploader
                 }
-                item.deleteSubjects()
-                if let subjects = dictionary["subject"] as? [String] {
-                    for subject in subjects {
-                        item.addSubjectsObject(Subject.createSubject(subject, managedObjectContext: managedObjectContext, temporary: temporary)!)
-                    }
-                }else if let subject = dictionary["subject"] as? String {
-                    let obj = Subject.createSubject(subject, managedObjectContext: managedObjectContext, temporary: temporary)
-                    item.addSubjectsObject(obj!)
-                }
                 
-                item.deleteAuthors()
-
-                if let authors = dictionary["creator"] as? [String] {
-                    for author in authors {
-                        item.addAuthorsObject(Author.createAuthor(author, managedObjectContext: managedObjectContext, temporary: temporary)!)
+                if item.subjects?.count == 0 {
+                    if let subjects = dictionary["subject"] as? [String] {
+                        for subject in subjects {
+                            item.addSubjectsObject(Subject.createSubject(subject, managedObjectContext: managedObjectContext, temporary: temporary)!)
+                        }
+                    }else if let subject = dictionary["subject"] as? String {
+                        let obj = Subject.createSubject(subject, managedObjectContext: managedObjectContext, temporary: temporary)
+                        item.addSubjectsObject(obj!)
                     }
-                }else if let author = dictionary["creator"] as? String {
-                    let obj = Author.createAuthor(author, managedObjectContext: managedObjectContext, temporary: temporary)
-                    item.addAuthorsObject(obj!)
                 }
+              
+                
+//                item.deleteAuthors()
 
+                if item.authors?.count == 0 {
+                    if let authors = dictionary["creator"] as? [String] {
+                        for author in authors {
+                            item.addAuthorsObject(Author.createAuthor(author, managedObjectContext: managedObjectContext, temporary: temporary)!)
+                        }
+                    }else if let author = dictionary["creator"] as? String {
+                        let obj = Author.createAuthor(author, managedObjectContext: managedObjectContext, temporary: temporary)
+                        item.addAuthorsObject(obj!)
+                    }
+                }
             }
+            
             do{
                 if !temporary {
                     try managedObjectContext.save()
                 }
             }catch let error as NSError {
-                print("Save managedObjectContext failed: \(error.localizedDescription)")
+                print("Save ARCHIVE ITEM managedObjectContext failed: \(error.localizedDescription)")
             }
             return item
         }catch let error as NSError {
@@ -201,7 +206,6 @@ class ArchiveItem: NSManagedObject {
                 let managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
                 if let file = File.createFile(dictionary, archiveItem: self, managedObjectContext: managedObjectContext, temporary: !(self.isFavourite!.boolValue)) {
                     self.file = file
-                    managedObjectContext.reset()
                 }
             }catch let error as NSError{
                 print("could not create managed object context \(error.localizedDescription)")

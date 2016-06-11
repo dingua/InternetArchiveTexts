@@ -20,10 +20,12 @@ class Page: NSManagedObject {
         page.chapter = chapter
         chapter.addPagesObject(page)
         page.bookmarked = isBookmarked
-        do{
-            try managedObjectContext.save()
-        }catch let error as NSError {
-            print("Save managedObjectContext failed: \(error.localizedDescription)")
+        if !temporary {
+            do{
+                try managedObjectContext.save()
+            }catch let error as NSError {
+                print("Save PAGE managedObjectContext failed: \(error.localizedDescription)")
+            }
         }
         return page
 }

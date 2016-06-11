@@ -179,7 +179,7 @@ class IABookImagesManager: NSObject {
                 var managedObjectContext: NSManagedObjectContext?
                 let temporary = self.chapter.managedObjectContext == nil
                 if !temporary {
-                    managedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
+                    managedObjectContext = self.chapter.managedObjectContext
                 }else {
                     managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
                 }
