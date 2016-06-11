@@ -214,7 +214,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     vc.updateImage(image,hidden: true)
                 })
-                
             }
         }
     }
