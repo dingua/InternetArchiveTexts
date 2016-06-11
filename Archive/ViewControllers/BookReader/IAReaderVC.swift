@@ -100,6 +100,9 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                 }else {
                     self.setupReaderToChapter(0)
                 }
+            }else {
+                self.showCanNotPreviewAlert()
+                return
             }
             self.addChaptersButton()
             self.progressSlider.userInteractionEnabled = true
@@ -142,12 +145,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                 self.pageNumber = 0
                 self.imagesDownloader!.getPages{pages in
                     if pages.count == 0 {
-                        let alert = UIAlertController(title: "Error", message: "Can not preview this file!", preferredStyle: .Alert)
-                        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
-                            self.dismissViewControllerAnimated(false, completion: nil)
-                        }
-                        alert.addAction(cancelAction)
-                        self.presentViewController(alert, animated: true, completion:nil)
+                        self.showCanNotPreviewAlert()
                         return
                     }
                     dispatch_async(dispatch_get_main_queue(), {
@@ -218,6 +216,15 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                 })
             }
         }
+    }
+    
+    func showCanNotPreviewAlert() {
+        let alert = UIAlertController(title: "Error", message: "Can not preview this file!", preferredStyle: .Alert)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
+            self.dismissViewControllerAnimated(false, completion: nil)
+        }
+        alert.addAction(cancelAction)
+        self.presentViewController(alert, animated: true, completion:nil)
     }
     
     override func didReceiveMemoryWarning() {

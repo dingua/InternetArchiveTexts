@@ -83,7 +83,8 @@ class IABookDetailsVC: UIViewController, UITableViewDelegate, UITableViewDataSou
             let group = dispatch_group_create()
             if book.collections?.count == 0 || book.uploader == nil {
                 dispatch_group_enter(group)
-                itemManager.itemMetadataDetails(book.identifier!/*, item: book*/, completion: { dictionary in
+                itemManager.itemMetadataDetails(book.identifier!, completion: { dictionary in
+                    guard dictionary.count != 0 else { self.showItemNotAvailableAlert();return}
                     if book.collections?.count == 0 {
                         if let collections = dictionary["collection"] as? [String] {
                             for collection in collections {
@@ -351,6 +352,19 @@ class IABookDetailsVC: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     func addLoadingView() {
         addLoadingView(yOffset: loadingViewYOffset)
+    }
+    
+    func showItemNotAvailableAlert() {
+        let alert = UIAlertController(title: "Error", message: "The item is not available due to issues with the item's content.", preferredStyle: .Alert)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
+            if Utils.isiPad() {
+                self.dismissViewControllerAnimated(false, completion: nil)
+            } else {
+                self.navigationController?.popViewControllerAnimated(false)
+            }
+        }
+        alert.addAction(cancelAction)
+        presentViewController(alert, animated: true, completion:nil)
     }
   
     //MARK: - IBAction

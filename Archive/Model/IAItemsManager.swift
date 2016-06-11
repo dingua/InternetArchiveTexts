@@ -86,7 +86,11 @@
             .responseJSON { response in
                 if let value = response.result.value {
                     let json = JSON(value)
-                    completion(json["result"].dictionaryObject!)
+                    if let result = json["result"].dictionaryObject {
+                        completion(result)
+                    } else {
+                        completion([:])
+                    }
                 }
         }
     }
@@ -102,7 +106,9 @@
             .responseJSON { response in
                 if let value = response.result.value {
                     let json = JSON(value)
-                    files = json["result"].arrayObject!
+                    if let filesArray = json["result"].arrayObject {
+                        files = filesArray
+                    }
                 }
                 dispatch_group_leave(group)
 
@@ -134,7 +140,9 @@
         }
         
         dispatch_group_notify(group, dispatch_get_main_queue()) {
-            item.setupFile(["server":server!,"dir":dir!,"files":files!])
+            if let files = files, server =  server, dir =  dir {
+                item.setupFile(["server":server,"dir":dir,"files":files])
+            }
             completion()
         }
     }
