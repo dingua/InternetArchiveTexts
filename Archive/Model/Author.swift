@@ -11,7 +11,7 @@ import CoreData
 
 
 class Author: NSManagedObject {
-
+    
     static let managedContext :NSManagedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
     
     static func createAuthor(name: String, managedObjectContext : NSManagedObjectContext, temporary: Bool)->Author? {
@@ -31,18 +31,10 @@ class Author: NSManagedObject {
                 author = fetchedItems?.firstObject as? Author
             }
             author?.name = name
-            do{
-                if !temporary {
-                    try managedObjectContext.save()
-                }
-            }catch let error as NSError {
-                print("Save AUTHOR managedObjectContext failed: \(error.localizedDescription)")
-            }
             return author
         }catch let error as NSError{
             print("Fetch failed: \(error.localizedDescription)")
         }
         return nil
     }
-
 }

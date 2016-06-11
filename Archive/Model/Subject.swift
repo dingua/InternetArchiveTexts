@@ -31,13 +31,6 @@ class Subject: NSManagedObject {
                 subject = fetchedItems?.firstObject as? Subject
             }
             subject?.name = name
-            do{
-                if !temporary {
-                    try managedObjectContext.save()
-                }
-            }catch let error as NSError {
-                print("Save SUBJECT managedObjectContext failed: \(error.localizedDescription)")
-            }
             return subject
         }catch let error as NSError{
             print("Fetch failed: \(error.localizedDescription)")
