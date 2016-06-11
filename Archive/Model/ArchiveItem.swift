@@ -181,20 +181,13 @@ class ArchiveItem: NSManagedObject {
     }
     
     func setupUploader(uploader: String) {
+        self.uploader = uploader
         do {
-            var managedObjectContext: NSManagedObjectContext?
-            var temporary = true
-            if let ctxt = self.managedObjectContext {
-                managedObjectContext = ctxt
-                temporary = false
-            }else {
-                managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
+            if let managedObjectContext = self.managedObjectContext {
+                try managedObjectContext.save()
             }
-            self.uploader = uploader
-            if !temporary {
-                try managedObjectContext!.save()
-            }
-        }catch {
+        }catch let error as NSError{
+            print("ERROR Saving context \(error.localizedDescription)")
         }
     }
     
