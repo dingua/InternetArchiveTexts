@@ -85,14 +85,19 @@ class IAFavouriteManager: NSObject {
                             dispatch_group_leave(group)
                         }
                     }
+                }
+                dispatch_group_notify(group, dispatch_get_main_queue(), {
                     do {
                         try managedObjectContext.save()
                     } catch let error as NSError {
                         print("Could not save private context: \(error.localizedDescription)")
                     }
-                    managedObjectContext.reset()
-                }
-                dispatch_group_notify(group, dispatch_get_main_queue(), {
+                    //                    managedObjectContext.reset()
+                    do{
+                        try CoreDataStackManager.sharedManager.managedObjectContext.save()
+                    } catch let error as NSError {
+                        print("Could not save main context: \(error.localizedDescription)")
+                    }
                     completion()
                 })
 
