@@ -30,7 +30,7 @@ class IAFavoriteCollectoinVC: IAGenericItemCollectionVC {
         let item = fetchedResultController!.objectAtIndexPath(indexPath) as! ArchiveItem
         
         cell.configure(item, type: .Favorite) {
-            IAFavouriteManager.sharedInstance.deleteBookmark(item) { _ in }
+            IAFavouriteManager.sharedInstance.deleteBookmark(IAArchiveItem(item: item)) { _ in }
         }
         
         cell.secondActionClosure = {
@@ -67,7 +67,7 @@ class IAFavoriteCollectoinVC: IAGenericItemCollectionVC {
 
     func presentDetails(item: ArchiveItem) {
         let bookDetails = UIStoryboard(name: "BookDetails", bundle: nil).instantiateInitialViewController() as! IABookDetailsVC
-        bookDetails.book = item
+        bookDetails.book = IAArchiveItem(item: item)
         if Utils.isiPad() {
             bookDetails.transitioningDelegate = self.bookDetailsPresentationDelegate
             bookDetails.modalPresentationStyle = .Custom
@@ -89,7 +89,7 @@ class IAFavoriteCollectoinVC: IAGenericItemCollectionVC {
     func showReader(item: ArchiveItem, atChapterIndex chapterIndex :Int = -1) {
         let navController = UIStoryboard(name: "Reader",bundle: nil).instantiateInitialViewController() as! UINavigationController
         let bookReader = navController.topViewController as! IAReaderVC
-        bookReader.item = item
+        bookReader.item = IAArchiveItem(item: item)
         bookReader.didGetFileDetailsCompletion = {
             bookReader.setupReaderToChapter(chapterIndex)
         }

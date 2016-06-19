@@ -11,10 +11,10 @@ import UIKit
 class IAChaptersListVC: UITableViewController {
     var selectedChapterIndex = -1
     var chapterSelectionHandler : ChapterSelectionHandler?
-    var chapters: NSArray? {
+    var chapters: [IAChapter]? {
         didSet {
             self.tableView.reloadData()
-            for chapter  in (chapters as? [Chapter])! {
+            for chapter  in chapters! {
                 NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAChaptersListVC.updateDownloadProgress), name: "\(chapter.name!)_progress", object: nil)
                 NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAChaptersListVC.downloadFinished), name: "\(chapter.name!)_finished", object: nil)
                 NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IAChaptersListVC.chapterDeleted), name: "\(chapter.name!)_deleted", object: nil)
@@ -35,31 +35,33 @@ class IAChaptersListVC: UITableViewController {
     
     
     func updateDownloadProgress(notification: NSNotification) {
-        let filteredChapters = chapters?.filteredArrayUsingPredicate(NSPredicate(format: "name like %@", notification.name.substringToIndex((notification.name.rangeOfString("_progress")?.startIndex)!)))
-        let chapter = (filteredChapters?.first)!
-        dispatch_async(dispatch_get_main_queue(), {
-            self.downloadProgress[chapter.name!] = notification.object! as? Double
-            self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: (self.chapters?.indexOfObject(chapter))!, inSection: 0)], withRowAnimation: .None)
-        })
+        reloadChapter(notification,statusStr: "_progress")
     }
     
     func downloadFinished(notification: NSNotification) {
-        let filteredChapters = chapters?.filteredArrayUsingPredicate(NSPredicate(format: "name like %@", notification.name.substringToIndex((notification.name.rangeOfString("_finished")?.startIndex)!)))
-        let chapter = (filteredChapters?.first)!
-        dispatch_async(dispatch_get_main_queue(), {
-            self.downloadProgress[chapter.name!] = nil
-            self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: (self.chapters?.indexOfObject(chapter))!, inSection: 0)], withRowAnimation: .None)
-        })
+        reloadChapter(notification,statusStr: "_finished")
     }
     
     func chapterDeleted(notification: NSNotification) {
-        let filteredChapters = chapters?.filteredArrayUsingPredicate(NSPredicate(format: "name like %@", notification.name.substringToIndex((notification.name.rangeOfString("_deleted")?.startIndex)!)))
-        let chapter = (filteredChapters?.first)!
-        dispatch_async(dispatch_get_main_queue(), {
-            self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: (self.chapters?.indexOfObject(chapter))!, inSection: 0)], withRowAnimation: .None)
-        })
+        reloadChapter(notification,statusStr: "_deleted")
     }
     
+    func reloadChapter(notification: NSNotification, statusStr: String) {
+        let name = notification.name.substringToIndex((notification.name.rangeOfString(statusStr)?.startIndex)!)
+        let filteredChapters = chapters?.filter({$0.name == name})
+        let chapter = filteredChapters?.first
+        if let chapter = chapter {
+            dispatch_async(dispatch_get_main_queue(), {
+                print("notification object \(notification.object))")
+                if let progress = notification.object  as? Double {
+                    self.downloadProgress[chapter.name!] = progress
+                } else {
+                    self.downloadProgress[chapter.name!] = nil
+                }
+                self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: (self.chapters?.indexOf({$0.name == chapter.name}))!, inSection: 0)], withRowAnimation: .None)
+            })
+        }
+    }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidAppear(animated)
@@ -83,7 +85,7 @@ class IAChaptersListVC: UITableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("downloadStatusCell", forIndexPath: indexPath) as! IAChapterTableViewCell
-        let chapter = (chapters![indexPath.row] as! Chapter)
+        let chapter = chapters![indexPath.row]
         if let progress = downloadProgress[chapter.name!] {
             cell.configure(chapter, withProgress : progress, isSelected: indexPath.row == selectedChapterIndex) {chapter in
                 IADownloadsManager.sharedInstance.downloadTrigger(chapter)

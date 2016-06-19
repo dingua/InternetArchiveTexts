@@ -28,7 +28,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     let itemsPerPage = 36
     var currentPage = 0
     var searchManager = IAItemsManager()
-    var items = [ArchiveItem]()
+    var items = [IAArchiveItem]()
     var searchText : String?
     var collectionTitle: String?
     var type: IABookListType?
@@ -158,7 +158,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
         }
     }
     
-    func addItems(items: [ArchiveItem]) {
+    func addItems(items: [IAArchiveItem]) {
         if !items.isEmpty {
             currentPage+=1
         }
@@ -184,7 +184,8 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
             let cell = collectionView.dequeueReusableCellWithReuseIdentifier(itemCollectionCellIdentifier, forIndexPath: indexPath) as! IACollectionsExploreViewCell
             cell.configureWithItem(items[indexPath.row])
             return cell
-        }else {
+        }else
+        {
             let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! IAItemListCellView
             cell.configureWithItem(item)
             cell.favoriteClosure = {
@@ -285,7 +286,7 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
     }
 
     
-    func showReader(item: ArchiveItem, atChapterIndex chapterIndex :Int = -1) {
+    func showReader(item: IAArchiveItem, atChapterIndex chapterIndex :Int = -1) {
         let navController = UIStoryboard(name: "Reader",bundle: nil).instantiateInitialViewController() as! UINavigationController
         let bookReader = navController.topViewController as! IAReaderVC
         bookReader.item = item
@@ -329,17 +330,9 @@ class IAItemsListVC: UICollectionViewController,IASortListDelegate {
         }
     }
     
-    func triggerFavorite(item: ArchiveItem, atIndexPath indexPath: NSIndexPath) {
-        if !((item.isFavourite?.boolValue)!) {
-            IAFavouriteManager.sharedInstance.addBookmark(item, completion: { message in
-                self.collectionView?.reloadItemsAtIndexPaths([indexPath])
-            })
-            
-        }else {
-            IAFavouriteManager.sharedInstance.deleteBookmark(item, completion: { _ in
-                self.collectionView?.reloadItemsAtIndexPaths([indexPath])
-            })
-            
+    func triggerFavorite(item: IAArchiveItem, atIndexPath indexPath: NSIndexPath) {
+        IAFavouriteManager.sharedInstance.triggerFavorite(item) { message in
+            self.collectionView?.reloadItemsAtIndexPaths([indexPath])
         }
     }
     

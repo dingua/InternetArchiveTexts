@@ -29,7 +29,7 @@ class IABookmarkVC: IAGenericItemCollectionVC {
         let page = fetchedResultController!.objectAtIndexPath(indexPath) as! Page
         
         cell.configure(page, type: .Bookmark) {
-            IABookmarkManager.sharedInstance.triggerBookmark(page)
+            IABookmarkManager.sharedInstance.triggerBookmark(IAPage(page: page))
         }
         
         return cell
@@ -39,13 +39,18 @@ class IABookmarkVC: IAGenericItemCollectionVC {
         let page = fetchedResultController!.objectAtIndexPath(indexPath) as! Page
         let navController = UIStoryboard(name: "Reader", bundle: nil).instantiateInitialViewController() as! UINavigationController
         let bookReader = navController.topViewController as! IAReaderVC
-        bookReader.item = page.chapter!.file!.archiveItem!
-        self.presentViewController(navController, animated: true, completion: {
-            bookReader.setupReaderToChapter((page.chapter?.file?.chapters?.allObjects as! [Chapter]).sort({ $0.name < $1.name}).indexOf(page.chapter!)!){
-                bookReader.pageNumber = Int((page.number?.intValue)!)
-                bookReader.updateUIAfterPageSeek(true)
+        bookReader.item = IAArchiveItem(item: page.chapter!.file!.archiveItem!)
+        bookReader.didGetFileDetailsCompletion = {
+            let chapterIndex = (page.chapter?.file?.chapters?.allObjects as! [Chapter]).sort({ $0.name < $1.name}).indexOf(page.chapter!)!
+            bookReader.setupReaderToChapter(chapterIndex){
+                let number = (page.number?.intValue)!
+                if number != 0 {
+                    bookReader.pageNumber = Int(number)
+                    bookReader.updateUIAfterPageSeek(true)
+                }
             }
-        })
+        }
+        self.presentViewController(navController, animated: true, completion: nil)
     }
     
     //MARK: - Private

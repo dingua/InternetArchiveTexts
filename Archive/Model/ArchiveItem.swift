@@ -15,9 +15,9 @@ class ArchiveItem: NSManagedObject {
     
     // Insert code here to add functionality to your managed object subclass
     
-    static let managedContext :NSManagedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
+    static let managedObjectContext :NSManagedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
     
-    static func createArchiveItem(dictionary: [String:AnyObject], managedObjectContext : NSManagedObjectContext, temporary: Bool)->ArchiveItem? {
+    static func createArchiveItem(dictionary: [String:AnyObject])->ArchiveItem? {
         let predicate = NSPredicate(format: "identifier like %@", "\(dictionary["identifier"]!)");
         
         let fetchItemWithSameId = NSFetchRequest(entityName: "ArchiveItem")
@@ -25,11 +25,11 @@ class ArchiveItem: NSManagedObject {
         fetchItemWithSameId.predicate = predicate
         let fetchedItems : NSArray?
         do {
-            fetchedItems = try self.managedContext.executeFetchRequest(fetchItemWithSameId)
+            fetchedItems = try managedObjectContext.executeFetchRequest(fetchItemWithSameId)
             var item: ArchiveItem?
             if (fetchedItems!.count == 0) {
                 let entity = NSEntityDescription.entityForName("ArchiveItem", inManagedObjectContext: managedObjectContext)!
-                item = NSManagedObject(entity: entity, insertIntoManagedObjectContext: temporary ? nil : managedObjectContext) as? ArchiveItem
+                item = NSManagedObject(entity: entity, insertIntoManagedObjectContext: managedObjectContext) as? ArchiveItem
                 item!.isFavourite = NSNumber(bool: false)
             }else {
                 item = fetchedItems?.firstObject as? ArchiveItem
@@ -54,43 +54,105 @@ class ArchiveItem: NSManagedObject {
                 if item.subjects?.count == 0 {
                     if let subjects = dictionary["subject"] as? [String] {
                         for subject in subjects {
-                            item.addSubjectsObject(Subject.createSubject(subject, managedObjectContext: managedObjectContext, temporary: temporary)!)
+                            item.addSubjectsObject(Subject.createSubject(subject)!)
                         }
                     }else if let subject = dictionary["subject"] as? String {
-                        let obj = Subject.createSubject(subject, managedObjectContext: managedObjectContext, temporary: temporary)
+                        let obj = Subject.createSubject(subject)
                         item.addSubjectsObject(obj!)
                     }
                 }
-              
                 
-//                item.deleteAuthors()
-
                 if item.authors?.count == 0 {
                     if let authors = dictionary["creator"] as? [String] {
                         for author in authors {
-                            item.addAuthorsObject(Author.createAuthor(author, managedObjectContext: managedObjectContext, temporary: temporary)!)
+                            item.addAuthorsObject(Author.createAuthor(author)!)
                         }
                     }else if let author = dictionary["creator"] as? String {
-                        let obj = Author.createAuthor(author, managedObjectContext: managedObjectContext, temporary: temporary)
+                        let obj = Author.createAuthor(author)
                         item.addAuthorsObject(obj!)
                     }
                 }
             }
-            
-            do{
-                if !temporary {
-                    try managedObjectContext.save()
-                }
-            }catch let error as NSError {
-                print("Save ARCHIVE ITEM managedObjectContext failed: \(error.localizedDescription)")
-            }
+            CoreDataStackManager.sharedManager.saveContext()
             return item
         }catch let error as NSError {
             print("Fetch failed: \(error.localizedDescription)")
         }
         return nil
     }
-
+    
+    
+    static func createArchiveItem(archiveItem: IAArchiveItem, managedObjectContext : NSManagedObjectContext)->ArchiveItem? {
+        let predicate = NSPredicate(format: "identifier like %@", archiveItem.identifier!);
+        
+        let fetchItemWithSameId = NSFetchRequest(entityName: "ArchiveItem")
+        
+        fetchItemWithSameId.predicate = predicate
+        let fetchedItems : NSArray?
+        do {
+            fetchedItems = try managedObjectContext.executeFetchRequest(fetchItemWithSameId)
+            var item: ArchiveItem?
+            if (fetchedItems!.count == 0) {
+                let entity = NSEntityDescription.entityForName("ArchiveItem", inManagedObjectContext: managedObjectContext)!
+                item = NSManagedObject(entity: entity, insertIntoManagedObjectContext: managedObjectContext) as? ArchiveItem
+                item!.isFavourite = NSNumber(bool: false)
+            }else {
+                item = fetchedItems?.firstObject as? ArchiveItem
+            }
+            if let item = item {
+                if let identifier = archiveItem.identifier {
+                    item.identifier = identifier
+                }
+                if let description = archiveItem.desc {
+                    item.desc = description
+                }
+                if let title = archiveItem.title {
+                    item.title = title
+                }
+                if let mediatype = archiveItem.mediatype {
+                    item.mediatype = mediatype
+                }
+                if let uploader = archiveItem.uploader {
+                    item.uploader = uploader
+                }
+                for subject in archiveItem.subjects {
+                    let obj = Subject.createSubject(subject)
+                    item.addSubjectsObject(obj!)
+                }
+                for author in archiveItem.authors {
+                    let obj = Author.createAuthor(author)
+                    item.addAuthorsObject(obj!)
+                }
+            }
+            CoreDataStackManager.sharedManager.saveContext()
+            return item
+        }catch let error as NSError {
+            print("Fetch failed: \(error.localizedDescription)")
+        }
+        return nil
+    }
+    
+    static func isFavourite(itemIdentifier: String)->Bool {
+        let predicate = NSPredicate(format: "identifier like %@", itemIdentifier)
+        let request = NSFetchRequest(entityName: "ArchiveItem")
+        request.predicate = predicate
+        request.resultType = .DictionaryResultType
+        request.propertiesToFetch = ["isFavourite"]
+        
+        let fetchedItems : NSArray?
+        do {
+            fetchedItems = try managedObjectContext.executeFetchRequest(request)
+            if fetchedItems?.count == 0 {
+                return false
+            }else {
+                let item = fetchedItems?.firstObject as? [String:AnyObject]
+                return  item?["isFavourite"]?.boolValue ?? false
+            }
+        }catch let error as NSError {
+            print("Fetch failed: \(error.localizedDescription)")
+        }
+        return false
+    }
     
     func deleteAuthors() {
         if let authors = self.authors?.allObjects {
@@ -99,7 +161,7 @@ class ArchiveItem: NSManagedObject {
             }
         }
     }
-
+    
     func deleteSubjects() {
         if let subjects = self.subjects?.allObjects {
             for subject in subjects {
@@ -107,45 +169,24 @@ class ArchiveItem: NSManagedObject {
             }
         }
     }
-
+    
     func markAsFavourite(favourite: Bool) {
-        do{
-            if let managedObjectContext = self.managedObjectContext {
-                self.isFavourite = NSNumber(bool: favourite)
-                try managedObjectContext.save()
-                
-            }else {
-                let managedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
-                managedObjectContext.insertObject(self)
-                if let file = self.file {
-                    managedObjectContext.insertObject(file)
-                    if let chapters = file.chapters {
-                        for chapter in chapters.allObjects {
-                            managedObjectContext.insertObject(chapter as! Chapter)
-                        }
-                    }
-                }
-                self.isFavourite = NSNumber(bool: favourite)
-                try CoreDataStackManager.sharedManager.managedObjectContext.save()
-            }
-        }catch let error as NSError {
-            print("Error \(error.localizedDescription) can not save")
-        }
+        self.isFavourite = NSNumber(bool: favourite)
     }
     
     
-   static func deleteAllFavourites() {
+    static func deleteAllFavourites() {
         let predicate = NSPredicate(format: "self.isFavourite == YES");
         
         let fetchItemWithSameId = NSFetchRequest(entityName: "ArchiveItem")
         
         fetchItemWithSameId.predicate = predicate
         do {
-            if let fetchedItems = try self.managedContext.executeFetchRequest(fetchItemWithSameId) as? [ArchiveItem] {
+            if let fetchedItems = try managedObjectContext.executeFetchRequest(fetchItemWithSameId) as? [ArchiveItem] {
                 for item in fetchedItems {
                     item.isFavorite = false
                 }
-                try self.managedContext.save()
+                try CoreDataStackManager.sharedManager.saveContext()
             }
         } catch let error as NSError {
             print("Fetch failed: \(error.localizedDescription)")
@@ -154,8 +195,8 @@ class ArchiveItem: NSManagedObject {
     
     func hasDownloadedChapter()->Bool {
         for chapter in (self.file?.chapters?.allObjects as? [Chapter])!{
-                if chapter.isDownloaded!.boolValue == true {
-                    return true
+            if chapter.isDownloaded!.boolValue == true {
+                return true
             }
         }
         return false
@@ -171,7 +212,7 @@ class ArchiveItem: NSManagedObject {
             }else {
                 managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
             }
-            let collection = ArchiveItem.createArchiveItem(collectionDict, managedObjectContext: managedObjectContext!, temporary: temporary)
+            let collection = ArchiveItem.createArchiveItem(collectionDict)
             self.addCollectionsObject(collection!)
             if !temporary {
                 try managedObjectContext!.save()
@@ -192,17 +233,8 @@ class ArchiveItem: NSManagedObject {
     }
     
     func setupFile(dictionary: [String:AnyObject]) {
-        if let managedObjectContext = self.managedObjectContext {
-            File.createFile(dictionary, archiveItem: self, managedObjectContext: managedObjectContext, temporary: false)
-        }else {
-            do{
-                let managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
-                if let file = File.createFile(dictionary, archiveItem: self, managedObjectContext: managedObjectContext, temporary: !(self.isFavourite!.boolValue)) {
-                    self.file = file
-                }
-            }catch let error as NSError{
-                print("could not create managed object context \(error.localizedDescription)")
-            }
+        if let file = File.createFile(dictionary, archiveItem: self) {
+            self.file = file
         }
     }
 }

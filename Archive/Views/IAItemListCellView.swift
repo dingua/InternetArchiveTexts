@@ -28,9 +28,23 @@ class IAItemListCellView : UICollectionViewCell {
             self.bookTitleLabel.font = UIFont(name: self.bookTitleLabel.font!.fontName, size: 12)
         }
         self.bookImageView.af_setImageWithURL(Constants.URL.ImageURL(book.identifier!).url)
-        
         if Utils.isLoggedIn() {
             let imageName = book.isFavorite ? "favourite_filled" : "favourite_empty"
+            favouriteBtn.setImage(UIImage(named:imageName), forState: .Normal)
+        } else {
+            favouriteBtn.setImage(UIImage(named:"favourite_empty"), forState: .Normal)
+        }
+    }
+    
+    func configureWithItem(book: IAArchiveItem) {
+        self.bookTitleLabel.text = book.title
+        if !Utils.isiPad() {
+            self.bookTitleLabel.font = UIFont(name: self.bookTitleLabel.font!.fontName, size: 12)
+        }
+        self.bookImageView.af_setImageWithURL(Constants.URL.ImageURL(book.identifier!).url)
+        
+        if Utils.isLoggedIn() {
+            let imageName = book.isFavourite ? "favourite_filled" : "favourite_empty"
             favouriteBtn.setImage(UIImage(named:imageName), forState: .Normal)
         } else {
             favouriteBtn.setImage(UIImage(named:"favourite_empty"), forState: .Normal)

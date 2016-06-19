@@ -13,7 +13,7 @@ private let reuseIdentifier = "collectionExploreCell"
 class IACollectionsExploreVC: UICollectionViewController, IARootVCProtocol {
     
     var searchManager = IAItemsManager()
-    var collections = [ArchiveItem]()
+    var collections = [IAArchiveItem]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,7 +39,7 @@ class IACollectionsExploreVC: UICollectionViewController, IARootVCProtocol {
                     let managedCtx = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
                     dispatch_group_enter(group)
                     managedCtx.performBlock {
-                        mySelf.collections.append(ArchiveItem.createArchiveItem(allTextsDictionary, managedObjectContext: managedCtx, temporary: true)!)
+                        mySelf.collections.append(IAArchiveItem(dictionary: allTextsDictionary))
                         dispatch_group_leave(group)
                     }
                 

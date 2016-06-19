@@ -12,9 +12,9 @@ import CoreData
 
 class Subject: NSManagedObject {
     
-    static let managedContext :NSManagedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
+    static let managedObjectContext :NSManagedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
     
-    static func createSubject(name: String, managedObjectContext : NSManagedObjectContext, temporary: Bool)->Subject? {
+    static func createSubject(name: String)->Subject? {
         let predicate = NSPredicate(format: "name like %@", "\(name)")
         
         let fetchItemWithSameId = NSFetchRequest(entityName: "Subject")
@@ -22,11 +22,11 @@ class Subject: NSManagedObject {
         fetchItemWithSameId.predicate = predicate
         let fetchedItems : NSArray?
         do {
-            fetchedItems = try self.managedContext.executeFetchRequest(fetchItemWithSameId)
+            fetchedItems = try managedObjectContext.executeFetchRequest(fetchItemWithSameId)
             var subject: Subject?
             if (fetchedItems!.count == 0) {
                 let entity = NSEntityDescription.entityForName("Subject", inManagedObjectContext: managedObjectContext)!
-                subject = NSManagedObject(entity: entity, insertIntoManagedObjectContext: temporary ? nil : managedObjectContext) as? Subject
+                subject = NSManagedObject(entity: entity, insertIntoManagedObjectContext: managedObjectContext) as? Subject
             }else {
                 subject = fetchedItems?.firstObject as? Subject
             }

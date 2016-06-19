@@ -12,9 +12,9 @@ import CoreData
 
 class Author: NSManagedObject {
     
-    static let managedContext :NSManagedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
+    static let managedObjectContext :NSManagedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
     
-    static func createAuthor(name: String, managedObjectContext : NSManagedObjectContext, temporary: Bool)->Author? {
+    static func createAuthor(name: String)->Author? {
         let predicate = NSPredicate(format: "name like %@", "\(name)")
         
         let fetchItemWithSameId = NSFetchRequest(entityName: "Author")
@@ -22,11 +22,11 @@ class Author: NSManagedObject {
         fetchItemWithSameId.predicate = predicate
         let fetchedItems : NSArray?
         do {
-            fetchedItems = try self.managedContext.executeFetchRequest(fetchItemWithSameId)
+            fetchedItems = try managedObjectContext.executeFetchRequest(fetchItemWithSameId)
             var author: Author?
             if (fetchedItems!.count == 0) {
                 let entity = NSEntityDescription.entityForName("Author", inManagedObjectContext: managedObjectContext)!
-                author = NSManagedObject(entity: entity, insertIntoManagedObjectContext: temporary ? nil : managedObjectContext) as? Author
+                author = NSManagedObject(entity: entity, insertIntoManagedObjectContext: managedObjectContext) as? Author
             }else {
                 author = fetchedItems?.firstObject as? Author
             }

@@ -32,7 +32,7 @@
     
     //MARK: - File Details
     
-    func getFileDetails(archiveItem: ArchiveItem, completion:(File)->()){
+    func getFileDetails(archiveItem: IAArchiveItem, completion:(IAFile)->()){
         
         if let file = archiveItem.file {
             return completion(file)
@@ -42,21 +42,7 @@
             Alamofire.request(Utils.requestWithURL(url))
                 .responseJSON { response in
                     if let value = response.result.value {
-                        if let managedObjectContext = archiveItem.managedObjectContext {
-                            if let file = File.createFile(value as! [String : AnyObject], archiveItem: archiveItem, managedObjectContext: managedObjectContext, temporary: false) {
-                                completion(file)
-                            }
-                        }else {
-                            do{
-                                let managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
-                                if let file = File.createFile(value as! [String : AnyObject], archiveItem: archiveItem, managedObjectContext: managedObjectContext, temporary: !(archiveItem.isFavourite!.boolValue)) {
-                                    completion(file)
-                                }
-                            }catch let error as NSError{
-                                print("could not create managed object context \(error.localizedDescription)")
-                            }
-                        }
-                        print("get file details finished in \(NSDate().timeIntervalSinceDate(startDate))")
+                        completion(IAFile(dictionary: value as! [String : AnyObject], archiveItem: archiveItem))
                     }
             }
         }
@@ -96,7 +82,7 @@
     }
 
     
-    func itemChapters(item: ArchiveItem, completion:()->()) {
+    func itemChapters(item: IAArchiveItem, completion:()->()) {
         let group = dispatch_group_create()
         let filesUrl = "\(baseURL)/metadata/\(item.identifier!)/files"
         
@@ -141,7 +127,7 @@
         
         dispatch_group_notify(group, dispatch_get_main_queue()) {
             if let files = files, server =  server, dir =  dir {
-                item.setupFile(["server":server,"dir":dir,"files":files])
+                item.file = IAFile(dictionary: ["server":server,"dir":dir,"files":files], archiveItem: item)
             }
             completion()
         }
@@ -149,7 +135,7 @@
 
     //MARK: - Generic Search
     
-    func searchItems(query: String, count: Int ,page: Int ,sort: String,completion: ([ArchiveItem])->()) {
+    func searchItems(query: String, count: Int ,page: Int ,sort: String,completion: ([IAArchiveItem])->()) {
         if let currentSearchRequest = currentSearchRequest {
             currentSearchRequest.cancel()
         }
@@ -158,30 +144,16 @@
         let params = "\(baseURL)/\(searchURL)\(searchParameters)"
         currentSearchRequest = Alamofire.request(Utils.requestWithURL(params))
             .responseJSON { response in
-                do{
-                    let managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
-                    if let result = response.result.value {
-                        let json = JSON(result)
-                        let docs = json["response"]["docs"].array
-                        if let docs = docs {
-                            var collections = [ArchiveItem]()
-                            let group = dispatch_group_create()
-                            for doc in docs {
-                                dispatch_group_enter(group)
-                                managedObjectContext.performBlock {
-                                    collections.append(ArchiveItem.createArchiveItem(doc.dictionaryObject!, managedObjectContext: managedObjectContext, temporary: true)!)
-                                    dispatch_group_leave(group)
-                                }
-                            }
-                            dispatch_group_notify(group, dispatch_get_main_queue(), {
-                                completion(collections)
-                            })
+                if let result = response.result.value {
+                    let json = JSON(result)
+                    let docs = json["response"]["docs"].array
+                    if let docs = docs {
+                        var collections = [IAArchiveItem]()
+                        for doc in docs {
+                            collections.append(IAArchiveItem(dictionary: doc.dictionaryObject!))
                         }
+                        completion(collections)
                     }
-                }catch{
-                    print("Error: \(error)\nCould not get managed Object Context.")
-                    return
-                    
                 }
         }
     }
@@ -189,19 +161,19 @@
     
     //MARK: - Search Books Items
     
-    func searchBooksWithText(word: String, count: Int, page: Int,completion: ([ArchiveItem])->()) {
+    func searchBooksWithText(word: String, count: Int, page: Int,completion: ([IAArchiveItem])->()) {
         searchBooksWithText(word, count: count, page: page, sortOption: IASearchSortOption.DownloadsDescendant, completion: completion)
     }
     
-    func searchBookOfCreator(creator: String, count: Int, page: Int,completion: ([ArchiveItem])->()) {
+    func searchBookOfCreator(creator: String, count: Int, page: Int,completion: ([IAArchiveItem])->()) {
         searchBookOfCreator(creator, count: count, page: page, sortOption: IASearchSortOption.DownloadsDescendant, completion: completion)
     }
     
-    func searchBookOfCollection(collection: String, count: Int, page: Int,completion: ([ArchiveItem])->()) {
+    func searchBookOfCollection(collection: String, count: Int, page: Int,completion: ([IAArchiveItem])->()) {
         searchBookOfCollection(collection, count: count, page: page, sortOption: IASearchSortOption.DownloadsDescendant, completion: completion)
     }
     
-    func searchBooksWithText(word: String, count: Int, page: Int, sortOption: IASearchSortOption, completion: ([ArchiveItem])->()) {
+    func searchBooksWithText(word: String, count: Int, page: Int, sortOption: IASearchSortOption, completion: ([IAArchiveItem])->()) {
         let text = word.stringByReplacingOccurrencesOfString(" ", withString: "+")
         let searchText = text.allowdStringForURL()
         let query = "\(searchText)%20AND%20mediatype:texts"
@@ -209,7 +181,7 @@
     }
     
     
-    func searchBookOfCreator(creator: String, count: Int, page: Int, sortOption: IASearchSortOption, completion: ([ArchiveItem])->()) {
+    func searchBookOfCreator(creator: String, count: Int, page: Int, sortOption: IASearchSortOption, completion: ([IAArchiveItem])->()) {
         let text = creator.stringByReplacingOccurrencesOfString(" ", withString: "+")
         let searchText = text.allowdStringForURL()
         let query = "creator:\(searchText)%20AND%20mediatype:texts"
@@ -218,7 +190,7 @@
     
     
     
-    func searchBookOfCollection(collection: String, count: Int, page: Int,sortOption: IASearchSortOption, completion: ([ArchiveItem])->()) {
+    func searchBookOfCollection(collection: String, count: Int, page: Int,sortOption: IASearchSortOption, completion: ([IAArchiveItem])->()) {
         let text = collection.stringByReplacingOccurrencesOfString(" ", withString: "+")
         let searchText = text.allowdStringForURL()
         let query = "collection:\(searchText)%20AND%20mediatype:texts"
@@ -227,7 +199,7 @@
     
     //MARK: - Search Books Collections
     
-    func searchCollections(collection: String,hidden: Bool, count: Int, page: Int,completion: ([ArchiveItem])->()) {
+    func searchCollections(collection: String,hidden: Bool, count: Int, page: Int,completion: ([IAArchiveItem])->()) {
         let text = collection.stringByReplacingOccurrencesOfString(" ", withString: "+")
         let searchText = text.allowdStringForURL()
         let query = "collection:\(searchText)%20AND%20mediatype:collection%20AND%20NOT%20hidden:\(hidden)"
@@ -238,11 +210,11 @@
     
     //MARK: - Search Books Collections & Texts
     
-    func searchCollectionsAndTexts(collection: String,hidden: Bool, count: Int, page: Int,completion: ([ArchiveItem])->()) {
+    func searchCollectionsAndTexts(collection: String,hidden: Bool, count: Int, page: Int,completion: ([IAArchiveItem])->()) {
         searchCollectionsAndTexts(collection, hidden: hidden, count: count, page: page, sortOption: IASearchSortOption.DownloadsDescendant, completion: completion)
     }
     
-    func searchCollectionsAndTexts(collection: String,hidden: Bool, count: Int, page: Int, sortOption: IASearchSortOption, completion: ([ArchiveItem])->()) {
+    func searchCollectionsAndTexts(collection: String,hidden: Bool, count: Int, page: Int, sortOption: IASearchSortOption, completion: ([IAArchiveItem])->()) {
         let text = collection.stringByReplacingOccurrencesOfString(" ", withString: "+")
         let searchText = text.allowdStringForURL()
         let query = "collection:\(searchText)%20AND%20(mediatype:collection%20OR%20mediatype:texts)%20AND%20NOT%20hidden:\(hidden)"
@@ -250,7 +222,7 @@
         searchItems(query, count: count, page: page, sort: sortOption.rawValue, completion: completion)
     }
     
-    func searchCollectionsAndTexts(uploader uploader: String,hidden: Bool, count: Int, page: Int, sortOption: IASearchSortOption, completion: ([ArchiveItem])->()) {
+    func searchCollectionsAndTexts(uploader uploader: String,hidden: Bool, count: Int, page: Int, sortOption: IASearchSortOption, completion: ([IAArchiveItem])->()) {
         let text = uploader.stringByReplacingOccurrencesOfString(" ", withString: "+")
         let searchText = text.allowdStringForURL()
         let query = "uploader:\(searchText)%20AND%20(mediatype:collection%20OR%20mediatype:texts)%20AND%20NOT%20hidden:\(hidden)"
@@ -258,7 +230,7 @@
         searchItems(query, count: count, page: page, sort: sortOption.rawValue, completion: completion)
     }
     
-    func searchCollectionsAndTexts(subject subject: String,hidden: Bool, count: Int, page: Int, sortOption: IASearchSortOption, completion: ([ArchiveItem])->()) {
+    func searchCollectionsAndTexts(subject subject: String,hidden: Bool, count: Int, page: Int, sortOption: IASearchSortOption, completion: ([IAArchiveItem])->()) {
         let text = subject.stringByReplacingOccurrencesOfString(" ", withString: "+")
         let searchText = text.allowdStringForURL()
         let query = "subject:\(searchText)%20AND%20(mediatype:collection%20OR%20mediatype:texts)%20AND%20NOT%20hidden:\(hidden)"

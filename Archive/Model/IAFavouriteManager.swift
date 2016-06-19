@@ -28,15 +28,15 @@ class IAFavouriteManager: NSObject {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    func triggerBookmark(item: ArchiveItem, completion: ArchiveItem -> ()) {
-        if item.isFavorite {
+    func triggerFavorite(item: IAArchiveItem, completion: IAArchiveItem -> ()) {
+        if item.isFavourite {
             deleteBookmark(item, completion: completion)
         }else {
             addBookmark(item, completion: completion)
         }
     }
     
-    func addBookmark(item: ArchiveItem, completion: ArchiveItem -> ()) {
+    func addBookmark(item: IAArchiveItem, completion: IAArchiveItem -> ()) {
         let encodedTitle = item.title!.allowdStringForURL()
         let bookmarkURL = "\(bookmarkAPI)add_bookmark=1&mediatype=texts&identifier=\(item.identifier!)&title=\(encodedTitle)&output=json"
         Alamofire.request(.GET, bookmarkURL).responseJSON (completionHandler: { response in
@@ -47,22 +47,28 @@ class IAFavouriteManager: NSObject {
         })
     }
     
-    func deleteBookmark(item: ArchiveItem, completion: ArchiveItem -> ()) {
+    func deleteBookmark(item: IAArchiveItem, completion: IAArchiveItem -> ()) {
         let bookmarkURL = "\(bookmarkAPI)del_bookmark=\(item.identifier!)"
         Alamofire.request(.GET, bookmarkURL).responseString(completionHandler: { response in
             self.deleteBookmark(item)
             completion(item)
-            
         })
     }
     
-    private func addBookmark(item: ArchiveItem) {
-       item.markAsFavourite(true)
+    private func addBookmark(item: IAArchiveItem) {
+        item.isFavourite = true
+        let managedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
+        let archiveItem = ArchiveItem.createArchiveItem(item, managedObjectContext: managedObjectContext)
+        archiveItem?.markAsFavourite(true)
+        CoreDataStackManager.sharedManager.saveContext()
     }
     
-    
-    private func deleteBookmark(item: ArchiveItem) {
-        item.markAsFavourite(false)
+    private func deleteBookmark(item: IAArchiveItem) {
+        item.isFavourite = false
+        let managedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
+        let archiveItem = ArchiveItem.createArchiveItem(item, managedObjectContext: managedObjectContext)
+        archiveItem?.markAsFavourite(false)
+        CoreDataStackManager.sharedManager.saveContext()
     }
     
     func getBookmarks(userId: String, completion: () -> ()) {
@@ -75,29 +81,19 @@ class IAFavouriteManager: NSObject {
                 if let result = response.result.value {
                     let bookmarks = JSON(result).arrayValue
                     for bookmark in bookmarks {
-                        dispatch_group_enter(group)
-                        managedObjectContext.performBlock {
                         if bookmark["mediatype"].stringValue == "texts" {
-                                if let bookItem = ArchiveItem.createArchiveItem(bookmark.dictionaryObject!, managedObjectContext: managedObjectContext, temporary: false){
+                            dispatch_group_enter(group)
+                            managedObjectContext.performBlock {
+                                if let bookItem = ArchiveItem.createArchiveItem(bookmark.dictionaryObject!){
                                     bookItem.markAsFavourite(true)
                                 }
+                                dispatch_group_leave(group)
                             }
-                            dispatch_group_leave(group)
                         }
                     }
                 }
                 dispatch_group_notify(group, dispatch_get_main_queue(), {
-                    do {
-                        try managedObjectContext.save()
-                    } catch let error as NSError {
-                        print("Could not save private context: \(error.localizedDescription)")
-                    }
-                    //                    managedObjectContext.reset()
-                    do{
-                        try CoreDataStackManager.sharedManager.managedObjectContext.save()
-                    } catch let error as NSError {
-                        print("Could not save main context: \(error.localizedDescription)")
-                    }
+                    CoreDataStackManager.sharedManager.saveContext()
                     completion()
                 })
 

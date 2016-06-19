@@ -21,10 +21,10 @@ struct Constants {
         static let BaseURL = "https://archive.org"
         
         case ImageURL(String)
-        case ImageURLForPage(Page,withScale: Int)
-        case ScandataURL(Chapter)
-        case ScandataURLZipPreview(Chapter)
-        case ZipFileURL(Chapter)
+        case ImageURLForPage(IAPage,withScale: Int)
+        case ScandataURL(IAChapter)
+        case ScandataURLZipPreview(IAChapter)
+        case ZipFileURL(IAChapter)
         var url: NSURL {
             var path = ""
             

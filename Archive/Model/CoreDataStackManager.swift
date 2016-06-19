@@ -13,7 +13,6 @@ class CoreDataStackManager {
     // MARK: Properties
     
     static let sharedManager = CoreDataStackManager()
-    static let applicationDocumentsDirectoryName = "com.example.apple-samplecode.Earthquakes"
     static let mainStoreFileName = "SingleViewCoreData.sqlite"
     static let errorDomain = "CoreDataStackManager"
     

@@ -14,8 +14,8 @@ class IADownloadsManager {
     static let sharedInstance = IADownloadsManager()
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     struct FileDownloadStatus {
-        var file: File?
-        var chapter: Chapter?
+        var file: IAFile?
+        var chapter: IAChapter?
         var totalBytesRead: Int64?
         var totalBytesExpectedToRead: Int64?
     }
@@ -34,8 +34,8 @@ class IADownloadsManager {
         }
     }
     
-    func downloadTrigger(chapter: Chapter) {
-        if chapter.isDownloaded?.boolValue == true {
+    func downloadTrigger(chapter: IAChapter) {
+        if Chapter.chapterDownloadStatus(chapter.name!, itemIdentifier: chapter.file!.archiveItem!.identifier!).isDownloaded == true {
             deleteChapter(chapter)
         }else {
             if let file = chapter.file {
@@ -44,15 +44,19 @@ class IADownloadsManager {
        }
     }
     
-    private func download(chapter: Chapter, file: File) {
+    private func download(chapter: IAChapter, file: IAFile) {
         let fileStatus = FileDownloadStatus(file: file, chapter: chapter, totalBytesRead: 0, totalBytesExpectedToRead: 0)
         filesQueue?.append(fileStatus)
+        
         let destination = Alamofire.Request.suggestedDownloadDestination(
             directory: .CachesDirectory,
             domain: .UserDomainMask
         )
         let type = chapter.type?.rawValue.lowercaseString
-        chapter.markInDownloadingState()
+        let managedContext = CoreDataStackManager.sharedManager.managedObjectContext
+        let fileDB = File.createFile(file, managedObjectContext: managedContext)
+        let chapterDB = Chapter.createChapter(chapter, file: fileDB!)
+        chapterDB!.markInDownloadingState()
         Alamofire.download(.GET, "https://\(file.server!)\(file.directory!)/\(chapter.subdirectory!)_\(type!).zip".allowdStringForURL(), destination: destination)
             .response { request, response, _, error in
                 let paths =  NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)
@@ -62,8 +66,8 @@ class IADownloadsManager {
                 if unzipSucceed {
                     self.deleteFile(zipFilePath)
                     self.filesQueue?.indexOf({$0.file?.archiveItem?.identifier == file.archiveItem!.identifier && $0.chapter?.name == chapter.name}).map({
-                        if let chapter = self.filesQueue![$0].chapter {
-                            chapter.markDownloaded(true)
+                        if let _ = self.filesQueue![$0].chapter {
+                            chapterDB!.markDownloaded(true)
                         }
                         self.filesQueue!.removeAtIndex($0)
                         if self.filesQueue?.count == 0 {self.appDelegate.downloadProgress = 0}
@@ -73,8 +77,8 @@ class IADownloadsManager {
                 }else {
                     self.deleteFile(zipFilePath)
                     self.filesQueue?.indexOf({$0.file?.archiveItem?.identifier == file.archiveItem!.identifier && $0.chapter?.name == chapter.name}).map({
-                        if let chapter = self.filesQueue![$0].chapter {
-                            chapter.markDownloaded(false)
+                        if let _ = self.filesQueue![$0].chapter {
+                            chapterDB!.markDownloaded(false)
                         }
                         self.filesQueue!.removeAtIndex($0)
                         if self.filesQueue?.count == 0 {self.appDelegate.downloadProgress = 0}
@@ -95,10 +99,13 @@ class IADownloadsManager {
         
     }
     
-    private func deleteChapter(chapter: Chapter) {
+    private func deleteChapter(chapter: IAChapter) {
         let type = chapter.type!.rawValue.lowercaseString
         if deleteFile("\(self.docuementsDirectory())/\(chapter.name!)\(type)") {
-            chapter.markDownloaded(false)
+            let managedContext = CoreDataStackManager.sharedManager.managedObjectContext
+            let myfile = File.createFile(chapter.file!, managedObjectContext: managedContext)
+            let myChapter = Chapter.createChapter(chapter, file: myfile!)
+            myChapter!.markDownloaded(false)
             NSNotificationCenter.defaultCenter().postNotificationName("\(chapter.name!)_deleted", object:  nil)
         }else {
         
@@ -123,7 +130,8 @@ class IADownloadsManager {
         print("cache = \(NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)[0])")
         let chaptersInDownloadState = self.getChaptersInDownloadState()
         for chapter in chaptersInDownloadState as! [Chapter] {
-            self.download(chapter, file: chapter.file!)
+            let myChapter = IAChapter.init(chapter: chapter)
+            self.download(myChapter, file: myChapter.file!)
         }
     }
     

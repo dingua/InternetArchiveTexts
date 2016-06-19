@@ -11,7 +11,7 @@ import CoreData
 typealias BookmarkSelectionHandler = (Page) -> ()
 
 class IABookmarksListVC: UITableViewController, NSFetchedResultsControllerDelegate {
-    var item: ArchiveItem?
+    var item: IAArchiveItem?
     var selectionHandler: BookmarkSelectionHandler?
     
     lazy var fetchRequest: NSFetchRequest = {
@@ -28,7 +28,7 @@ class IABookmarksListVC: UITableViewController, NSFetchedResultsControllerDelega
         return fetchController
     }()
 
-    func configure(item: ArchiveItem, andSelectionHandler selectionHandler: BookmarkSelectionHandler) {
+    func configure(item: IAArchiveItem, andSelectionHandler selectionHandler: BookmarkSelectionHandler) {
         self.item = item
         self.selectionHandler = selectionHandler
     }

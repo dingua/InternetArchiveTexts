@@ -7,7 +7,7 @@
 //
 
 import UIKit
-typealias DownloadChapterActionHandler = (chapter: Chapter)->()
+typealias DownloadChapterActionHandler = (chapter: IAChapter)->()
 
 class IAChapterTableViewCell: UITableViewCell {
     
@@ -22,7 +22,7 @@ class IAChapterTableViewCell: UITableViewCell {
     
     //Attributes
     var downloadSelectionHandler: DownloadChapterActionHandler?
-    var chapter: Chapter?
+    var chapter: IAChapter?
     
     //MARK: - Functions
     
@@ -37,15 +37,15 @@ class IAChapterTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(chapter: Chapter, withProgress progress: Double = 0.0, isSelected selected: Bool = false,downloadActionHandler: DownloadChapterActionHandler?) {
+    func configure(chapter: IAChapter, withProgress progress: Double = 0.0, isSelected selected: Bool = false,downloadActionHandler: DownloadChapterActionHandler?) {
         self.chapter = chapter
         chapterNameLabel.text = chapter.name
         if progress == 0.0 {
             downloadProgressView.hidden = true
             downloadStatusButton.hidden = false
-            if (chapter.isDownloaded?.boolValue)! {
+            let downloadedStatus = Chapter.chapterDownloadStatus(chapter.name!, itemIdentifier: chapter.file?.archiveItem?.identifier ?? "")
+            if downloadedStatus.isDownloaded {
                 downloadStatusButton.setImage(UIImage(named: "done_btn"), forState: .Normal)
-                
             }else {
                 downloadStatusButton.setImage(UIImage(named: "download_button"), forState: .Normal)
             }

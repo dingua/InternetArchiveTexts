@@ -17,14 +17,14 @@ class IAChapterBookmarkExploreVC: UIViewController {
     @IBOutlet weak var bookmarksContainerView: UIView!
     @IBOutlet weak var segementControl: UISegmentedControl!
     
-    var item: ArchiveItem?
+    var item: IAArchiveItem?
     var selectedChapterIndex = -1
     var chapterSelectionHandler : ChapterSelectionHandler?
     var bookmarkSelectionHandler: BookmarkSelectionHandler?
     var sortPresentationDelegate =  IASortPresentationDelgate()
 
     //MARK: - Initializer
-    func update(item: ArchiveItem, selectedIndex: Int) {
+    func update(item: IAArchiveItem, selectedIndex: Int) {
         self.item = item
         self.selectedChapterIndex = selectedIndex
     }
@@ -32,7 +32,7 @@ class IAChapterBookmarkExploreVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         if let item = item {
-            favoButton.setImage(item.isFavorite ? UIImage(named: "favourite_filled") : UIImage(named: "favourite_empty"), forState: .Normal)
+            favoButton.setImage(item.isFavourite ? UIImage(named: "favourite_filled") : UIImage(named: "favourite_empty"), forState: .Normal)
         }
         chaptersContainerView.hidden = false
         bookmarksContainerView.hidden = true
@@ -51,7 +51,15 @@ class IAChapterBookmarkExploreVC: UIViewController {
                         self.chapterSelectionHandler!(chapterIndex: chapterIndex)
                     })
                 }
-                chaptersListVC.chapters = (item.file?.chapters?.allObjects as! [Chapter]).sort({ $0.name < $1.name})
+                
+                if let chapters = item.file?.chapters { // Temporary Item has chapters set already
+                    chaptersListVC.chapters = chapters.sort({ $0.name < $1.name})
+                } else { // Otherwise check the item in the database
+                    let itemDB = ArchiveItem.createArchiveItem(item, managedObjectContext: CoreDataStackManager.sharedManager.managedObjectContext)
+                    if let chapters = itemDB?.file?.chapters {
+                        chaptersListVC.chapters = chapters.sort({ $0.name < $1.name}).map({IAChapter(chapter: $0 as! Chapter)})
+                    }
+                }
                 chaptersListVC.selectedChapterIndex = selectedChapterIndex
             }
             
@@ -105,10 +113,10 @@ class IAChapterBookmarkExploreVC: UIViewController {
         self.presentViewController(loginVC, animated: true, completion: nil)
     }
     
-    func triggerFavorite(item: ArchiveItem?) {
+    func triggerFavorite(item: IAArchiveItem?) {
         if let item = item {
-            IAFavouriteManager.sharedInstance.triggerBookmark(item) {_ in
-                self.favoButton.imageView?.image = (item.isFavorite) ? UIImage(named: "favourite_filled") : UIImage(named: "favourite_empty")
+            IAFavouriteManager.sharedInstance.triggerFavorite(item) {_ in
+                self.favoButton.imageView?.image = (item.isFavourite) ? UIImage(named: "favourite_filled") : UIImage(named: "favourite_empty")
             }
         }
     }

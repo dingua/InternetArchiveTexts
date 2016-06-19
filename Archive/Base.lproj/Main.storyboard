@@ -332,13 +332,16 @@
                                         </button>
                                         <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="hca-pq-KQe">
                                             <rect key="frame" x="192" y="21" width="70" height="2"/>
+                                            <color key="tintColor" red="0.13725490200000001" green="0.14117647059999999" blue="0.14901960780000001" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="70" id="PwG-i8-y9Q"/>
                                             </constraints>
                                         </progressView>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstAttribute="trailingMargin" secondItem="hca-pq-KQe" secondAttribute="trailing" constant="30" id="9fK-oa-b0S"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="hca-pq-KQe" secondAttribute="trailing" constant="30" id="9fK-oa-b0S">
+                                            <variation key="widthClass=compact" constant="0.0"/>
+                                        </constraint>
                                         <constraint firstAttribute="leadingMargin" secondItem="a9v-05-fAH" secondAttribute="leading" id="IdX-eL-nLb"/>
                                         <constraint firstItem="a9v-05-fAH" firstAttribute="centerY" secondItem="j3c-Aj-sf6" secondAttribute="centerY" id="JGO-Ab-njd"/>
                                         <constraint firstItem="hca-pq-KQe" firstAttribute="centerY" secondItem="j3c-Aj-sf6" secondAttribute="centerY" id="aIH-Xb-dN3"/>
@@ -365,7 +368,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MhF-Lt-NK8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2686" y="5228"/>
+            <point key="canvasLocation" x="2718" y="5695"/>
         </scene>
         <!--Chapter Bookmark ExploreVC-->
         <scene sceneID="PCB-lG-iRf">
@@ -473,7 +476,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pWJ-QA-yTt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2314" y="5575"/>
+            <point key="canvasLocation" x="2262" y="5677"/>
         </scene>
         <!--Favourite LoginVC-->
         <scene sceneID="Wax-WY-pcY">
@@ -1282,10 +1285,10 @@
                                                 </mask>
                                             </variation>
                                         </imageView>
-                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="osx-CU-mM3" userLabel="TopView">
+                                        <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="osx-CU-mM3" userLabel="TopView">
                                             <rect key="frame" x="0.0" y="0.0" width="150" height="50"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p1g-Zx-CTp" userLabel="detailsButton">
+                                                <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p1g-Zx-CTp" userLabel="detailsButton">
                                                     <rect key="frame" x="80" y="14" width="20" height="22"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="20" id="72A-nb-MvA"/>
@@ -1566,7 +1569,9 @@
                                     <constraint firstAttribute="trailingMargin" secondItem="MPq-Az-8G6" secondAttribute="trailing" constant="-8" id="Qyw-G0-99g"/>
                                     <constraint firstAttribute="bottom" secondItem="MPq-Az-8G6" secondAttribute="bottom" id="WwT-r6-BYZ"/>
                                     <constraint firstItem="S1L-5E-85T" firstAttribute="trailing" secondItem="MPq-Az-8G6" secondAttribute="trailing" id="aa6-FW-rF9"/>
-                                    <constraint firstItem="MPq-Az-8G6" firstAttribute="trailing" secondItem="itn-QY-Pg0" secondAttribute="trailing" constant="8" id="eOM-3k-iZf"/>
+                                    <constraint firstItem="MPq-Az-8G6" firstAttribute="trailing" secondItem="itn-QY-Pg0" secondAttribute="trailing" constant="8" id="eOM-3k-iZf">
+                                        <variation key="widthClass=compact" constant="15"/>
+                                    </constraint>
                                     <constraint firstItem="S1L-5E-85T" firstAttribute="leading" secondItem="MPq-Az-8G6" secondAttribute="leading" id="mgl-yK-00g"/>
                                     <constraint firstItem="MPq-Az-8G6" firstAttribute="leading" secondItem="TBC-ku-f7g" secondAttribute="leading" id="vyr-B5-cCD"/>
                                 </constraints>
@@ -1635,7 +1640,7 @@
         <image name="sort" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="x14-IC-tKz"/>
         <segue reference="tge-dc-5FS"/>
+        <segue reference="BNG-AH-2HG"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -18,7 +18,7 @@ class IACollectionsExploreViewCell: UICollectionViewCell {
         imageView.image = nil
     }
     
-    func configureWithItem(collection: ArchiveItem) {
+    func configureWithItem(collection: IAArchiveItem) {
         titleLabel.text = collection.title
         
         imageView.af_setImageWithURL(Constants.URL.ImageURL(collection.identifier!).url)

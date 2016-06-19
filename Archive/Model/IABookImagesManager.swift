@@ -33,9 +33,9 @@ class IABookImagesManager: NSObject {
     
     //MARK: - Properties
     
-    var file: File
+    var file: IAFile
     var chapterIndex: Int
-    var chapter : Chapter
+    var chapter : IAChapter
     var type : String?
     
     let imageDownloader = ImageDownloader(
@@ -46,36 +46,25 @@ class IABookImagesManager: NSObject {
     )
     
     var requests : Array<Alamofire.Request>?
-    var pages : [Page]?
+    var pages : [IAPage]?
     private var _numberOfPages : Int?
     var numberOfPages : Int? {
         get {
             return self._numberOfPages
         }
         set {
-            if self.chapter.numberOfPages?.integerValue != newValue {
-                if let newValue = newValue {
-                    self.chapter.numberOfPages = NSNumber(integer: newValue)
-                    if self.chapter.managedObjectContext != nil {
-                        do{
-                            try self.chapter.managedObjectContext?.save()
-                        }catch let error as NSError {
-                            print("couldn't save \(error.localizedDescription)")
-                        }
-                    }
-                }
-            }
+            self.chapter.numberOfPages = newValue!
             self._numberOfPages = newValue
         }
     }
     
     //MARK: - Initializer
     
-    init(file : File, chapterIndex : Int) {
+    init(file : IAFile, chapterIndex : Int) {
         
         self.file = file
         self.chapterIndex = chapterIndex
-        self.chapter = self.file.chapters!.sort({$0.name < $1.name})[chapterIndex] as! Chapter
+        self.chapter = self.file.chapters.sort({$0.name < $1.name})[chapterIndex]
         self.type = self.chapter.type?.rawValue.lowercaseString
         self.requests = Array()
     }
@@ -83,7 +72,7 @@ class IABookImagesManager: NSObject {
     //MARK: - Download Pages
     
     func urlOfPage(number: Int) -> String{
-        return urlOfPage(Int((pages![number].number?.intValue)!),scale: 2)
+        return urlOfPage(pages![number].number!,scale: 2)
     }
     
     func urlOfPage(number: Int, scale: Int) -> String{
@@ -149,9 +138,9 @@ class IABookImagesManager: NSObject {
     
     //MARK: - Get Pages
     
-    func getPages(completion : ([Page])->()) {
-        if  (self.chapter.pages?.count == self.chapter.numberOfPages?.integerValue) && self.chapter.pages?.count != 0 {
-            self.pages = self.chapter.pages?.allObjects as? [Page]
+    func getPages(completion : ([IAPage])->()) {
+        if  (self.chapter.pages?.count == self.chapter.numberOfPages) && self.chapter.pages?.count != 0 {
+            self.pages = self.chapter.pages
             self.pages = self.pages!.sort({Int($0.number!) < Int($1.number!)})
             self.numberOfPages = self.pages?.count
             return completion(self.pages!)
@@ -160,7 +149,7 @@ class IABookImagesManager: NSObject {
         return getPages(scandataURL, completion: completion)
     }
     
-    func getPages(url: String, completion : ([Page])->()) {
+    func getPages(url: String, completion : ([IAPage])->()) {
         Alamofire.request(Utils.requestWithURL(url)).response { (request, response, data, error) in
             do{
                 let tbxml =  try TBXML(XMLData: data, error: ())
@@ -176,18 +165,9 @@ class IABookImagesManager: NSObject {
                 }
                 var  pageElement = TBXML.childElementNamed("page", parentElement: pageData)
                 self.pages = []
-                var managedObjectContext: NSManagedObjectContext?
-                let temporary = self.chapter.managedObjectContext == nil
-                if !temporary {
-                    managedObjectContext = self.chapter.managedObjectContext
-                }else {
-                    managedObjectContext = try CoreDataStackManager.sharedManager.createPrivateQueueContext()
-                }
                 while pageElement != nil{
-                    if let page = Page.createPage(TBXML.valueOfAttributeNamed("leafNum", forElement: pageElement), chapter: self.chapter, isBookmarked: false, managedObjectContext: managedObjectContext!, temporary: temporary) {
-                        self.pages!.append(page)
+                        self.pages!.append(IAPage(number: TBXML.valueOfAttributeNamed("leafNum", forElement: pageElement), chapter: self.chapter, isBookmarked: false))
                         pageElement = TBXML.nextSiblingNamed("page", searchFromElement: pageElement)
-                    }
                 }
                 self.pages = self.pages?.sort({Int($0.number!) < Int($1.number!)})
                 self.numberOfPages = self.pages?.count
@@ -198,7 +178,7 @@ class IABookImagesManager: NSObject {
         }
     }
     
-    func pageAtIndex(index: Int) -> Page? {
+    func pageAtIndex(index: Int) -> IAPage? {
         if let pages = self.pages {
             return pages[index]
         }
@@ -222,6 +202,6 @@ class IABookImagesManager: NSObject {
     }
     
     func isChapterStored()->Bool {
-        return chapter.isDownloaded?.boolValue == true
+        return Chapter.chapterDownloadStatus(chapter.name!, itemIdentifier: chapter.file!.archiveItem!.identifier!).isDownloaded
     }
 }
