@@ -18,6 +18,7 @@ class IADownloadsManager {
         var chapter: IAChapter?
         var totalBytesRead: Int64?
         var totalBytesExpectedToRead: Int64?
+        var request: Request
     }
     
     private var filesQueue : Array<FileDownloadStatus>? = []
@@ -44,10 +45,21 @@ class IADownloadsManager {
        }
     }
     
+    func cancelDownload(chapter: IAChapter) {
+        self.filesQueue?.indexOf({$0.file?.archiveItem!.identifier == chapter.file!.archiveItem!.identifier && $0.chapter?.name == chapter.name}).map({
+            self.filesQueue![$0].request.cancel()
+            let managedContext = CoreDataStackManager.sharedManager.managedObjectContext
+            let myfile = File.createFile(chapter.file!, managedObjectContext: managedContext)
+            let myChapter = Chapter.createChapter(chapter, file: myfile!)
+            myChapter!.markDownloaded(false)
+            NSNotificationCenter.defaultCenter().postNotificationName("\(chapter.name!)_deleted", object:  nil)
+            self.filesQueue![$0].totalBytesRead = 0
+            self.appDelegate.downloadProgress = Float(self.totalProgress!)
+            self.filesQueue!.removeAtIndex($0)
+        })
+    }
+    
     private func download(chapter: IAChapter, file: IAFile) {
-        let fileStatus = FileDownloadStatus(file: file, chapter: chapter, totalBytesRead: 0, totalBytesExpectedToRead: 0)
-        filesQueue?.append(fileStatus)
-        
         let destination = Alamofire.Request.suggestedDownloadDestination(
             directory: .CachesDirectory,
             domain: .UserDomainMask
@@ -57,7 +69,7 @@ class IADownloadsManager {
         let fileDB = File.createFile(file, managedObjectContext: managedContext)
         let chapterDB = Chapter.createChapter(chapter, file: fileDB!)
         chapterDB!.markInDownloadingState()
-        Alamofire.download(.GET, "https://\(file.server!)\(file.directory!)/\(chapter.subdirectory!)_\(type!).zip".allowdStringForURL(), destination: destination)
+        let request = Alamofire.download(.GET, "https://\(file.server!)\(file.directory!)/\(chapter.subdirectory!)_\(type!).zip".allowdStringForURL(), destination: destination)
             .response { request, response, _, error in
                 let paths =  NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)
                 let cacheDir =  paths[0]
@@ -73,6 +85,7 @@ class IADownloadsManager {
                         if self.filesQueue?.count == 0 {self.appDelegate.downloadProgress = 0}
                         self.appDelegate.downloadDone()
                         NSNotificationCenter.defaultCenter().postNotificationName("\(chapter.name!)_finished", object:  nil)
+                        NSNotificationCenter.defaultCenter().postNotificationName("download_done", object:  nil)
                     })
                 }else {
                     self.deleteFile(zipFilePath)
@@ -84,6 +97,8 @@ class IADownloadsManager {
                         if self.filesQueue?.count == 0 {self.appDelegate.downloadProgress = 0}
                         self.appDelegate.downloadFailed()
                         NSNotificationCenter.defaultCenter().postNotificationName("\(chapter.name!)_finished", object:  nil)
+                        NSNotificationCenter.defaultCenter().postNotificationName("download_deleted", object:  nil)
+
                     })
                 }
             }
@@ -96,7 +111,8 @@ class IADownloadsManager {
                     }
                 )
         }
-        
+        let fileStatus = FileDownloadStatus(file: file, chapter: chapter, totalBytesRead: 0, totalBytesExpectedToRead: 0, request: request)
+        filesQueue?.append(fileStatus)
     }
     
     private func deleteChapter(chapter: IAChapter) {
@@ -107,6 +123,7 @@ class IADownloadsManager {
             let myChapter = Chapter.createChapter(chapter, file: myfile!)
             myChapter!.markDownloaded(false)
             NSNotificationCenter.defaultCenter().postNotificationName("\(chapter.name!)_deleted", object:  nil)
+            NSNotificationCenter.defaultCenter().postNotificationName("download_deleted", object:  nil)
         }else {
         
         }

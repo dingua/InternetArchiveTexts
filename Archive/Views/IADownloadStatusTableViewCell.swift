@@ -20,8 +20,10 @@ class IAChapterTableViewCell: UITableViewCell {
     @IBOutlet weak var downloadStatusButton: UIButton!
     @IBOutlet weak var downloadProgressView: UIProgressView!
     
+    @IBOutlet weak var cancelBtn: UIButton!
     //Attributes
     var downloadSelectionHandler: DownloadChapterActionHandler?
+    var cancelActionHandler: DownloadChapterActionHandler?
     var chapter: IAChapter?
     
     //MARK: - Functions
@@ -37,11 +39,12 @@ class IAChapterTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(chapter: IAChapter, withProgress progress: Double = 0.0, isSelected selected: Bool = false,downloadActionHandler: DownloadChapterActionHandler?) {
+    func configure(chapter: IAChapter, withProgress progress: Double = 0.0, isSelected selected: Bool = false,downloadActionHandler: DownloadChapterActionHandler?, cancelActionHandler: DownloadChapterActionHandler? = nil) {
         self.chapter = chapter
         chapterNameLabel.text = chapter.name
         if progress == 0.0 {
             downloadProgressView.hidden = true
+            cancelBtn.hidden = true
             downloadStatusButton.hidden = false
             let downloadedStatus = Chapter.chapterDownloadStatus(chapter.name!, itemIdentifier: chapter.file?.archiveItem?.identifier ?? "")
             if downloadedStatus.isDownloaded {
@@ -51,6 +54,7 @@ class IAChapterTableViewCell: UITableViewCell {
             }
         }else {
             downloadProgressView.hidden = false
+            cancelBtn.hidden = false
             downloadStatusButton.hidden = true
             downloadProgressView.progress = Float(progress)
         }
@@ -61,11 +65,19 @@ class IAChapterTableViewCell: UITableViewCell {
 
         }
         self.downloadSelectionHandler = downloadActionHandler
+        self.cancelActionHandler = cancelActionHandler
     }
     
     @IBAction func downloadButtonAction() {
-        if let chapter = chapter {
-            downloadSelectionHandler!(chapter: chapter)
+        if let chapter = chapter, downloadSelectionHandler = downloadSelectionHandler {
+            downloadSelectionHandler(chapter: chapter)
         }
     }
+    
+    @IBAction func cancelDownload() {
+        if let cancelActionHandler = cancelActionHandler, chapter = chapter {
+            cancelActionHandler(chapter: chapter)
+        }
+    }
+    
 }

@@ -162,10 +162,8 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
 
     @IBAction func scrollViewDoubleTapped(sender: AnyObject) {
         let recognizer = sender as! UIGestureRecognizer
-        if let scrollView = scrollView {
-            if (scrollView.zoomScale > scrollView.minimumZoomScale) {
+        if let scrollView = scrollView where scrollView.zoomScale > scrollView.minimumZoomScale {
                 scrollView.setZoomScale(scrollView.minimumZoomScale, animated: true)
-            }
         }else if let image = image, imageView = imageView {
             let imageRect = AVMakeRectWithAspectRatioInsideRect(image.size, imageView.frame)
             let scale = view.frame.size.width/imageRect.width

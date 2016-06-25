@@ -177,7 +177,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         pageController.didMoveToParentViewController(nil)
         pageController.view.removeFromSuperview()
         pageController.setViewControllers(Array(arrayLiteral: pageVCWithNumber(pageNumber)) , direction: .Forward, animated: false, completion: nil)
-        pageController.view.backgroundColor = UIColor.redColor()
+        pageController.view.backgroundColor = UIColor.whiteColor()
         pageController.delegate = self
         pageController.dataSource = self
         
@@ -439,5 +439,11 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     func isFavourite()->Bool {
         return item?.isFavourite ?? false
+    }
+    
+    //MARK: Device orientation
+    
+    override func didRotateFromInterfaceOrientation(fromInterfaceOrientation: UIInterfaceOrientation) {
+        pagesViewControllers.forEach {$1.scaled = false}
     }
 }

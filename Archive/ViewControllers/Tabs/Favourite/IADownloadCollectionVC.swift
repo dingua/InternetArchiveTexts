@@ -16,8 +16,17 @@ class IADownloadCollectionVC: IAGenericItemCollectionVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         setFetchRequest()
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IADownloadCollectionVC.reload), name: "download_done", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(IADownloadCollectionVC.reload), name: "download_deleted", object: nil)
     }
     
+    func reload() {
+        performFetch()
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
     // MARK: - CollectionView
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> IAGenericItemCollectionCell {

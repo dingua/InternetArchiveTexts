@@ -87,13 +87,17 @@ class IAChaptersListVC: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("downloadStatusCell", forIndexPath: indexPath) as! IAChapterTableViewCell
         let chapter = chapters![indexPath.row]
         if let progress = downloadProgress[chapter.name!] {
-            cell.configure(chapter, withProgress : progress, isSelected: indexPath.row == selectedChapterIndex) {chapter in
+            cell.configure(chapter, withProgress : progress,
+                           isSelected: indexPath.row == selectedChapterIndex,
+                           downloadActionHandler:  {chapter in
                 IADownloadsManager.sharedInstance.downloadTrigger(chapter)
+            }){chapter in
+                IADownloadsManager.sharedInstance.cancelDownload(chapter)
             }
         }else {
-            cell.configure(chapter, isSelected: indexPath.row == selectedChapterIndex) {chapter in
+            cell.configure(chapter, isSelected: indexPath.row == selectedChapterIndex, downloadActionHandler: {chapter in
                 IADownloadsManager.sharedInstance.downloadTrigger(chapter)
-            }
+            })
         }
         return cell
     }
