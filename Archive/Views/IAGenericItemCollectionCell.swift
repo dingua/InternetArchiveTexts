@@ -15,7 +15,7 @@ class IAGenericItemCollectionCell: UICollectionViewCell {
     enum ItemCollectionButtonType: String {
         case None = ""
         case Favorite = "favourite_empty"
-        case Download = "3dots"
+        case Download = "download_button"
         case Bookmark = "bookmark_empty"
     }
     

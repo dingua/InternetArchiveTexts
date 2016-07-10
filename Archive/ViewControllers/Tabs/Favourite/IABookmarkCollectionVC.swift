@@ -32,25 +32,20 @@ class IABookmarkVC: IAGenericItemCollectionVC {
             IABookmarkManager.sharedInstance.triggerBookmark(IAPage(page: page))
         }
         
+        cell.secondActionClosure = {
+            if let item = page.chapter?.file?.archiveItem {
+                self.presentDetails(item)
+            }
+        }
         return cell
     }
     
     override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         let page = fetchedResultController!.objectAtIndexPath(indexPath) as! Page
-        let navController = UIStoryboard(name: "Reader", bundle: nil).instantiateInitialViewController() as! UINavigationController
-        let bookReader = navController.topViewController as! IAReaderVC
-        bookReader.item = IAArchiveItem(item: page.chapter!.file!.archiveItem!)
-        bookReader.didGetFileDetailsCompletion = {
-            let chapterIndex = (page.chapter?.file?.chapters?.allObjects as! [Chapter]).sort({ $0.name < $1.name}).indexOf(page.chapter!)!
-            bookReader.setupReaderToChapter(chapterIndex){
-                let number = (page.number?.intValue)!
-                if number != 0 {
-                    bookReader.pageNumber = Int(number)
-                    bookReader.updateUIAfterPageSeek(true)
-                }
-            }
-        }
-        self.presentViewController(navController, animated: true, completion: nil)
+        let chapterIndex = (page.chapter?.file?.chapters?.allObjects as! [Chapter]).sort({ $0.name < $1.name}).indexOf(page.chapter!)!
+        let number = (page.number?.intValue)!
+
+        showReader(page.chapter!.file!.archiveItem!, atChapterIndex: chapterIndex, atPage: Int(number))
     }
     
     //MARK: - Private
@@ -61,4 +56,44 @@ class IABookmarkVC: IAGenericItemCollectionVC {
         
         setFetchRequest(fetchRequest)
     }
+    
+    var bookDetailsPresentationDelegate = IABookDetailsPresentationDelgate()
+
+    private func presentDetails(item: ArchiveItem) {
+        let bookDetails = UIStoryboard(name: "BookDetails", bundle: nil).instantiateInitialViewController() as! IABookDetailsVC
+        bookDetails.book = IAArchiveItem(item: item)
+        if Utils.isiPad() {
+            bookDetails.transitioningDelegate = self.bookDetailsPresentationDelegate
+            bookDetails.modalPresentationStyle = .Custom
+            bookDetails.pushListOnDismiss = {text, type in
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let itemsListVC = storyboard.instantiateViewControllerWithIdentifier("bookListVC") as! IAItemsListVC
+                itemsListVC.loadList(text ?? "", type: type)
+                self.navigationController?.pushViewController(itemsListVC, animated: true)
+            }
+            bookDetails.pushReaderOnChapter = {chapterIndex in
+                self.showReader(item, atChapterIndex: chapterIndex)
+            }
+            self.presentViewController(bookDetails, animated: true, completion: nil)
+        }else {
+            self.navigationController?.pushViewController(bookDetails, animated: true)
+        }
+    }
+    
+    private func showReader(item: ArchiveItem, atChapterIndex chapterIndex :Int = -1, atPage page: Int = 0) {
+        let navController = UIStoryboard(name: "Reader",bundle: nil).instantiateInitialViewController() as! UINavigationController
+        let bookReader = navController.topViewController as! IAReaderVC
+        bookReader.item = IAArchiveItem(item: item)
+        bookReader.didGetFileDetailsCompletion = {
+            bookReader.setupReaderToChapter(chapterIndex) {
+                if page != 0 {
+                    bookReader.pageNumber = Int(page)
+                    bookReader.updateUIAfterPageSeek(true)
+                }
+            }
+        }
+        self.presentViewController(navController, animated: true, completion: nil)
+    }
+
+
 }

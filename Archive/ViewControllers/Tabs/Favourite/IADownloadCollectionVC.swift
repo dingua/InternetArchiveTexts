@@ -38,6 +38,10 @@ class IADownloadCollectionVC: IAGenericItemCollectionVC {
             self.showChaptersList(item)
         }
         
+        cell.secondActionClosure = {
+            self.presentDetails(item)
+        }
+        
         return cell
     }
     
@@ -67,6 +71,29 @@ class IADownloadCollectionVC: IAGenericItemCollectionVC {
         setFetchRequest(fetchRequest)
     }
     
+    var bookDetailsPresentationDelegate = IABookDetailsPresentationDelgate()
+    
+    private func presentDetails(item: ArchiveItem) {
+        let bookDetails = UIStoryboard(name: "BookDetails", bundle: nil).instantiateInitialViewController() as! IABookDetailsVC
+        bookDetails.book = IAArchiveItem(item: item)
+        if Utils.isiPad() {
+            bookDetails.transitioningDelegate = self.bookDetailsPresentationDelegate
+            bookDetails.modalPresentationStyle = .Custom
+            bookDetails.pushListOnDismiss = {text, type in
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                let itemsListVC = storyboard.instantiateViewControllerWithIdentifier("bookListVC") as! IAItemsListVC
+                itemsListVC.loadList(text ?? "", type: type)
+                self.navigationController?.pushViewController(itemsListVC, animated: true)
+            }
+            bookDetails.pushReaderOnChapter = {chapterIndex in
+                self.showReader(item, atChapterIndex: chapterIndex)
+            }
+            self.presentViewController(bookDetails, animated: true, completion: nil)
+        }else {
+            self.navigationController?.pushViewController(bookDetails, animated: true)
+        }
+    }
+
     func showReader(item: ArchiveItem, atChapterIndex chapterIndex :Int = -1) {
         let navController = UIStoryboard(name: "Reader",bundle: nil).instantiateInitialViewController() as! UINavigationController
         let bookReader = navController.topViewController as! IAReaderVC
