@@ -61,20 +61,7 @@ class IAGenericItemCollectionCell: UICollectionViewCell {
         return self
     }
     
-    func configure(page: Page, type: ItemCollectionButtonType?, completion: ItemCellCompletionBlock?) {
-        if type       != nil { buttonType    = type }
-        if completion != nil { actionClosure = completion }
-        
-        if let sortedChapters = page.chapter?.file?.sortedChapters() {
-            titleLabel.text = "\(page.chapter!.file!.archiveItem!.title!) \n Page \(Int((page.number?.intValue)!)+1) of chapter number \(sortedChapters.indexOf(page.chapter!)!+1) "
-        }
-        let url = page.urlOfPage(10)
-        mainImageView.af_setImageWithURL(NSURL(string: url)!)
-        
-        if buttonType == .Bookmark && page.bookmarked {
-            actionButton.setImage(UIImage(named: "bookmark_filled"), forState: .Normal)
-        }
-    }
+
     
     // MARK: - Life Cycle
     

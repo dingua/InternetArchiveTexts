@@ -8,7 +8,9 @@
 
 import UIKit
 import CoreData
+
 private let segueReaderIdentifier = "showReader1"
+private let reuseIdentifier = "ItemCell"
 
 class IABookmarkVC: IAGenericItemCollectionVC {
     
@@ -23,8 +25,13 @@ class IABookmarkVC: IAGenericItemCollectionVC {
     
     // MARK: - CollectionView
     
-    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> IAGenericItemCollectionCell {
-        let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath)
+    override func collectionView(collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                               sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        return Utils.isiPad() ? CGSizeMake(300, 250) : CGSizeMake(300, 250)
+    }
+    override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> IABookmarkItemCollectionCell {
+        let cell =  collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! IABookmarkItemCollectionCell
         
         let page = fetchedResultController!.objectAtIndexPath(indexPath) as! Page
         

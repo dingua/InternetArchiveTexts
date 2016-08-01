@@ -42,6 +42,7 @@
 		344551A51CD5E0F500FE7C47 /* IASortListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344551911CD5E0F500FE7C47 /* IASortListTableViewCell.swift */; };
 		344551A71CD5E13800FE7C47 /* IALoadingViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344551A61CD5E13800FE7C47 /* IALoadingViewProtocol.swift */; };
 		3448CFF31CC3901A001CBB31 /* IALoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3448CFF21CC3901A001CBB31 /* IALoginManager.swift */; };
+		346553FC1D33314A001BAECF /* IABookmarkItemCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 346553FB1D33314A001BAECF /* IABookmarkItemCollectionCell.swift */; };
 		3473ACAE1CD8C436008FE4C9 /* IATabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3473ACAD1CD8C436008FE4C9 /* IATabBarController.swift */; };
 		3473ACB51CDA7EBC008FE4C9 /* ArchiveItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3473ACB11CDA7EBC008FE4C9 /* ArchiveItem+CoreDataProperties.swift */; };
 		3473ACB61CDA7EBC008FE4C9 /* ArchiveItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3473ACB21CDA7EBC008FE4C9 /* ArchiveItem.swift */; };
@@ -138,6 +139,7 @@
 		344551911CD5E0F500FE7C47 /* IASortListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IASortListTableViewCell.swift; sourceTree = "<group>"; };
 		344551A61CD5E13800FE7C47 /* IALoadingViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IALoadingViewProtocol.swift; sourceTree = "<group>"; };
 		3448CFF21CC3901A001CBB31 /* IALoginManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IALoginManager.swift; sourceTree = "<group>"; };
+		346553FB1D33314A001BAECF /* IABookmarkItemCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IABookmarkItemCollectionCell.swift; sourceTree = "<group>"; };
 		3473ACAD1CD8C436008FE4C9 /* IATabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IATabBarController.swift; sourceTree = "<group>"; };
 		3473ACB11CDA7EBC008FE4C9 /* ArchiveItem+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ArchiveItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		3473ACB21CDA7EBC008FE4C9 /* ArchiveItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArchiveItem.swift; sourceTree = "<group>"; };
@@ -349,6 +351,7 @@
 				3434D5EC1CF607C400167C3E /* IABookDetailsTableViewCell.swift */,
 				342D1E8A1CFC14FC00EEFFAB /* IABookDetailsCollectionView.swift */,
 				342D1E8C1CFC15F400EEFFAB /* IABookDetailsCollectionViewCell.swift */,
+				346553FB1D33314A001BAECF /* IABookmarkItemCollectionCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -720,6 +723,7 @@
 				34EB38641C3FC0A70034F3E4 /* IAItemsManager.swift in Sources */,
 				34B9A2A01CD8AEAC00C7D9CD /* IADownloadsManager.swift in Sources */,
 				3490935E1CDCB22700FC49A7 /* IAGenericListVC.swift in Sources */,
+				346553FC1D33314A001BAECF /* IABookmarkItemCollectionCell.swift in Sources */,
 				347C49521CE44A2700145288 /* Page+CoreDataProperties.swift in Sources */,
 				3473ACBE1CDA7FD2008FE4C9 /* File.swift in Sources */,
 				A6F42BF91CE451A000F0D2C2 /* CoreDataCollectionViewController.swift in Sources */,
