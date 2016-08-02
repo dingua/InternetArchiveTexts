@@ -15,4 +15,4 @@ Currently user is able to:
 
 - Create/Manage bookmarks
 
-- Downloads books and manage your list of downloaded items.
+- Download books and manage your list of downloaded items.
