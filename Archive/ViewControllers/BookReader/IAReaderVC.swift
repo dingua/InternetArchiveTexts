@@ -53,6 +53,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     var  didGetFileDetailsCompletion: (()->())?
     
+    var pageVCisAnimating = false
     
     //IBOutlets
     @IBOutlet weak var bottomMenu: UIView!
@@ -83,6 +84,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         //Get File Details from MetaData Web Service
         getFileDetails()
         title = item?.title ?? ""
+        pageVCisAnimating = false
     }
     
     var startDate: NSDate?
@@ -239,15 +241,29 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     //MARK: UIPageViewControllerDelegate
     
     func pageViewController(pageViewController: UIPageViewController, willTransitionToViewControllers pendingViewControllers: [UIViewController]) {
+        pageVCisAnimating = true
         let vc = pendingViewControllers.first as! IAReaderPageVC
         pageNumber = vc.pageNumber!
         downloadMore()
         
     }
     
+    func pageViewController(pageViewController: UIPageViewController,
+                            didFinishAnimating finished: Bool,
+                                               previousViewControllers: [UIViewController],
+                                               transitionCompleted completed: Bool) {
+        if (completed || finished) {
+            pageVCisAnimating = false
+        }
+    }
+    
     //MARK: UIPageViewControllerDataSource
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
+        if pageVCisAnimating {
+            print("viewControllerBeforeViewController")
+            return nil
+        }
         let pageNumber = (viewController as! IAReaderPageVC).pageNumber
         
         if pageNumber <= 0 {
@@ -257,6 +273,10 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     }
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController?{
+        if pageVCisAnimating {
+            print("viewControllerAfterViewController")
+            return nil
+        }
         let pageNumber = (viewController as! IAReaderPageVC).pageNumber
         
         if pageNumber >= numberOfPages-1 {
@@ -391,7 +411,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     //MARK: GestureRecognizer Delegate
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
+        return !pageVCisAnimating
     }
     
     //MARK: Navigation

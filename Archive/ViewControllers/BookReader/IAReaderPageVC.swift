@@ -151,6 +151,7 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
     //MARK: UIGestureRecognizerDelegate
     
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+
         if otherGestureRecognizer.isKindOfClass(UIPinchGestureRecognizer) {
             return false
         }else {
@@ -158,6 +159,16 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
         }
     }
 
+    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+//        if gestureRecognizer.isKindOfClass(UIPanGestureRecognizer) {
+            if let reader = parentViewController?.parentViewController where reader.isKindOfClass(IAReaderVC) {
+                print("**pageVCisAnimating \(!(reader as! IAReaderVC).pageVCisAnimating)")
+                return !(reader as! IAReaderVC).pageVCisAnimating
+            }
+//        }
+        return true
+    }
+    
     //MARK: IBACTION
 
     @IBAction func scrollViewDoubleTapped(sender: AnyObject) {
