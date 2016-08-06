@@ -37,7 +37,6 @@
         if let file = archiveItem.file {
             return completion(file)
         }else {
-            let startDate = NSDate()
             let url = "\(baseURL)/metadata/\(archiveItem.identifier!)"
             Alamofire.request(Utils.requestWithURL(url))
                 .responseJSON { response in
