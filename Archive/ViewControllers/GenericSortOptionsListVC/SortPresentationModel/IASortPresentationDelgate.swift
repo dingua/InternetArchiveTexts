@@ -9,7 +9,8 @@
 import UIKit
 
 class IASortPresentationDelgate: NSObject, UIViewControllerTransitioningDelegate {
-
+    var noDismissOnTapWhileLoading = false
+    
     func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         let presentationAnimatedTransitioning = IASortPresentationAnimatedTransitioning()
         presentationAnimatedTransitioning.isPresentation = true
@@ -24,6 +25,7 @@ class IASortPresentationDelgate: NSObject, UIViewControllerTransitioningDelegate
     
     func presentationControllerForPresentedViewController(presented: UIViewController, presentingViewController presenting: UIViewController, sourceViewController source: UIViewController) -> UIPresentationController? {
         let presentatioController = IASortPresentationController(presentedViewController: presented, presentingViewController: presenting)
+        presentatioController.noDismissOnTapWhileLoading = noDismissOnTapWhileLoading
         return presentatioController
 
     }

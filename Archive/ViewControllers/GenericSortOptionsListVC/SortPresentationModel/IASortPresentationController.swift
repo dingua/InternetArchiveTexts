@@ -12,7 +12,8 @@ class IASortPresentationController: UIPresentationController {
     var chromeView : UIView?
     var centerX: NSLayoutConstraint?
     var centerY: NSLayoutConstraint?
-    
+    var noDismissOnTapWhileLoading = false
+
     override init(presentedViewController: UIViewController, presentingViewController: UIViewController) {
         self.chromeView = UIView()
         self.chromeView!.backgroundColor = UIColor(white: 0, alpha: 0.4)
@@ -34,10 +35,12 @@ class IASortPresentationController: UIPresentationController {
     
     func chromeviewTapped(gesture: UIGestureRecognizer) {
         if (gesture.state == .Ended) {
-            self.presentedViewController.dismissViewControllerAnimated(true) { ()->() in
-                self.chromeView!.alpha = 0.0;
+            if !noDismissOnTapWhileLoading {
+                self.presentedViewController.dismissViewControllerAnimated(true) { ()->() in
+                    self.chromeView!.alpha = 0.0;
+                }
             }
-        }
+       }
     }
     
     override func presentationTransitionWillBegin() {

@@ -13,6 +13,7 @@ import DGActivityIndicatorView
 class IALoginVC: UIViewController, UIWebViewDelegate, IALoadingViewProtocol {
     var activityIndicatorView : DGActivityIndicatorView?
     var dismissCompletion: (()->())?
+    var loadingHandler:((loading:Bool)->())?
     let loginURL = "https://archive.org/account/login.php"
     
     @IBOutlet weak var usernameField: UITextField!
@@ -23,7 +24,7 @@ class IALoginVC: UIViewController, UIWebViewDelegate, IALoadingViewProtocol {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        webView.loadRequest(NSURLRequest(URL: NSURL(string: "https://archive.org/account/login.php")!))
+        webView.loadRequest(NSURLRequest(URL: NSURL(string: loginURL)!))
         webView.delegate = self
         self.view.layer.cornerRadius = 20
         webView.hidden = true
@@ -38,9 +39,16 @@ class IALoginVC: UIViewController, UIWebViewDelegate, IALoadingViewProtocol {
     func webViewDidStartLoad(webView: UIWebView) {
         addLoadingView()
         webView.hidden = true
+        if let webURL = webView.request?.URLString where webURL == loginURL {
+            loadingHandler?(loading: true)
+        }
     }
     
     func webViewDidFinishLoad(webView: UIWebView) {
+        if let webURL = webView.request?.URLString where webURL == loginURL {
+            loadingHandler?(loading: false)
+        }
+
         if let
             _ = webView.request?.allHTTPHeaderFields ,
             _ = webView.request?.URL
