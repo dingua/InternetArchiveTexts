@@ -47,4 +47,7 @@ class IAChapter {
         self.file =  IAFile(file: chapter.file!)
     }
 
+    func isDownloaded() -> Bool {
+        return Chapter.chapterDownloadStatus(name!, itemIdentifier: file!.archiveItem!.identifier!).isDownloaded
+    }
 }

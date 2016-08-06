@@ -34,6 +34,9 @@ class IAFavouriteLoginVC: UIViewController,  IALoadingViewProtocol{
         loginVC.dismissCompletion = {
             self.addLoadingView()
         }
+        loginVC.loadingHandler = { loading in
+            self.sortPresentationDelegate.noDismissOnTapWhileLoading = loading
+        }
         presentViewController(loginVC, animated: true, completion: nil)
     }
     

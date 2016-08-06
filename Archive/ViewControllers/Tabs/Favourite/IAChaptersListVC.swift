@@ -90,13 +90,13 @@ class IAChaptersListVC: UITableViewController {
             cell.configure(chapter, withProgress : progress,
                            isSelected: indexPath.row == selectedChapterIndex,
                            downloadActionHandler:  {chapter in
-                IADownloadsManager.sharedInstance.downloadTrigger(chapter)
+                            self.triggerDownload(chapter)
             }){chapter in
-                IADownloadsManager.sharedInstance.cancelDownload(chapter)
+                self.cancelDownload(chapter)
             }
         }else {
             cell.configure(chapter, isSelected: indexPath.row == selectedChapterIndex, downloadActionHandler: {chapter in
-                IADownloadsManager.sharedInstance.downloadTrigger(chapter)
+            self.triggerDownload(chapter)
             })
         }
         return cell
@@ -105,4 +105,32 @@ class IAChaptersListVC: UITableViewController {
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         chapterSelectionHandler!(chapterIndex: indexPath.row)
     }
+    
+    //MARK: Handle Download Actions
+    
+    func triggerDownload(chapter: IAChapter) {
+        showConfirmationAlertForHandler(chapter.isDownloaded() ? "Do you want to delete this chapter ? " : "Do you want to download this chapter ?", handler: {
+            IADownloadsManager.sharedInstance.downloadTrigger(chapter)
+        })
+    }
+    
+    func cancelDownload(chapter: IAChapter) {
+        showConfirmationAlertForHandler("Do you want to cancel this download ?", handler: {
+            IADownloadsManager.sharedInstance.cancelDownload(chapter)
+        })
+    }
+
+    //MARK: Helper
+    
+    func showConfirmationAlertForHandler(message: String, handler: ()->()) {
+        let alertView = UIAlertController(title: "Download", message: message, preferredStyle: .Alert)
+        
+        alertView.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { _ in
+            handler()
+        }))
+        
+        alertView.addAction(UIAlertAction(title: "No", style: .Cancel, handler: nil))
+        self.presentViewController(alertView, animated: true, completion: nil)
+    }
+    
 }

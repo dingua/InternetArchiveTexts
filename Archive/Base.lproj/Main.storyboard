@@ -203,7 +203,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="390" height="300"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Book Title" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="dm4-3s-XUT" userLabel="Title Label">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Book Title" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="dm4-3s-XUT" userLabel="Title Label">
                                             <rect key="frame" x="261" y="68" width="109" height="20"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
@@ -236,9 +236,6 @@
                                                 <mask key="constraints">
                                                     <include reference="3bA-v7-XDK"/>
                                                 </mask>
-                                            </variation>
-                                            <variation key="widthClass=regular" misplaced="YES">
-                                                <rect key="frame" x="97" y="7" width="20" height="22"/>
                                             </variation>
                                             <connections>
                                                 <action selector="secondAction" destination="dbW-Qy-ahn" eventType="touchUpInside" id="jAe-9a-jvU"/>
@@ -296,21 +293,26 @@
                                                 </mask>
                                             </variation>
                                         </label>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ei4-d9-Q0U" userLabel="Main Image View">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ei4-d9-Q0U" userLabel="Main Image View">
                                             <rect key="frame" x="0.0" y="50" width="100" height="200"/>
+                                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" priority="750" constant="200" id="3tu-V9-WKc">
+                                                <constraint firstAttribute="height" constant="200" id="3tu-V9-WKc">
                                                     <variation key="widthClass=compact" constant="150"/>
                                                 </constraint>
-                                                <constraint firstAttribute="height" priority="750" constant="200" id="B7f-8b-GH3"/>
+                                                <constraint firstAttribute="height" constant="200" id="B7f-8b-GH3">
+                                                    <variation key="widthClass=regular" constant="170"/>
+                                                </constraint>
                                                 <constraint firstAttribute="width" secondItem="Ei4-d9-Q0U" secondAttribute="height" multiplier="2:4" id="KuX-DE-3SE"/>
-                                                <constraint firstAttribute="width" priority="750" constant="100" id="WjQ-J5-gmf">
+                                                <constraint firstAttribute="width" constant="100" id="WjQ-J5-gmf">
                                                     <variation key="widthClass=compact" constant="75"/>
                                                 </constraint>
                                                 <constraint firstAttribute="height" constant="200" id="oLz-vY-Umk">
                                                     <variation key="widthClass=compact" constant="150"/>
                                                 </constraint>
-                                                <constraint firstAttribute="width" priority="750" constant="100" id="zDg-7H-xdi"/>
+                                                <constraint firstAttribute="width" constant="100" id="zDg-7H-xdi">
+                                                    <variation key="widthClass=regular" constant="100"/>
+                                                </constraint>
                                             </constraints>
                                             <variation key="default">
                                                 <mask key="constraints">
@@ -340,7 +342,7 @@
                                 </view>
                                 <constraints>
                                     <constraint firstItem="Ei4-d9-Q0U" firstAttribute="trailing" secondItem="dMC-mx-N3i" secondAttribute="trailing" constant="8" id="0FW-nz-1s1"/>
-                                    <constraint firstAttribute="trailing" secondItem="dm4-3s-XUT" secondAttribute="trailing" constant="20" id="10R-js-9KA"/>
+                                    <constraint firstAttribute="trailing" secondItem="dm4-3s-XUT" secondAttribute="trailing" id="10R-js-9KA"/>
                                     <constraint firstItem="Da4-ev-8Cv" firstAttribute="top" secondItem="ywe-Xo-f18" secondAttribute="bottom" constant="8" id="99V-av-xVg"/>
                                     <constraint firstItem="ywe-Xo-f18" firstAttribute="top" secondItem="dm4-3s-XUT" secondAttribute="bottom" constant="8" id="E9u-6E-INm"/>
                                     <constraint firstItem="Ei4-d9-Q0U" firstAttribute="top" secondItem="dbW-Qy-ahn" secondAttribute="top" id="EG3-mu-fAb"/>
@@ -1074,6 +1076,7 @@
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="VLT-6b-T3h">
                                             <rect key="frame" x="0.0" y="0.0" width="150" height="300"/>
+                                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="200" id="e4y-gb-b74">
                                                     <variation key="widthClass=compact" constant="150"/>
@@ -1406,6 +1409,7 @@
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="sDh-XI-8lI" userLabel="Main Image View">
                                             <rect key="frame" x="0.0" y="0.0" width="150" height="300"/>
+                                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="200" id="C2N-NG-jpU">
                                                     <variation key="widthClass=compact" constant="150"/>
@@ -1634,6 +1638,7 @@
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MPq-Az-8G6" userLabel="Main Image View">
                                             <rect key="frame" x="0.0" y="0.0" width="150" height="300"/>
+                                            <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="200" id="Bmd-XI-e2D">
                                                     <variation key="widthClass=compact" constant="150"/>
@@ -1896,7 +1901,7 @@
         <image name="sort" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="S2s-Yx-eJD"/>
         <segue reference="BNG-AH-2HG"/>
-        <segue reference="tge-dc-5FS"/>
     </inferredMetricsTieBreakers>
 </document>

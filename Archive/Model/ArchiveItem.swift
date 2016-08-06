@@ -186,7 +186,7 @@ class ArchiveItem: NSManagedObject {
                 for item in fetchedItems {
                     item.isFavorite = false
                 }
-                try CoreDataStackManager.sharedManager.saveContext()
+                CoreDataStackManager.sharedManager.saveContext()
             }
         } catch let error as NSError {
             print("Fetch failed: \(error.localizedDescription)")

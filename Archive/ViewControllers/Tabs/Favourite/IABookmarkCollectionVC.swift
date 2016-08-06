@@ -28,7 +28,7 @@ class IABookmarkVC: IAGenericItemCollectionVC {
     override func collectionView(collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                                sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return Utils.isiPad() ? CGSizeMake(300, 250) : CGSizeMake(300, 250)
+        return  CGSizeMake(300, 250)
     }
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> IABookmarkItemCollectionCell {
         let cell =  collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! IABookmarkItemCollectionCell

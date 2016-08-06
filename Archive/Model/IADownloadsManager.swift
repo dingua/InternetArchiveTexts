@@ -36,7 +36,7 @@ class IADownloadsManager {
     }
     
     func downloadTrigger(chapter: IAChapter) {
-        if Chapter.chapterDownloadStatus(chapter.name!, itemIdentifier: chapter.file!.archiveItem!.identifier!).isDownloaded == true {
+        if chapter.isDownloaded() {
             deleteChapter(chapter)
         }else {
             if let file = chapter.file {
@@ -44,6 +44,7 @@ class IADownloadsManager {
             }
        }
     }
+    
     
     func cancelDownload(chapter: IAChapter) {
         self.filesQueue?.indexOf({$0.file?.archiveItem!.identifier == chapter.file!.archiveItem!.identifier && $0.chapter?.name == chapter.name}).map({
