@@ -42,6 +42,7 @@
 		344551A51CD5E0F500FE7C47 /* IASortListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344551911CD5E0F500FE7C47 /* IASortListTableViewCell.swift */; };
 		344551A71CD5E13800FE7C47 /* IALoadingViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 344551A61CD5E13800FE7C47 /* IALoadingViewProtocol.swift */; };
 		3448CFF31CC3901A001CBB31 /* IALoginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3448CFF21CC3901A001CBB31 /* IALoginManager.swift */; };
+		345A3F6F1D57491C009FBB13 /* IANavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 345A3F6E1D57491C009FBB13 /* IANavigationController.swift */; };
 		346553FC1D33314A001BAECF /* IABookmarkItemCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 346553FB1D33314A001BAECF /* IABookmarkItemCollectionCell.swift */; };
 		3473ACAE1CD8C436008FE4C9 /* IATabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3473ACAD1CD8C436008FE4C9 /* IATabBarController.swift */; };
 		3473ACB51CDA7EBC008FE4C9 /* ArchiveItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3473ACB11CDA7EBC008FE4C9 /* ArchiveItem+CoreDataProperties.swift */; };
@@ -139,6 +140,7 @@
 		344551911CD5E0F500FE7C47 /* IASortListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IASortListTableViewCell.swift; sourceTree = "<group>"; };
 		344551A61CD5E13800FE7C47 /* IALoadingViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IALoadingViewProtocol.swift; sourceTree = "<group>"; };
 		3448CFF21CC3901A001CBB31 /* IALoginManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IALoginManager.swift; sourceTree = "<group>"; };
+		345A3F6E1D57491C009FBB13 /* IANavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IANavigationController.swift; sourceTree = "<group>"; };
 		346553FB1D33314A001BAECF /* IABookmarkItemCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IABookmarkItemCollectionCell.swift; sourceTree = "<group>"; };
 		3473ACAD1CD8C436008FE4C9 /* IATabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IATabBarController.swift; sourceTree = "<group>"; };
 		3473ACB11CDA7EBC008FE4C9 /* ArchiveItem+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ArchiveItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -245,6 +247,7 @@
 				34DCE8A81CE8531B002F3119 /* ChapterBookmarkExplore */,
 				344551861CD5E0F500FE7C47 /* Tabs */,
 				340790DF1CF3133000D4596E /* Book Details */,
+				345A3F6E1D57491C009FBB13 /* IANavigationController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -735,6 +738,7 @@
 				3445519D1CD5E0F500FE7C47 /* IASortPresentationDelgate.swift in Sources */,
 				34DC28351D1017FA00086FE0 /* IAFile.swift in Sources */,
 				3434D5F71CF8950D00167C3E /* IABookDetailsPresentationDelgate.swift in Sources */,
+				345A3F6F1D57491C009FBB13 /* IANavigationController.swift in Sources */,
 				344551961CD5E0F500FE7C47 /* IAReaderCollectionViewController.swift in Sources */,
 				34DC28341D1017FA00086FE0 /* IAChapter.swift in Sources */,
 				3448CFF31CC3901A001CBB31 /* IALoginManager.swift in Sources */,

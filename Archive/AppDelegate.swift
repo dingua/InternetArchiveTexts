@@ -14,24 +14,6 @@ import MBProgressHUD
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var progressView : UIProgressView?
-    var downloadProgress: Float {
-        get {
-            return progressView!.progress
-        }
-        set {
-            dispatch_async(dispatch_get_main_queue()) {
-                self.progressView?.progress = newValue
-                if newValue > 0.0 {
-                    self.progressView?.hidden = false
-                    self.window!.bringSubviewToFront(self.progressView!)
-                }else {
-                    self.progressView?.hidden = true
-                }
-            }
-        }
-    }
-
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
@@ -43,7 +25,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         self.window?.rootViewController = tabbar
         self.window?.makeKeyAndVisible()
-        addProgressView()
         return true
     }
 
@@ -72,46 +53,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         CoreDataStackManager.sharedManager.saveContext()
     }
 
-    //MARK: - Download Progress
-    
-    func addProgressView() {
-        let window = UIApplication.sharedApplication().keyWindow!
-        progressView = UIProgressView(progressViewStyle: .Default)
-        progressView?.hidden = true
-        progressView?.tintColor = UIColor.blackColor()
-        window.addSubview(progressView!)
-        progressView!.translatesAutoresizingMaskIntoConstraints = false
-        
-        window.addConstraint(NSLayoutConstraint(item: progressView!  , attribute: .Leading, relatedBy: .Equal, toItem: window, attribute: .Leading, multiplier: 1.0, constant: 0))
-        window.addConstraint(NSLayoutConstraint(item: progressView!  , attribute: .Trailing , relatedBy: .Equal, toItem: window, attribute: .Trailing, multiplier: 1.0, constant: 0))
-        window.addConstraint(NSLayoutConstraint(item: progressView!  , attribute: .Top , relatedBy: .Equal, toItem: window, attribute: .Top, multiplier: 1.0, constant: 64))
-    }
-    
+    //MARK: - Download Status
    
     func downloadDone() {
-        let window = UIApplication.sharedApplication().keyWindow!
-        let doneView = MBProgressHUD.showHUDAddedTo(window, animated: true)
-        doneView.mode = .CustomView
-        doneView.labelText = "Done"
-        doneView.customView = UIImageView(image: UIImage(named: "done_btn")?.imageWithTintColor(UIColor.whiteColor()))
-        let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(2 * Double(NSEC_PER_SEC)))
-        dispatch_after(popTime, dispatch_get_main_queue(),{
-            MBProgressHUD.hideHUDForView(window ,animated:true)
-        })
+        showProgressView("Done", image: UIImage(named: "done_btn"))
     }
     
     func downloadFailed() {
+        showProgressView("Failed", image: UIImage(named: "done_btn"))
+    }
+    
+    func showProgressView(text: String, image: UIImage?) {
         let window = UIApplication.sharedApplication().keyWindow!
         let doneView = MBProgressHUD.showHUDAddedTo(window, animated: true)
         doneView.mode = .CustomView
-        doneView.labelText = "Failed"
-        doneView.customView = UIImageView(image: UIImage(named: "done_btn")?.imageWithTintColor(UIColor.whiteColor()))
+        doneView.labelText = text
+        doneView.customView = UIImageView(image: image?.imageWithTintColor(UIColor.whiteColor()))
         let popTime = dispatch_time(DISPATCH_TIME_NOW, Int64(2 * Double(NSEC_PER_SEC)))
         dispatch_after(popTime, dispatch_get_main_queue(),{
             MBProgressHUD.hideHUDForView(window ,animated:true)
         })
     }
-
-    
 }
 

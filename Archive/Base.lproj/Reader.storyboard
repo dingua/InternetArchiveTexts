@@ -208,7 +208,7 @@
         <!--Navigation Controller-->
         <scene sceneID="xmd-vz-AWB">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="9hh-xu-Q8S" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="9hh-xu-Q8S" customClass="IANavigationController" customModule="Archive" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <nil key="simulatedStatusBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="nvq-Ii-Vgn">

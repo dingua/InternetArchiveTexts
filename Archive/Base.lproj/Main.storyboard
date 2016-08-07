@@ -614,6 +614,9 @@
                                 <fontDescription key="fontDescription" name="Helvetica-Light" family="Helvetica" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
+                                <variation key="widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="54" y="263" width="52" height="20"/>
+                                </variation>
                                 <variation key="widthClass=regular" misplaced="YES">
                                     <rect key="frame" x="268" y="263" width="52" height="20"/>
                                 </variation>
@@ -625,6 +628,9 @@
                                     <constraint firstAttribute="height" constant="55" id="Wfs-U9-0vJ"/>
                                 </constraints>
                                 <state key="normal" backgroundImage="Login Button"/>
+                                <variation key="widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="116" y="245" width="100" height="55"/>
+                                </variation>
                                 <variation key="widthClass=regular" misplaced="YES">
                                     <rect key="frame" x="330" y="245" width="100" height="55"/>
                                 </variation>
@@ -640,6 +646,9 @@
                                 <fontDescription key="fontDescription" name="Helvetica-Light" family="Helvetica" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
+                                <variation key="widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="226" y="262" width="82" height="20"/>
+                                </variation>
                                 <variation key="widthClass=regular" misplaced="YES">
                                     <rect key="frame" x="440" y="262" width="82" height="20"/>
                                 </variation>
@@ -656,6 +665,9 @@
                                         <exclude reference="749-t5-PCo"/>
                                         <exclude reference="hFy-7I-Xut"/>
                                     </mask>
+                                </variation>
+                                <variation key="widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="318" y="257" width="32" height="30"/>
                                 </variation>
                                 <variation key="widthClass=regular" misplaced="YES">
                                     <rect key="frame" x="532" y="257" width="32" height="30"/>
@@ -698,7 +710,7 @@
         <!--Favorites Nav-->
         <scene sceneID="7x2-af-ehw">
             <objects>
-                <navigationController id="10l-OT-4Lu" userLabel="Favorites Nav" sceneMemberID="viewController">
+                <navigationController id="10l-OT-4Lu" userLabel="Favorites Nav" customClass="IANavigationController" customModule="Archive" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Favourites" image="favorite" id="Ecs-KY-6Mc" userLabel="Favourites"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="d9v-hi-cYj">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -875,7 +887,7 @@
         <!--Search-->
         <scene sceneID="CT8-9d-dMy">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="y3X-A3-hRI" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="y3X-A3-hRI" customClass="IANavigationController" customModule="Archive" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Search" image="search-button" id="Vhx-vU-Pjb"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="WvD-H9-D4i">
@@ -894,7 +906,7 @@
         <!--Explore-->
         <scene sceneID="QV0-g3-uPM">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="B34-nn-Xaz" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="B34-nn-Xaz" customClass="IANavigationController" customModule="Archive" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Explore" image="ia-button-plain" id="sGY-QB-LnF"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="aUl-aA-PpB">
@@ -1883,7 +1895,7 @@
         <image name="sort" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="S2s-Yx-eJD"/>
         <segue reference="BNG-AH-2HG"/>
+        <segue reference="tge-dc-5FS"/>
     </inferredMetricsTieBreakers>
 </document>

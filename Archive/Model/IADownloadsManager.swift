@@ -10,7 +10,7 @@ import Foundation
 import Alamofire
 import SSZipArchive
 
-class IADownloadsManager {
+class IADownloadsManager: NSObject {
     static let sharedInstance = IADownloadsManager()
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     struct FileDownloadStatus {
@@ -35,6 +35,8 @@ class IADownloadsManager {
         }
     }
     
+    dynamic var downloadProgress: Double = 0
+    
     func downloadTrigger(chapter: IAChapter) {
         if chapter.isDownloaded() {
             deleteChapter(chapter)
@@ -55,7 +57,7 @@ class IADownloadsManager {
             myChapter!.markDownloaded(false)
             NSNotificationCenter.defaultCenter().postNotificationName("\(chapter.name!)_deleted", object:  nil)
             self.filesQueue![$0].totalBytesRead = 0
-            self.appDelegate.downloadProgress = Float(self.totalProgress!)
+            self.downloadProgress = self.totalProgress!
             self.filesQueue!.removeAtIndex($0)
         })
     }
@@ -83,7 +85,7 @@ class IADownloadsManager {
                             chapterDB!.markDownloaded(true)
                         }
                         self.filesQueue!.removeAtIndex($0)
-                        if self.filesQueue?.count == 0 {self.appDelegate.downloadProgress = 0}
+                        if self.filesQueue?.count == 0 {self.downloadProgress = 0}
                         self.appDelegate.downloadDone()
                         NSNotificationCenter.defaultCenter().postNotificationName("\(chapter.name!)_finished", object:  nil)
                         NSNotificationCenter.defaultCenter().postNotificationName("download_done", object:  nil)
@@ -95,7 +97,7 @@ class IADownloadsManager {
                             chapterDB!.markDownloaded(false)
                         }
                         self.filesQueue!.removeAtIndex($0)
-                        if self.filesQueue?.count == 0 {self.appDelegate.downloadProgress = 0}
+                        if self.filesQueue?.count == 0 {self.downloadProgress = 0}
                         self.appDelegate.downloadFailed()
                         NSNotificationCenter.defaultCenter().postNotificationName("\(chapter.name!)_finished", object:  nil)
                         NSNotificationCenter.defaultCenter().postNotificationName("download_deleted", object:  nil)
@@ -107,7 +109,7 @@ class IADownloadsManager {
                 self.filesQueue?.indexOf({$0.file?.archiveItem!.identifier == file.archiveItem!.identifier && $0.chapter?.name == chapter.name}).map({
                     self.filesQueue![$0].totalBytesRead = totalBytesRead
                     self.filesQueue![$0].totalBytesExpectedToRead = totalBytesExpectedToRead
-                    self.appDelegate.downloadProgress = Float(self.totalProgress!)
+                    self.downloadProgress = self.totalProgress!
                     NSNotificationCenter.defaultCenter().postNotificationName("\(chapter.name!)_progress", object:  Double(Float(totalBytesRead)/Float(totalBytesExpectedToRead)))
                     }
                 )
