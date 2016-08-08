@@ -147,7 +147,6 @@ class IADownloadsManager: NSObject {
     }
     
     func resumeDownloads() {
-        print("cache = \(NSSearchPathForDirectoriesInDomains(.CachesDirectory, .UserDomainMask, true)[0])")
         let chaptersInDownloadState = self.getChaptersInDownloadState()
         for chapter in chaptersInDownloadState as! [Chapter] {
             let myChapter = IAChapter.init(chapter: chapter)

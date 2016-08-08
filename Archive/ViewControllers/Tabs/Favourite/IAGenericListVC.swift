@@ -85,8 +85,6 @@ class IAGenericListVC: UICollectionViewController, NSFetchedResultsControllerDel
     func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
         
         if type == NSFetchedResultsChangeType.Insert {
-            print("Insert Object: \(newIndexPath)")
-            
             blockOperations.append(
                 NSBlockOperation(block: { [weak self] in
                     if let this = self {
@@ -96,7 +94,6 @@ class IAGenericListVC: UICollectionViewController, NSFetchedResultsControllerDel
             )
         }
         else if type == NSFetchedResultsChangeType.Update {
-            print("Update Object: \(indexPath)")
             blockOperations.append(
                 NSBlockOperation(block: { [weak self] in
                     if let this = self {
@@ -106,8 +103,6 @@ class IAGenericListVC: UICollectionViewController, NSFetchedResultsControllerDel
             )
         }
         else if type == NSFetchedResultsChangeType.Move {
-            print("Move Object: \(indexPath)")
-            
             blockOperations.append(
                 NSBlockOperation(block: { [weak self] in
                     if let this = self {
@@ -117,8 +112,6 @@ class IAGenericListVC: UICollectionViewController, NSFetchedResultsControllerDel
             )
         }
         else if type == NSFetchedResultsChangeType.Delete {
-            print("Delete Object: \(indexPath)")
-            
             blockOperations.append(
                 NSBlockOperation(block: { [weak self] in
                     if let this = self {
@@ -132,8 +125,6 @@ class IAGenericListVC: UICollectionViewController, NSFetchedResultsControllerDel
     func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
         
         if type == NSFetchedResultsChangeType.Insert {
-            print("Insert Section: \(sectionIndex)")
-            
             blockOperations.append(
                 NSBlockOperation(block: { [weak self] in
                     if let this = self {
@@ -143,7 +134,6 @@ class IAGenericListVC: UICollectionViewController, NSFetchedResultsControllerDel
             )
         }
         else if type == NSFetchedResultsChangeType.Update {
-            print("Update Section: \(sectionIndex)")
             blockOperations.append(
                 NSBlockOperation(block: { [weak self] in
                     if let this = self {
@@ -153,8 +143,6 @@ class IAGenericListVC: UICollectionViewController, NSFetchedResultsControllerDel
             )
         }
         else if type == NSFetchedResultsChangeType.Delete {
-            print("Delete Section: \(sectionIndex)")
-            
             blockOperations.append(
                 NSBlockOperation(block: { [weak self] in
                     if let this = self {

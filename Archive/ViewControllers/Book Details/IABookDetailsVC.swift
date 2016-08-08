@@ -272,9 +272,7 @@ class IABookDetailsVC: UIViewController, UITableViewDelegate, UITableViewDataSou
         let text = parameter.values![indexPath.row] ?? ""
         let font = UIFont(name: "HelveticaNeue", size: 16)!
         let rect = text.boundingRectWithSize(CGSizeMake(1000,1000), options: .UsesLineFragmentOrigin, attributes: ([NSFontAttributeName:font]), context: nil)
-        print("rect width = \(rect.size.width) collection width \(collectionView.frame.size.width)")
         return CGSizeMake(min(rect.size.width, collectionView.frame.size.width-20), rect.size.height)
-        //        return rect.size
     }
     
     //MARK: - Helper

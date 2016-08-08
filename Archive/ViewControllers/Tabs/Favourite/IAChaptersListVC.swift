@@ -52,7 +52,6 @@ class IAChaptersListVC: UITableViewController {
         let chapter = filteredChapters?.first
         if let chapter = chapter {
             dispatch_async(dispatch_get_main_queue(), {
-                print("notification object \(notification.object))")
                 if let progress = notification.object  as? Double {
                     self.downloadProgress[chapter.name!] = progress
                 } else {

@@ -12,6 +12,7 @@ import AVFoundation
 
 class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var imageView: UIImageView?
+    @IBOutlet var panGestureRecognizer: UIPanGestureRecognizer!
     var image: UIImage?
     var pageNumber : Int?
     var imagesDownloader : IABookImagesManager!
@@ -30,16 +31,24 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        panGestureRecognizer.enabled = false
         scrollView.decelerationRate = UIScrollViewDecelerationRateFast
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        if let reader = parentViewController?.parentViewController where reader.isKindOfClass(IAReaderVC) {
+            (reader as! IAReaderVC).pageControllerPanGestureEnabled(true)
+        }
         appeared = true
         if image == nil {
             updatePage()
         }else {
             rescaleScrollView()
+            panGestureRecognizer.enabled = true
+            if let reader = parentViewController?.parentViewController where reader.isKindOfClass(IAReaderVC) {
+                (reader as! IAReaderVC).pageControllerPanGestureEnabled(false)
+            }
         }
     }
 
@@ -54,7 +63,11 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
                 mySelf.removeLoadingView()
                 if page == mySelf.pageNumber {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        mySelf.updateImage(image)                        
+                        mySelf.updateImage(image)
+                        mySelf.panGestureRecognizer.enabled = true
+                        if let reader = mySelf.parentViewController?.parentViewController where reader.isKindOfClass(IAReaderVC) {
+                            (reader as! IAReaderVC).pageControllerPanGestureEnabled(false)
+                        }
                     })
                 }
             }
@@ -64,6 +77,7 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
     
     func goNextPage() {
         if let reader = parentViewController?.parentViewController where reader.isKindOfClass(IAReaderVC) {
+                panGestureRecognizer.enabled = false
                 (reader as! IAReaderVC).goNextPage()
         }
     }
@@ -71,6 +85,7 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
     
     func goPreviousPage() {
         if let reader = parentViewController?.parentViewController where reader.isKindOfClass(IAReaderVC) {
+            panGestureRecognizer.enabled = false
             (reader as! IAReaderVC).goPreviousPage()
         }
     }
@@ -160,12 +175,9 @@ class IAReaderPageVC: UIViewController, UIGestureRecognizerDelegate {
     }
 
     func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
-//        if gestureRecognizer.isKindOfClass(UIPanGestureRecognizer) {
             if let reader = parentViewController?.parentViewController where reader.isKindOfClass(IAReaderVC) {
-                print("**pageVCisAnimating \(!(reader as! IAReaderVC).pageVCisAnimating)")
                 return !(reader as! IAReaderVC).pageVCisAnimating
             }
-//        }
         return true
     }
     

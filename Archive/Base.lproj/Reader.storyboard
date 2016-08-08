@@ -186,6 +186,7 @@
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <connections>
                         <outlet property="imageView" destination="Teh-Dt-DnY" id="Era-A0-Uah"/>
+                        <outlet property="panGestureRecognizer" destination="9YS-lP-pdk" id="VMU-CQ-ksp"/>
                         <outlet property="scrollView" destination="JBX-Rp-5oF" id="9fN-64-m3L"/>
                     </connections>
                 </viewController>

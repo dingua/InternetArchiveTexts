@@ -152,7 +152,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                         return
                     }
                     dispatch_async(dispatch_get_main_queue(), {
-                        print("totoal time \(NSDate().timeIntervalSinceDate(self.startDate!))")
                         self.numberOfPages = Int(pages.count)
                         chapter.numberOfPages = self.numberOfPages
                         self.removeLoadingView()
@@ -235,7 +234,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        pagesViewControllers.removeAll()
     }
     
     //MARK: UIPageViewControllerDelegate
@@ -261,7 +260,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
         if pageVCisAnimating {
-            print("viewControllerBeforeViewController")
             return nil
         }
         let pageNumber = (viewController as! IAReaderPageVC).pageNumber
@@ -274,7 +272,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController?{
         if pageVCisAnimating {
-            print("viewControllerAfterViewController")
             return nil
         }
         let pageNumber = (viewController as! IAReaderPageVC).pageNumber
@@ -351,10 +348,12 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         let pageVC = self.pageVCWithNumber(self.pageNumber)
         self.pageController.setViewControllers(Array(arrayLiteral: pageVC) , direction: toNextPage ? .Forward : .Reverse, animated: true, completion: nil)
         self.updatePages()
+        pageController.gestureRecognizers.filter({$0 is UIPanGestureRecognizer}).first?.enabled = true
     }
     
     func goNextPage() {
         if pageNumber < numberOfPages-1 {
+            pageController.gestureRecognizers.filter({$0 is UIPanGestureRecognizer}).first?.enabled = false
             pageNumber += 1
             updateUIAfterPageSeek(true)
         }
@@ -362,6 +361,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     func goPreviousPage() {
         if pageNumber > 0 {
+            pageController.gestureRecognizers.filter({$0 is UIPanGestureRecognizer}).first?.enabled = false
             pageNumber -= 1
             updateUIAfterPageSeek(false)
         }
@@ -465,5 +465,9 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     override func didRotateFromInterfaceOrientation(fromInterfaceOrientation: UIInterfaceOrientation) {
         pagesViewControllers.forEach {$1.scaled = false}
+    }
+    
+    func pageControllerPanGestureEnabled(enabled: Bool) {
+        pageController.gestureRecognizers.filter({$0 is UIPanGestureRecognizer}).first?.enabled = enabled
     }
 }

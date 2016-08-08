@@ -7,18 +7,20 @@
 //
 
 import UIKit
+import DGActivityIndicatorView
 
 private let reuseIdentifier = "collectionExploreCell"
 
-class IACollectionsExploreVC: UICollectionViewController, IARootVCProtocol {
+class IACollectionsExploreVC: UICollectionViewController, IARootVCProtocol, IALoadingViewProtocol {
+    var activityIndicatorView : DGActivityIndicatorView?
     
     var searchManager = IAItemsManager()
     var collections = [IAArchiveItem]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        activityIndicatorView = DGActivityIndicatorView(type: .ThreeDots, tintColor: UIColor.blackColor())
         searchCollections()
-        print("downloaded chapters \(IADownloadsManager.sharedInstance.getDownloadedChapters())")
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -28,6 +30,7 @@ class IACollectionsExploreVC: UICollectionViewController, IARootVCProtocol {
     //MARK: - Helpers
     
     func searchCollections() {
+        addLoadingView()
         searchManager.searchCollections("texts", hidden: true, count: 50, page: 0) { [weak self] collections  in
             if let mySelf = self {
                 let allTextsDictionary = [
@@ -50,6 +53,7 @@ class IACollectionsExploreVC: UICollectionViewController, IARootVCProtocol {
                 dispatch_group_notify(group, dispatch_get_main_queue(), {
                     mySelf.collections.appendContentsOf(collections)
                     mySelf.collectionView!.reloadData()
+                    self?.removeLoadingView()
                 })
              }
         }
@@ -61,7 +65,7 @@ class IACollectionsExploreVC: UICollectionViewController, IARootVCProtocol {
     func collectionView(collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-            return Utils.isiPad() ? CGSizeMake(240, 300) : CGSizeMake(self.view.frame.size.width/2-10, 250)
+            return Utils.isiPad() ? CGSizeMake(240, 300) : CGSizeMake(self.view.frame.size.width/2-10, 200)
     }
 
     override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
