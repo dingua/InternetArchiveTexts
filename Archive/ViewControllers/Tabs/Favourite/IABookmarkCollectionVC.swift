@@ -33,15 +33,19 @@ class IABookmarkVC: IAGenericItemCollectionVC {
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> IABookmarkItemCollectionCell {
         let cell =  collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! IABookmarkItemCollectionCell
         
-        let page = fetchedResultController!.objectAtIndexPath(indexPath) as! Page
-        
-        cell.configure(page, type: .Bookmark) {
-            IABookmarkManager.sharedInstance.triggerBookmark(IAPage(page: page))
-        }
-        
-        cell.secondActionClosure = {
-            if let item = page.chapter?.file?.archiveItem {
-                self.presentDetails(item)
+        fetchedResultController?.managedObjectContext.performBlock {
+            let page = self.fetchedResultController!.objectAtIndexPath(indexPath) as! Page
+            
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                cell.configure(page, type: .Bookmark) {
+                    IABookmarkManager.sharedInstance.triggerBookmark(IAPage(page: page))
+                }
+                
+                cell.secondActionClosure = {
+                    if let item = page.chapter?.file?.archiveItem {
+                        self.presentDetails(item)
+                    }
+                }
             }
         }
         return cell

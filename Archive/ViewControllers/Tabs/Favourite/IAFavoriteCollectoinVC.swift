@@ -27,16 +27,19 @@ class IAFavoriteCollectoinVC: IAGenericItemCollectionVC {
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> IAGenericItemCollectionCell {
         let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath)
         
-        let item = fetchedResultController!.objectAtIndexPath(indexPath) as! ArchiveItem
-        
-        cell.configure(item, type: .Favorite) {
-            IAFavouriteManager.sharedInstance.deleteBookmark(IAArchiveItem(item: item)) { _ in }
+        fetchedResultController?.managedObjectContext.performBlock {
+            let item = self.fetchedResultController!.objectAtIndexPath(indexPath) as! ArchiveItem
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                cell.configure(item, type: .Favorite) {
+                    IAFavouriteManager.sharedInstance.deleteBookmark(IAArchiveItem(item: item)) { _ in }
+                }
+                
+                cell.secondActionClosure = {
+                    self.presentDetails(item)
+                }
+           
+            }
         }
-        
-        cell.secondActionClosure = {
-            self.presentDetails(item)
-        }
-        
         return cell
     }
     

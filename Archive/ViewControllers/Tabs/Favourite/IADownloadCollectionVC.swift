@@ -32,14 +32,18 @@ class IADownloadCollectionVC: IAGenericItemCollectionVC {
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> IAGenericItemCollectionCell {
         let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath)
         
-        let item = fetchedResultController!.objectAtIndexPath(indexPath) as! ArchiveItem
-        
-        cell.configure(item, type: .Download) {
-            self.showChaptersList(item)
-        }
-        
-        cell.secondActionClosure = {
-            self.presentDetails(item)
+        fetchedResultController?.managedObjectContext.performBlock {
+            let item = self.fetchedResultController!.objectAtIndexPath(indexPath) as! ArchiveItem
+            
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                cell.configure(item, type: .Download) {
+                    self.showChaptersList(item)
+                }
+                
+                cell.secondActionClosure = {
+                    self.presentDetails(item)
+                }
+            }
         }
         
         return cell
