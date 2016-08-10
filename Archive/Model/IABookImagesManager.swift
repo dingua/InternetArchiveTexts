@@ -72,7 +72,7 @@ class IABookImagesManager: NSObject {
     //MARK: - Download Pages
     
     func urlOfPage(number: Int) -> String{
-        return urlOfPage(pages![number].number!,scale: 2)
+        return urlOfPage(number,scale: 2)
     }
     
     func urlOfPage(number: Int, scale: Int) -> String{
