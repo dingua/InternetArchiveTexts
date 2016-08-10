@@ -84,7 +84,7 @@ class IAFavouriteManager: NSObject {
                         if bookmark["mediatype"].stringValue == "texts" {
                             dispatch_group_enter(group)
                             managedObjectContext.performBlock {
-                                if let bookItem = ArchiveItem.createArchiveItem(bookmark.dictionaryObject!){
+                                if let bookItem = ArchiveItem.createArchiveItem(bookmark.dictionaryObject!, save: false){
                                     bookItem.markAsFavourite(true)
                                 }
                                 dispatch_group_leave(group)

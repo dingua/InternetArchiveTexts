@@ -16,8 +16,13 @@ class ArchiveItem: NSManagedObject {
     // Insert code here to add functionality to your managed object subclass
     
     static let managedObjectContext :NSManagedObjectContext = CoreDataStackManager.sharedManager.managedObjectContext
-    
+  
     static func createArchiveItem(dictionary: [String:AnyObject])->ArchiveItem? {
+        return ArchiveItem.createArchiveItem(dictionary, save: true)
+    }
+    
+    
+    static func createArchiveItem(dictionary: [String:AnyObject], save: Bool )->ArchiveItem? {
         let predicate = NSPredicate(format: "identifier like %@", "\(dictionary["identifier"]!)");
         
         let fetchItemWithSameId = NSFetchRequest(entityName: "ArchiveItem")
@@ -73,7 +78,11 @@ class ArchiveItem: NSManagedObject {
                     }
                 }
             }
-            CoreDataStackManager.sharedManager.saveContext()
+            
+            if save {
+                CoreDataStackManager.sharedManager.saveContext()
+            }
+
             return item
         }catch let error as NSError {
             print("Fetch failed: \(error.localizedDescription)")
