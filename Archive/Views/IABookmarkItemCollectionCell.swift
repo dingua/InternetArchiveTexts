@@ -18,8 +18,7 @@ class IABookmarkItemCollectionCell: IAGenericItemCollectionCell {
         if completion != nil { actionClosure = completion }
         
         titleLabel.text = "\(page.chapter!.file!.archiveItem!.title!)"
-        let url = page.urlOfPage(10)
-        mainImageView.af_setImageWithURL(NSURL(string: url)!)
+        mainImageView.af_setImageWithURL(Constants.URL.ImageURL(page.chapter!.file!.archiveItem!.identifier!).url)
         
         if buttonType == .Bookmark && page.bookmarked {
             actionButton.setImage(UIImage(named: "bookmark_filled"), forState: .Normal)
