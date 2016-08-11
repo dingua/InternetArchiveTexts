@@ -95,7 +95,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         archiveItemsManager.getFileDetails(item!) { (file) -> () in
             self.removeLoadingView()
             self.item!.file = file
-            self.addBookmarkButton()
             if file.chapters.count > 0 {
                 if let completion = self.didGetFileDetailsCompletion {
                     completion()
@@ -106,7 +105,6 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                 self.showCanNotPreviewAlert()
                 return
             }
-            self.addChaptersButton()
             self.progressSlider.userInteractionEnabled = true
         }
     }
@@ -120,6 +118,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         if let page = imagesDownloader?.pageAtIndex(pageNumber), let rightBarButtonItem = navigationItem.rightBarButtonItem {
             let bookmarked = Page.isPageBookmarked(page)
             rightBarButtonItem.image = bookmarked ? UIImage(named: "bookmark_filled") : UIImage(named: "bookmark_empty")
+            page.isBookmarked = bookmarked
         }
     }
     
@@ -129,6 +128,13 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
             navigationItem.rightBarButtonItems?.append(button)
         }else {
             navigationItem.rightBarButtonItem = button
+        }
+    }
+    
+    func addNavigationItems() {
+        if navigationItem.rightBarButtonItems == nil {
+            addBookmarkButton()
+            addChaptersButton()
         }
     }
     
@@ -159,6 +165,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
                             completion()
                         }
                         self.updatePages()
+                        self.addNavigationItems()
                         self.updateBookmarkButton()
                     })
                 }
