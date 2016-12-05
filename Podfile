@@ -3,14 +3,14 @@ use_frameworks!
 
 target 'Archive' do
 
-pod 'Alamofire', '~> 3.1'
-pod 'AlamofireImage', '~> 2.0'
+pod 'Alamofire', '~> 3.5.0'
+pod 'AlamofireImage', '~> 2.5.0'
 pod 'SwiftyJSON', :git => 'https://github.com/SwiftyJSON/SwiftyJSON.git'
 pod 'DGActivityIndicatorView'
 pod 'TBXML'
 pod 'SSZipArchive'
 pod 'MBProgressHUD', '~> 0.9.2'
-pod 'ReachabilitySwift', :git => 'https://github.com/ashleymills/Reachability.swift'
+pod 'ReachabilitySwift', '~> 2.4'
 pod 'FRHyperLabel'
 end
 

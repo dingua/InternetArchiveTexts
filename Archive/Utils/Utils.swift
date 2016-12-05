@@ -59,7 +59,7 @@ extension UIImage {
         UIGraphicsBeginImageContextWithOptions(self.size, false, image.scale);
         color.set()
         image.drawInRect(CGRectMake(0, 0, self.size.width, image.size.height))
-        image = UIGraphicsGetImageFromCurrentImageContext()
+        image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         return  image
     }

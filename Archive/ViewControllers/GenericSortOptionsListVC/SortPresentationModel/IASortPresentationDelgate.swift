@@ -23,7 +23,7 @@ class IASortPresentationDelgate: NSObject, UIViewControllerTransitioningDelegate
         return presentationAnimatedTransitioning
     }
     
-    func presentationControllerForPresentedViewController(presented: UIViewController, presentingViewController presenting: UIViewController, sourceViewController source: UIViewController) -> UIPresentationController? {
+    func presentationControllerForPresentedViewController(presented: UIViewController, presentingViewController presenting: UIViewController?, sourceViewController source: UIViewController) -> UIPresentationController? {
         let presentatioController = IASortPresentationController(presentedViewController: presented, presentingViewController: presenting)
         presentatioController.noDismissOnTapWhileLoading = noDismissOnTapWhileLoading
         return presentatioController

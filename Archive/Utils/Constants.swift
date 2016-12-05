@@ -48,7 +48,7 @@ struct Constants {
         }
 
         var urlString: String {
-            return url.absoluteString
+            return url.absoluteString ?? ""
         }
     }
     

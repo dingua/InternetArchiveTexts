@@ -1,49 +1,46 @@
 PODS:
-  - Alamofire (3.1.5)
-  - AlamofireImage (2.3.0):
-    - Alamofire (~> 3.1)
+  - Alamofire (3.5.1)
+  - AlamofireImage (2.5.0):
+    - Alamofire (~> 3.5)
   - DGActivityIndicatorView (2.0)
   - FRHyperLabel (1.0.2)
   - MBProgressHUD (0.9.2)
-  - ReachabilitySwift (2.3.3)
+  - ReachabilitySwift (2.4)
   - SSZipArchive (1.1)
   - SwiftyJSON (2.3.2)
   - TBXML (1.5)
 
 DEPENDENCIES:
-  - Alamofire (~> 3.1)
-  - AlamofireImage (~> 2.0)
+  - Alamofire (~> 3.5.0)
+  - AlamofireImage (~> 2.5.0)
   - DGActivityIndicatorView
   - FRHyperLabel
   - MBProgressHUD (~> 0.9.2)
-  - ReachabilitySwift (from `https://github.com/ashleymills/Reachability.swift`)
+  - ReachabilitySwift (~> 2.4)
   - SSZipArchive
   - SwiftyJSON (from `https://github.com/SwiftyJSON/SwiftyJSON.git`)
   - TBXML
 
 EXTERNAL SOURCES:
-  ReachabilitySwift:
-    :git: https://github.com/ashleymills/Reachability.swift
   SwiftyJSON:
     :git: https://github.com/SwiftyJSON/SwiftyJSON.git
 
 CHECKOUT OPTIONS:
-  ReachabilitySwift:
-    :commit: fa90df50c04f5743fbdf643cbe8d10562d75673d
-    :git: https://github.com/ashleymills/Reachability.swift
   SwiftyJSON:
     :commit: 929539eb6a3304eaa9153ca44041a78b85bf2ee5
     :git: https://github.com/SwiftyJSON/SwiftyJSON.git
 
 SPEC CHECKSUMS:
-  Alamofire: 5f730ba29fd113b7ddd71c1e65d0c630acf5d7b0
-  AlamofireImage: 4013fb5b99b10117bf2554a67b9bd2231d476b45
+  Alamofire: 0dfba1184a543e2aa160f4e39cac4e8aba48d223
+  AlamofireImage: 2d34936e5201270bb17a316a786e90e83b4a249d
   DGActivityIndicatorView: 52875b025a6ccf6a431a905285c12e2bb95eb559
   FRHyperLabel: 967b8b7ffdd86b9f2d44f2981a5688c4d3faa9ac
   MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
-  ReachabilitySwift: e0f6b6f280effb47731acfaaa2d5ffe223703793
+  ReachabilitySwift: dc7452dab85ff881904215e1a113326ad8d07beb
   SSZipArchive: de3d215ab73f87db627f81f2ce24f1731e3886c3
   SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
   TBXML: 9f9dadb239f2f2af1dadb87fe43a0ce6e479379a
 
-COCOAPODS: 0.39.0
+PODFILE CHECKSUM: 41db6582f787262346022c78419bf18c0c04d915
+
+COCOAPODS: 1.1.1

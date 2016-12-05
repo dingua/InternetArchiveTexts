@@ -13,7 +13,7 @@ class IABookDetailsPresentationController: UIPresentationController {
     var centerX: NSLayoutConstraint?
     var centerY: NSLayoutConstraint?
     
-    override init(presentedViewController: UIViewController, presentingViewController: UIViewController) {
+    override init(presentedViewController: UIViewController, presentingViewController: UIViewController?) {
         self.chromeView = UIView()
         self.chromeView!.backgroundColor = UIColor(white: 0, alpha: 0.4)
         super.init(presentedViewController: presentedViewController, presentingViewController: presentingViewController)

@@ -22,7 +22,7 @@ class IABookDetailsPresentationDelgate: NSObject , UIViewControllerTransitioning
         return presentationAnimatedTransitioning
     }
     
-    func presentationControllerForPresentedViewController(presented: UIViewController, presentingViewController presenting: UIViewController, sourceViewController source: UIViewController) -> UIPresentationController? {
+    func presentationControllerForPresentedViewController(presented: UIViewController, presentingViewController presenting: UIViewController?, sourceViewController source: UIViewController) -> UIPresentationController? {
         let presentatioController = IABookDetailsPresentationController(presentedViewController: presented, presentingViewController: presenting)
         return presentatioController
         

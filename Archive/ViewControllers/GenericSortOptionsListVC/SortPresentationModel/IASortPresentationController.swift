@@ -14,7 +14,7 @@ class IASortPresentationController: UIPresentationController {
     var centerY: NSLayoutConstraint?
     var noDismissOnTapWhileLoading = false
 
-    override init(presentedViewController: UIViewController, presentingViewController: UIViewController) {
+    override init(presentedViewController: UIViewController, presentingViewController: UIViewController?) {
         self.chromeView = UIView()
         self.chromeView!.backgroundColor = UIColor(white: 0, alpha: 0.4)
         super.init(presentedViewController: presentedViewController, presentingViewController: presentingViewController)

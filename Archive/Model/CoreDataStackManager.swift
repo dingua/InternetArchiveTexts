@@ -70,7 +70,7 @@ class CoreDataStackManager {
     /// URL for the main Core Data store file.
     lazy var storeURL: NSURL = {
         return self.applicationDocumentsDirectory.URLByAppendingPathComponent(mainStoreFileName)
-    }()
+    }()!
     
     
     // Creates a new Core Data stack and returns a managed object context associated with a private queue.
