@@ -274,6 +274,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         if pageNumber <= 0 {
             return nil
         }
+        updateBookmarkIfNecessary(false)
         return pageVCWithNumber(pageNumber!-1)
     }
     
@@ -286,6 +287,7 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
         if pageNumber >= numberOfPages-1 {
             return nil
         }
+        updateBookmarkIfNecessary(true)
         return pageVCWithNumber(pageNumber!+1)
     }
     
@@ -360,14 +362,20 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     func goNextPage() {
         if pageNumber < numberOfPages-1 {
+            updateBookmarkIfNecessary(true)
             pageController.gestureRecognizers.filter({$0 is UIPanGestureRecognizer}).first?.enabled = false
             pageNumber += 1
             updateUIAfterPageSeek(true)
+            
+
         }
     }
     
     func goPreviousPage() {
         if pageNumber > 0 {
+            
+            updateBookmarkIfNecessary(false)
+            
             pageController.gestureRecognizers.filter({$0 is UIPanGestureRecognizer}).first?.enabled = false
             pageNumber -= 1
             updateUIAfterPageSeek(false)
@@ -466,6 +474,16 @@ class IAReaderVC: UIViewController,UIPageViewControllerDelegate,UIPageViewContro
     
     func isFavourite()->Bool {
         return item?.isFavourite ?? false
+    }
+    
+    func updateBookmarkIfNecessary(forNextPage: Bool) {
+        if let currentPage = imagesDownloader?.pageAtIndex(pageNumber) where currentPage.isBookmarked {
+            IABookmarkManager.sharedInstance.triggerBookmark(currentPage)
+            
+            if let nextPage = imagesDownloader?.pageAtIndex(forNextPage ? pageNumber+1 : pageNumber-1) where !nextPage.isBookmarked {
+                IABookmarkManager.sharedInstance.triggerBookmark(nextPage)
+            }
+        }
     }
     
     //MARK: Device orientation
